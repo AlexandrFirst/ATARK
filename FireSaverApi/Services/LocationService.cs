@@ -23,7 +23,7 @@ namespace FireSaverApi.Services
         public async Task<LocationPointModel> CalculateLocationModel()
         {
             var points = await dataContext.Points.Include(w => w.WorldPosition).Include(m => m.MapPosition).Take(2).ToListAsync();
-
+            //TODO: Add processing of multiple points
             double deltaXPixel = Math.Abs(points[0].MapPosition.Latitude - points[1].MapPosition.Latitude);
             double deltaYPixel = Math.Abs(points[0].MapPosition.Longtitude - points[1].MapPosition.Longtitude);
 
@@ -54,8 +54,8 @@ namespace FireSaverApi.Services
 
             locationPointModel = await CalculateLocationModel();
 
-            double x3WorldCoord = worldPostion.Latitude; //y по логике
-            double y3WorldCoord = worldPostion.Longtitude; //x по логике
+            double x3WorldCoord = worldPostion.Latitude; 
+            double y3WorldCoord = worldPostion.Longtitude;
 
             double x1WorldCoord = firstPoint.WorldPosition.Latitude;
             double y1WorldCoord = firstPoint.WorldPosition.Longtitude;
@@ -71,8 +71,8 @@ namespace FireSaverApi.Services
 
             return new PositionDto()
             {
-                Latitude = x3PixelCoord,
-                Longtitude = y3PixelCoord
+                Longtitude = x3PixelCoord,
+                Latitude = y3PixelCoord
             };
         }
     }

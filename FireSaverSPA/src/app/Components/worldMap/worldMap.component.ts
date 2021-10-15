@@ -21,6 +21,13 @@ export class WorldMapComponent implements AfterViewInit {
   postion: Postion;
 
   private loadMap(): void {
+    var icon = L.icon({
+      iconUrl: 'assets/images/marker-icon.png',
+      shadowUrl: 'assets/images/marker-shadow.png',
+      popupAnchor: [13, 0],
+    });
+
+
     this.map = L.map('map').setView([0, 0], 1);
     L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
       attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -42,44 +49,13 @@ export class WorldMapComponent implements AfterViewInit {
         });
     }).then((pos: any) => {
       console.log(pos);
+      this.marker = L.marker([pos.lat, pos.lng], {icon}).addTo(this.map)
+
       this.map.flyTo([pos.lat, pos.lng], 17);
-      L.marker([pos.lat + 0.001, pos.lng]).addTo(this.map)
-      L.marker([pos.lat, pos.lng + 0.001]).addTo(this.map)
-      L.marker([pos.lat, pos.lng]).addTo(this.map)
+      L.marker([pos.lat + 0.001, pos.lng], { icon }).addTo(this.map)
+      L.marker([pos.lat, pos.lng + 0.001], { icon }).addTo(this.map)
+      L.marker([pos.lat, pos.lng], { icon }).addTo(this.map)
     });
-
-
-    var icon = L.icon({
-      iconUrl: 'assets/images/marker-icon.png',
-      shadowUrl: 'assets/images/marker-shadow.png',
-      popupAnchor: [13, 0],
-    });
-
-    this.marker = L.marker([51.5, -0.09], { icon });
-    this.marker.addTo(this.map);
-
-    var circle = L.circle([51.508, -0.11], {
-      color: 'red',
-      fillColor: '#f03',
-      fillOpacity: 0.5,
-      radius: 500
-    }).addTo(this.map);
-
-    var polygon = L.polygon([
-      [51.509, -0.08],
-      [51.503, -0.06],
-      [51.51, -0.047]
-    ]).addTo(this.map);
-
-    this.marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
-    circle.bindPopup("I am a circle.");
-    polygon.bindPopup("I am a polygon.");
-
-    var popup = L.popup()
-      .setLatLng([51.5, -0.09])
-      .setContent("I am a standalone popup.")
-      .openOn(this.map);
-
 
     this.map.on('click', (e) => {
       const pos = e.latlng;
