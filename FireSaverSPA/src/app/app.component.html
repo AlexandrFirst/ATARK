@@ -1,0 +1,10 @@
+<div>
+  <app-worldMap (clickedCoords)="worldMapCLicked($event)"></app-worldMap>
+</div>
+<div>
+  <app-myMap (clickedCoords)="myMapClicked($event)" [inputPos]="inputPos"></app-myMap>
+</div>
+<button style="margin-top: 20px;" (click)="writePostion()">Send data</button>
+<button style="margin-top: 20px;" (click)="calculateModel()">Calculate Model</button>
+<button style="margin-top: 20px;" (click)="GetImageMapPosition()">Get Image Map Postion</button>
+<button style="margin-top: 20px;" (click)="DeleteAllPoints()">Delete points</button>
