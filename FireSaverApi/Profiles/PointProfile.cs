@@ -10,6 +10,8 @@ namespace FireSaverApi.Profiles
         {
             CreateMap<Position, PositionDto>().ReverseMap();
             CreateMap<Point, PointDto>().ReverseMap();
+            CreateMap<RoutePoint, RoutePointDto>().ReverseMap();
+
         }
     }
 }

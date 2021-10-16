@@ -56,5 +56,7 @@ namespace FireSaverApi.Controllers
 
             return Ok(new { Message = "All points are deleted" });
         }
+    
+        
     }
 }

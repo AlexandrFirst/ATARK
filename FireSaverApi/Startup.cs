@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using FireSaverApi.Contracts;
 using FireSaverApi.DataContext;
@@ -42,6 +43,8 @@ namespace FireSaverApi
             });
 
             services.AddControllers();
+            services.AddControllers().AddJsonOptions(x =>
+                        x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
             services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(Configuration.GetConnectionString("FireSaverDbConnectionString")));
 
             services.AddScoped<ILocationService, LocationService>();
