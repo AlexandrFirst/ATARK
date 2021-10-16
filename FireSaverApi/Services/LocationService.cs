@@ -71,8 +71,8 @@ namespace FireSaverApi.Services
 
             return new PositionDto()
             {
-                Longtitude = x3PixelCoord,
-                Latitude = y3PixelCoord
+                Latitude = x3PixelCoord,
+                Longtitude = y3PixelCoord
             };
         }
     }

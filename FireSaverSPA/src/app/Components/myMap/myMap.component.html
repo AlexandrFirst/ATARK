@@ -2,4 +2,12 @@
 <div>
     selected image coords: {{postion?.latitude}} {{postion?.longtitude}}
 </div>
+<!-- <div>
+    selected route point: Latitude - {{selectedRoutePoint?.getLatLng().lat}};
+    Longtitude - {{selectedRoutePoint?.getLatLng().lng}}
+</div> -->
 <button (click)="removePlacedMarkers()">Remove calculated markers</button>
+<button>Get route</button>
+<button (click)="deleteRouteBtnClick()">Delete route</button>
+<button>Delete route point</button>
+<button (click)="placeRoutePointBtnClick()">Set route point</button>

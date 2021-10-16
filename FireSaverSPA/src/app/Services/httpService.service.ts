@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Point, Postion } from '../Models/Dtos';
+import { InputRoutePoint, Point, Postion } from '../Models/Dtos';
 
 @Injectable({
   providedIn: 'root'
@@ -26,5 +26,17 @@ export class HttpServiceService {
 
   deleteAllPoints(): Observable<any> {
     return this.client.delete(this.baseUrl + "Points/points");
+  }
+
+  sendRouteNewPoint(routePoint: InputRoutePoint) {
+    return this.client.post(this.baseUrl + "RouteBuilder/newroute", routePoint);
+  }
+
+  addRouteNewPoint(routePoint: InputRoutePoint) {
+    return this.client.post(this.baseUrl + "RouteBuilder/newpoint", routePoint);
+  }
+
+  deleteRoute(){
+    return this.client.delete(this.baseUrl + "RouteBuilder/route");
   }
 }
