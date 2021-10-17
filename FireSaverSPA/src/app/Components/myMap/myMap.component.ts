@@ -16,6 +16,7 @@ export class MyMapComponent implements AfterViewInit {
   map: any;
   marker: L.Marker;
 
+  selectedRouteMarker: L.CircleMarker = null;
   selectedRoutePoint: RoutePoint;
   allRoutesPoints: RoutePoint[] = [];
 
@@ -76,132 +77,106 @@ export class MyMapComponent implements AfterViewInit {
 
     if (!this.selectedRoutePoint) {
       this.http.sendRouteNewPoint({ pointPostion: this.postion } as InputRoutePoint).subscribe((res: RoutePoint) => {
-        var newPlaceMarker = this.placeRoutePoint(res.pointPostion.latitude, res.pointPostion.longtitude);
-        var isPointUnderTrack = false;
-
-        newPlaceMarker.on("mousedown", () => {
-
-          this.http.getRoutePointById(res.id).subscribe(data => {
-            console.log(data)
-            this.selectedRoutePoint = data
-          })
-
-
-          console.log("point is tracked: ", isPointUnderTrack)
-          if (!isPointUnderTrack) {
-            this.map.dragging.disable()
-
-            this.map.on("mousemove", trackCursor)
-            isPointUnderTrack = true;
-          }
-
-        })
-
-        this.map.on("click", () => {
-          if (isPointUnderTrack) {
-            this.map.dragging.enable()
-            this.map.off("mousemove", trackCursor)
-            isPointUnderTrack = false;
-          }
-        })
-
-
-        const trackCursor = (evt) => {
-          newPlaceMarker.setLatLng(evt.latlng)
-          var oldPolyline = this.routePolyline[this.selectedRoutePoint.id.toString()];
-
-          if (this.selectedRoutePoint.parentPoint) {
-            oldPolyline.setLatLngs([this.routePoints[this.selectedRoutePoint.parentPoint.id].getLatLng(),
-            newPlaceMarker.getLatLng()]);
-          }
-          
-          var childArray: any = this.selectedRoutePoint.childrenPoints;
-
-          if (childArray && childArray.length > 0) {
-            childArray.forEach(point => {
-              console.log("here");
-              var polyline = this.routePolyline[point.id.toString()];
-              polyline.setLatLngs([this.routePoints[this.selectedRoutePoint.id.toString()].getLatLng(),
-              this.routePoints[point.id.toString()].getLatLng()])
-            })
-          }
-
-        }
-
-        this.routePoints[res.id.toString()] = newPlaceMarker;
-        this.allRoutesPoints.push(res);
-        this.selectedRoutePoint = res
-
+        pointHandler(res, true);
       }, error => {
         console.log(error);
       });
     }
     else {
       this.http.addRouteNewPoint({ pointPostion: this.postion, parentRoutePointId: this.selectedRoutePoint.id } as InputRoutePoint).subscribe((res: RoutePoint) => {
-        var newPlaceMarker = this.placeRoutePoint(res.pointPostion.latitude, res.pointPostion.longtitude);
-        var isPointUnderTrack = false;
-
-        newPlaceMarker.on("mousedown", () => {
-
-          this.http.getRoutePointById(res.id).subscribe(data => {
-            console.log(data)
-            this.selectedRoutePoint = data
-          })
-
-
-          console.log("point is tracked: ", isPointUnderTrack)
-          if (!isPointUnderTrack) {
-            this.map.dragging.disable()
-
-            this.map.on("mousemove", trackCursor)
-            isPointUnderTrack = true;
-          }
-
-        })
-
-        this.map.on("click", () => {
-          if (isPointUnderTrack) {
-            this.map.dragging.enable()
-            this.map.off("mousemove", trackCursor)
-            isPointUnderTrack = false;
-          }
-        })
-
-
-        const trackCursor = (evt) => {
-          newPlaceMarker.setLatLng(evt.latlng)
-          var oldPolyline = this.routePolyline[this.selectedRoutePoint.id.toString()];
-
-          if (this.selectedRoutePoint.parentPoint) {
-            oldPolyline.setLatLngs([this.routePoints[this.selectedRoutePoint.parentPoint.id].getLatLng(),
-            newPlaceMarker.getLatLng()]);
-          }
-          
-          var childArray: any = this.selectedRoutePoint.childrenPoints;
-
-          if (childArray && childArray.length > 0) {
-            childArray.forEach(point => {
-              console.log("here");
-              var polyline = this.routePolyline[point.id.toString()];
-              polyline.setLatLngs([this.routePoints[this.selectedRoutePoint.id.toString()].getLatLng(),
-              this.routePoints[point.id.toString()].getLatLng()])
-            })
-          }
-
-        }
-
-        this.routePoints[res.id.toString()] = newPlaceMarker;
-        this.allRoutesPoints.push(res);
-
-        var newPolyline = L.polyline([this.routePoints[this.selectedRoutePoint.id].getLatLng(), newPlaceMarker.getLatLng()]).addTo(this.map);
-
-        this.selectedRoutePoint = res
-
-        this.routePolyline[res.id.toString()] = newPolyline;
+        pointHandler(res, false);
       }, error => {
         console.log(error);
       })
     }
+
+
+    const pointHandler = (res: RoutePoint, isStartPoint: boolean = false) => {
+
+      var newPlaceMarker = this.placeRoutePoint(res.pointPostion.latitude, res.pointPostion.longtitude);
+      var isPointUnderTrack = false;
+
+      if (this.selectedRouteMarker) {
+        this.selectedRouteMarker.setStyle({ fillColor: 'green' })
+        this.selectedRouteMarker = newPlaceMarker;
+        this.selectedRouteMarker.setStyle({ fillColor: 'red' })
+      }
+      else {
+        this.selectedRouteMarker = newPlaceMarker;
+        this.selectedRouteMarker.setStyle({ fillColor: 'red' })
+      }
+
+      newPlaceMarker.on("mousedown", () => {
+
+        this.http.getRoutePointById(res.id).subscribe(data => {
+          console.log(data)
+          this.selectedRoutePoint = data
+
+          if (this.selectedRouteMarker) {
+            this.selectedRouteMarker.setStyle({ fillColor: 'green' })
+            this.selectedRouteMarker = this.routePoints[data.id.toString()];
+            this.selectedRouteMarker.setStyle({ fillColor: 'red' })
+          }
+
+        })
+
+
+        console.log("point is tracked: ", isPointUnderTrack)
+        if (!isPointUnderTrack) {
+          this.map.dragging.disable()
+
+          this.map.on("mousemove", trackCursor)
+          isPointUnderTrack = true;
+        }
+
+      })
+
+      this.map.on("click", () => {
+        if (isPointUnderTrack) {
+          this.map.dragging.enable()
+          this.map.off("mousemove", trackCursor)
+          isPointUnderTrack = false;
+        }
+      })
+
+
+      const trackCursor = (evt) => {
+        newPlaceMarker.setLatLng(evt.latlng)
+        var oldPolyline = this.routePolyline[this.selectedRoutePoint.id.toString()];
+
+        if (this.selectedRoutePoint.parentPoint) {
+          oldPolyline.setLatLngs([this.routePoints[this.selectedRoutePoint.parentPoint.id].getLatLng(),
+          newPlaceMarker.getLatLng()]);
+        }
+
+        var childArray: any = this.selectedRoutePoint.childrenPoints;
+
+        if (childArray && childArray.length > 0) {
+          childArray.forEach(point => {
+            console.log("here");
+            var polyline = this.routePolyline[point.id.toString()];
+            polyline.setLatLngs([this.routePoints[this.selectedRoutePoint.id.toString()].getLatLng(),
+            this.routePoints[point.id.toString()].getLatLng()])
+          })
+        }
+
+      }
+
+      this.routePoints[res.id.toString()] = newPlaceMarker;
+      this.allRoutesPoints.push(res);
+
+
+      if (!isStartPoint) {
+        var newPolyline = L.polyline([this.routePoints[this.selectedRoutePoint.id].getLatLng(), newPlaceMarker.getLatLng()]).addTo(this.map);
+
+        this.routePolyline[res.id.toString()] = newPolyline;
+      }
+
+      this.selectedRoutePoint = res
+
+      return newPlaceMarker;
+    }
+
   }
 
 
@@ -216,7 +191,6 @@ export class MyMapComponent implements AfterViewInit {
       opacity: 1,
       fillOpacity: 0.8
     }).addTo(this.map);
-
     return newRoutePoint;
   }
 
