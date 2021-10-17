@@ -16,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 
 namespace FireSaverApi
 {
@@ -43,8 +44,10 @@ namespace FireSaverApi
             });
 
             services.AddControllers();
-            services.AddControllers().AddJsonOptions(x =>
-                        x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+            services.AddControllers().AddNewtonsoftJson(o =>
+            {
+                o.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            });
             services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(Configuration.GetConnectionString("FireSaverDbConnectionString")));
 
             services.AddScoped<ILocationService, LocationService>();

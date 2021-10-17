@@ -36,7 +36,11 @@ export class HttpServiceService {
     return this.client.post(this.baseUrl + "RouteBuilder/newpoint", routePoint);
   }
 
-  deleteRoute(){
+  deleteRoute() {
     return this.client.delete(this.baseUrl + "RouteBuilder/route");
+  }
+
+  getRoutePointById(routePointId: number):Observable<any> {
+    return this.client.get(this.baseUrl + "RouteBuilder/routepoint/" + routePointId);
   }
 }

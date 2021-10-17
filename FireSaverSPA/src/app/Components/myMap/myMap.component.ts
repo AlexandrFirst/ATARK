@@ -16,7 +16,7 @@ export class MyMapComponent implements AfterViewInit {
   map: any;
   marker: L.Marker;
 
-  parentRoutePoint: RoutePoint;
+  selectedRoutePoint: RoutePoint;
   allRoutesPoints: RoutePoint[] = [];
 
   routePoints: { [id: string]: L.CircleMarker; } = {}
@@ -74,33 +74,128 @@ export class MyMapComponent implements AfterViewInit {
     if (!this.postion)
       return;
 
-    if (!this.parentRoutePoint) {
+    if (!this.selectedRoutePoint) {
       this.http.sendRouteNewPoint({ pointPostion: this.postion } as InputRoutePoint).subscribe((res: RoutePoint) => {
         var newPlaceMarker = this.placeRoutePoint(res.pointPostion.latitude, res.pointPostion.longtitude);
-        newPlaceMarker.on('click', (e) => {
-          this.parentRoutePoint = res
+        var isPointUnderTrack = false;
+
+        newPlaceMarker.on("mousedown", () => {
+
+          this.http.getRoutePointById(res.id).subscribe(data => {
+            console.log(data)
+            this.selectedRoutePoint = data
+          })
+
+
+          console.log("point is tracked: ", isPointUnderTrack)
+          if (!isPointUnderTrack) {
+            this.map.dragging.disable()
+
+            this.map.on("mousemove", trackCursor)
+            isPointUnderTrack = true;
+          }
+
         })
+
+        this.map.on("click", () => {
+          if (isPointUnderTrack) {
+            this.map.dragging.enable()
+            this.map.off("mousemove", trackCursor)
+            isPointUnderTrack = false;
+          }
+        })
+
+
+        const trackCursor = (evt) => {
+          newPlaceMarker.setLatLng(evt.latlng)
+          var oldPolyline = this.routePolyline[this.selectedRoutePoint.id.toString()];
+
+          if (this.selectedRoutePoint.parentPoint) {
+            oldPolyline.setLatLngs([this.routePoints[this.selectedRoutePoint.parentPoint.id].getLatLng(),
+            newPlaceMarker.getLatLng()]);
+          }
+          
+          var childArray: any = this.selectedRoutePoint.childrenPoints;
+
+          if (childArray && childArray.length > 0) {
+            childArray.forEach(point => {
+              console.log("here");
+              var polyline = this.routePolyline[point.id.toString()];
+              polyline.setLatLngs([this.routePoints[this.selectedRoutePoint.id.toString()].getLatLng(),
+              this.routePoints[point.id.toString()].getLatLng()])
+            })
+          }
+
+        }
+
         this.routePoints[res.id.toString()] = newPlaceMarker;
         this.allRoutesPoints.push(res);
-        this.parentRoutePoint = res
+        this.selectedRoutePoint = res
 
       }, error => {
         console.log(error);
       });
     }
     else {
-      this.http.addRouteNewPoint({ pointPostion: this.postion, parentRoutePointId: this.parentRoutePoint.id } as InputRoutePoint).subscribe((res: RoutePoint) => {
+      this.http.addRouteNewPoint({ pointPostion: this.postion, parentRoutePointId: this.selectedRoutePoint.id } as InputRoutePoint).subscribe((res: RoutePoint) => {
         var newPlaceMarker = this.placeRoutePoint(res.pointPostion.latitude, res.pointPostion.longtitude);
-        newPlaceMarker.on('click', (e) => {
-          this.parentRoutePoint = res
+        var isPointUnderTrack = false;
+
+        newPlaceMarker.on("mousedown", () => {
+
+          this.http.getRoutePointById(res.id).subscribe(data => {
+            console.log(data)
+            this.selectedRoutePoint = data
+          })
+
+
+          console.log("point is tracked: ", isPointUnderTrack)
+          if (!isPointUnderTrack) {
+            this.map.dragging.disable()
+
+            this.map.on("mousemove", trackCursor)
+            isPointUnderTrack = true;
+          }
+
         })
+
+        this.map.on("click", () => {
+          if (isPointUnderTrack) {
+            this.map.dragging.enable()
+            this.map.off("mousemove", trackCursor)
+            isPointUnderTrack = false;
+          }
+        })
+
+
+        const trackCursor = (evt) => {
+          newPlaceMarker.setLatLng(evt.latlng)
+          var oldPolyline = this.routePolyline[this.selectedRoutePoint.id.toString()];
+
+          if (this.selectedRoutePoint.parentPoint) {
+            oldPolyline.setLatLngs([this.routePoints[this.selectedRoutePoint.parentPoint.id].getLatLng(),
+            newPlaceMarker.getLatLng()]);
+          }
+          
+          var childArray: any = this.selectedRoutePoint.childrenPoints;
+
+          if (childArray && childArray.length > 0) {
+            childArray.forEach(point => {
+              console.log("here");
+              var polyline = this.routePolyline[point.id.toString()];
+              polyline.setLatLngs([this.routePoints[this.selectedRoutePoint.id.toString()].getLatLng(),
+              this.routePoints[point.id.toString()].getLatLng()])
+            })
+          }
+
+        }
+
         this.routePoints[res.id.toString()] = newPlaceMarker;
         this.allRoutesPoints.push(res);
 
-        var newPolyline = L.polyline([this.routePoints[this.parentRoutePoint.id].getLatLng(), newPlaceMarker.getLatLng()]).addTo(this.map);
+        var newPolyline = L.polyline([this.routePoints[this.selectedRoutePoint.id].getLatLng(), newPlaceMarker.getLatLng()]).addTo(this.map);
 
-        this.routePolyline
-        this.parentRoutePoint = res
+        this.selectedRoutePoint = res
 
         this.routePolyline[res.id.toString()] = newPolyline;
       }, error => {
@@ -108,6 +203,8 @@ export class MyMapComponent implements AfterViewInit {
       })
     }
   }
+
+
 
   placeRoutePoint(lat, lng): L.CircleMarker {
 
@@ -124,6 +221,7 @@ export class MyMapComponent implements AfterViewInit {
   }
 
 
+
   removePlacedMarkers() {
     this.markersArray.forEach(marker => {
       this.map.removeLayer(marker)
@@ -132,7 +230,7 @@ export class MyMapComponent implements AfterViewInit {
 
   deleteRouteBtnClick() {
     this.http.deleteRoute().subscribe(() => {
-      this.parentRoutePoint = null;
+      this.selectedRoutePoint = null;
 
       this.allRoutesPoints.forEach(item => {
         const marker: L.CircleMarker = this.routePoints[item.id.toString()];

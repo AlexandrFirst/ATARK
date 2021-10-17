@@ -78,6 +78,21 @@ namespace FireSaverApi.Controllers
             return Ok("route points are deleted");
         }
 
+        [HttpGet("routepoint/{routePointId}")]
+        public async Task<IActionResult> GetRoutePoint(int routePointId)
+        {
+            var retrievingPoint = await context.RoutePoints.Include(c => c.ChildrenPoints)
+                                                                    .Include(p => p.ParentPoint)
+                                                                    .Include(p => p.PointPostion)
+                                                                    .FirstOrDefaultAsync(i => i.Id == routePointId);
+            if (retrievingPoint == null)
+                throw new System.Exception("Can't find deleting point");
+
+            retrievingPoint.ChildrenPoints = await GetAllChildrenPoints(retrievingPoint.ChildrenPoints);
+            var pointToReturn = mapper.Map<RoutePointDto>(retrievingPoint);
+            return Ok(pointToReturn);
+        }
+
         [HttpDelete("route")]
         public async Task<IActionResult> DeleteRoute()
         {
@@ -85,7 +100,7 @@ namespace FireSaverApi.Controllers
             if (listPoint.Count == 0)
                 throw new System.Exception("there is no point to delete");
 
-            var initPoint = await context.RoutePoints.Include(p => p.ParentPoint).Include(c => c.ChildrenPoints).FirstOrDefaultAsync(p => p.ParentPoint == null);
+            var initPoint = await context.RoutePoints.Include(p => p.ParentPoint).Include(p => p.PointPostion).Include(c => c.ChildrenPoints).FirstOrDefaultAsync(p => p.ParentPoint == null);
             if (initPoint is null)
                 throw new System.Exception("can't find init point");
 
@@ -118,11 +133,11 @@ namespace FireSaverApi.Controllers
             List<RoutePoint> allChildren = new List<RoutePoint>();
             foreach (var point in parentChildernPoints)
             {
-                var children = await context.RoutePoints.Include(c => c.ChildrenPoints).FirstOrDefaultAsync(p => p.Id == point.Id);
+                var children = await context.RoutePoints.Include(c => c.ChildrenPoints).Include(p => p.ParentPoint).FirstOrDefaultAsync(p => p.Id == point.Id);
                 point.ChildrenPoints = await GetAllChildrenPoints(children.ChildrenPoints, isDeleteMode);
 
                 System.Console.WriteLine(point.ChildrenPoints.Count);
-                if(isDeleteMode)
+                if (isDeleteMode)
                     context.RoutePoints.Remove(point);
             }
 
