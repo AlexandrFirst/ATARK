@@ -28,6 +28,10 @@ export class HttpServiceService {
     return this.client.delete(this.baseUrl + "Points/points");
   }
 
+  deleteRoutePoint(routePointId: number): Observable<any> {
+    return this.client.delete(this.baseUrl + "RouteBuilder/routepoint/" + routePointId);
+  }
+
   sendRouteNewPoint(routePoint: InputRoutePoint) {
     return this.client.post(this.baseUrl + "RouteBuilder/newroute", routePoint);
   }
@@ -40,7 +44,7 @@ export class HttpServiceService {
     return this.client.delete(this.baseUrl + "RouteBuilder/route");
   }
 
-  getRoutePointById(routePointId: number):Observable<any> {
+  getRoutePointById(routePointId: number): Observable<any> {
     return this.client.get(this.baseUrl + "RouteBuilder/routepoint/" + routePointId);
   }
 }

@@ -2,7 +2,7 @@ import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@
 import * as L from 'leaflet'
 import { LatLngBoundsLiteral } from 'leaflet';
 import { Subject } from 'rxjs';
-import { InputRoutePoint, Postion, RoutePoint } from 'src/app/Models/Dtos';
+import { DeletePointOutput, InputRoutePoint, Postion, RoutePoint } from 'src/app/Models/Dtos';
 import { HttpServiceService } from 'src/app/Services/httpService.service';
 
 @Component({
@@ -179,8 +179,6 @@ export class MyMapComponent implements AfterViewInit {
 
   }
 
-
-
   placeRoutePoint(lat, lng): L.CircleMarker {
 
     const newRoutePoint: L.CircleMarker = L.circleMarker([lat, lng], {
@@ -194,8 +192,6 @@ export class MyMapComponent implements AfterViewInit {
     return newRoutePoint;
   }
 
-
-
   removePlacedMarkers() {
     this.markersArray.forEach(marker => {
       this.map.removeLayer(marker)
@@ -205,6 +201,9 @@ export class MyMapComponent implements AfterViewInit {
   deleteRouteBtnClick() {
     this.http.deleteRoute().subscribe(() => {
       this.selectedRoutePoint = null;
+      console.log("route points: ", this.allRoutesPoints)
+      console.log("route markers: ", this.routePoints)
+      console.log("route lines: ", this.routePolyline)
 
       this.allRoutesPoints.forEach(item => {
         const marker: L.CircleMarker = this.routePoints[item.id.toString()];
@@ -218,6 +217,103 @@ export class MyMapComponent implements AfterViewInit {
       this.allRoutesPoints = [];
       this.routePolyline = {}
       this.routePoints = {}
+    }, error => {
+      console.log(error);
+    })
+  }
+
+  deleteSelectedRoutePoint() {
+    if (!this.selectedRoutePoint) {
+      console.log("Select point to delete")
+      return;
+    }
+
+    var selectedRoutePointId = this.selectedRoutePoint.id;
+    this.http.deleteRoutePoint(selectedRoutePointId).subscribe((data: DeletePointOutput) => {
+      console.log("reterned data: ", data);
+      console.log("selected point: ", selectedRoutePointId);
+
+      const lineToDelete = this.routePolyline[selectedRoutePointId.toString()];
+      const markerToDelete = this.routePoints[selectedRoutePointId.toString()];
+
+      if (lineToDelete) {
+        this.map.removeLayer(lineToDelete);
+        delete this.routePolyline[selectedRoutePointId.toString()];
+      }
+
+      if (markerToDelete) {
+        this.map.removeLayer(markerToDelete);
+        delete this.routePoints[selectedRoutePointId.toString()];
+      }
+
+      if (data.point1Id && data.point2Id) {
+
+        console.log(this.routePoints);
+
+
+
+        var moreLineToDelete = this.routePolyline[data.point2Id.toString()]
+
+        if (moreLineToDelete) {
+          this.map.removeLayer(moreLineToDelete);
+          delete this.routePolyline[data.point2Id.toString()]
+        }
+
+        if (!lineToDelete) {
+          var moreLineToDelete2 = this.routePolyline[data.point1Id.toString()]
+
+          if (moreLineToDelete2) {
+            this.map.removeLayer(moreLineToDelete2);
+            delete this.routePolyline[data.point1Id.toString()]
+          }
+        }
+
+        var point1 = this.routePoints[data.point1Id.toString()];
+        var point2 = this.routePoints[data.point2Id.toString()];
+
+        var newPolyline = L.polyline([point1.getLatLng(), point2.getLatLng()]).addTo(this.map);
+
+
+        if (!this.routePolyline[data.point2Id]) {
+          this.routePolyline[data.point2Id] = newPolyline;
+        } else if (!this.routePolyline[data.point1Id]) {
+          this.routePolyline[data.point1Id] = newPolyline;
+        } else {
+          console.error("can't add polyline while deleting")
+        }
+
+        var routePoint = this.allRoutesPoints.filter(val => val.id == data.point1Id)[0];
+
+        this.selectedRoutePoint = routePoint;
+
+        if (this.selectedRouteMarker) {
+          this.selectedRouteMarker.setStyle({ fillColor: 'green' })
+          this.selectedRouteMarker = this.routePoints[this.selectedRoutePoint.id.toString()];
+          this.selectedRouteMarker.setStyle({ fillColor: 'red' })
+        }
+
+      } else if (data.point1Id) {
+
+        if (!lineToDelete) {
+          var moreLineToDelete = this.routePolyline[data.point1Id.toString()]
+
+          if (moreLineToDelete) {
+            this.map.removeLayer(moreLineToDelete);
+            delete this.routePolyline[data.point1Id.toString()]
+          }
+        }
+
+        var routePoint = this.allRoutesPoints.filter(val => val.id == data.point1Id)[0];
+        this.selectedRoutePoint = routePoint;
+
+
+      } else if (!data.point1Id && !data.point2Id) {
+        this.selectedRoutePoint = null;
+        this.allRoutesPoints = [];
+        this.routePolyline = {}
+        this.routePoints = {}
+      }
+
     }, error => {
       console.log(error);
     })

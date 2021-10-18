@@ -19,3 +19,8 @@ export class InputRoutePoint {
     parentRoutePointId: number;
     pointPostion: Postion;
 }
+
+export class DeletePointOutput {
+    point1Id: number;
+    point2Id: number;
+}

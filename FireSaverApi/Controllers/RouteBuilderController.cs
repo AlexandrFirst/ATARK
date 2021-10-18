@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using FireSaverApi.DataContext;
@@ -67,15 +68,52 @@ namespace FireSaverApi.Controllers
             var deletingPoint = await context.RoutePoints.Include(c => c.ChildrenPoints)
                                                         .Include(p => p.ParentPoint)
                                                         .FirstOrDefaultAsync(i => i.Id == routePointId);
+
+            DeletePointOutputDto deletePointOutputDto = new DeletePointOutputDto();
+
             if (deletingPoint == null)
                 throw new System.Exception("Can't find deleting point");
 
-            deletingPoint.ChildrenPoints = await GetAllChildrenPoints(deletingPoint.ChildrenPoints);
+            if (deletingPoint.ParentPoint != null && deletingPoint.ChildrenPoints.Count < 2)
+            {
+                var childPoint = deletingPoint.ChildrenPoints.FirstOrDefault();
+                if (childPoint != null)
+                {
+                    childPoint.ParentPoint = deletingPoint.ParentPoint;
+                    deletePointOutputDto.Point2Id = childPoint.Id;
+                }
 
-            context.RoutePoints.Remove(deletingPoint);
+                deletePointOutputDto.Point1Id = deletingPoint.ParentPoint.Id;
+                context.RoutePoints.Remove(deletingPoint);
+
+            }
+            else if (deletingPoint.ParentPoint == null && deletingPoint.ChildrenPoints.Count <= 2)
+            {
+                var firstChild = deletingPoint.ChildrenPoints.FirstOrDefault();
+                var secondChild = deletingPoint.ChildrenPoints.ElementAtOrDefault(1);
+
+                if (firstChild != null)
+                {
+                    firstChild.ParentPoint = null;
+                    if (secondChild != null)
+                    {
+                        secondChild.ParentPoint = firstChild;
+                        deletePointOutputDto.Point2Id = secondChild.Id;
+                    }
+                    deletePointOutputDto.Point1Id = firstChild.Id;
+                    firstChild.ParentPoint = null;
+                }
+                context.RoutePoints.Remove(deletingPoint);
+            }
+            else if (deletingPoint.ChildrenPoints.Count > 2)
+            {
+                throw new System.Exception("You can delete points with two or less connections or delete the whole bunch");
+            }
+
+
             await context.SaveChangesAsync();
 
-            return Ok("route points are deleted");
+            return Ok(deletePointOutputDto);
         }
 
         [HttpGet("routepoint/{routePointId}")]
