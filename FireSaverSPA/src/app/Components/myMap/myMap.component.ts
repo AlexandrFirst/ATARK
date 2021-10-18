@@ -136,6 +136,8 @@ export class MyMapComponent implements AfterViewInit {
           this.map.dragging.enable()
           this.map.off("mousemove", trackCursor)
           isPointUnderTrack = false;
+
+          //TODO: send update coords for point in bd
         }
       })
 
@@ -317,6 +319,34 @@ export class MyMapComponent implements AfterViewInit {
     }, error => {
       console.log(error);
     })
+  }
+
+  getRouteBtnClick() {
+    this.http.getWholeRoute().subscribe(data => {
+      console.log(data)
+      this.printRoute(data)
+    })
+  }
+
+
+  printRoute(currentPoint: RoutePoint) {
+
+    var currentMarker = this.placeRoutePoint(currentPoint.pointPostion.latitude, currentPoint.pointPostion.longtitude);
+
+    this.allRoutesPoints.push(currentPoint);
+    this.routePoints[currentPoint.id.toString()] = currentMarker;
+
+    if (currentPoint.childrenPoints.length == 0) {
+      return;
+    }
+
+    currentPoint.childrenPoints.forEach(elem => {
+    
+      this.printRoute(elem);
+
+      var newPolyline = L.polyline([this.routePoints[currentPoint.id.toString()].getLatLng(), this.routePoints[elem.id.toString()].getLatLng()]).addTo(this.map);
+      this.routePolyline[elem.id.toString()] = newPolyline;
+    });
   }
 
 }

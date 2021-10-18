@@ -47,4 +47,8 @@ export class HttpServiceService {
   getRoutePointById(routePointId: number): Observable<any> {
     return this.client.get(this.baseUrl + "RouteBuilder/routepoint/" + routePointId);
   }
+
+  getWholeRoute(): Observable<any> {
+    return this.client.get(this.baseUrl + "RouteBuilder/route");
+  }
 }

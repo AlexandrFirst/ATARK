@@ -152,7 +152,10 @@ namespace FireSaverApi.Controllers
         [HttpGet("route")]
         public async Task<IActionResult> GetRoute()
         {
-            var initPoint = await context.RoutePoints.Include(p => p.ParentPoint).Include(c => c.ChildrenPoints).FirstOrDefaultAsync(p => p.ParentPoint == null);
+            var initPoint = await context.RoutePoints.Include(p => p.ParentPoint)
+                                                    .Include(c => c.ChildrenPoints)
+                                                    .Include(c => c.PointPostion)
+                                                    .FirstOrDefaultAsync(p => p.ParentPoint == null);
             if (initPoint == null)
                 throw new System.Exception("Something went wrong. Try again");
 
@@ -171,7 +174,10 @@ namespace FireSaverApi.Controllers
             List<RoutePoint> allChildren = new List<RoutePoint>();
             foreach (var point in parentChildernPoints)
             {
-                var children = await context.RoutePoints.Include(c => c.ChildrenPoints).Include(p => p.ParentPoint).FirstOrDefaultAsync(p => p.Id == point.Id);
+                var children = await context.RoutePoints.Include(c => c.ChildrenPoints)
+                                                        .Include(p => p.ParentPoint)
+                                                        .Include(c => c.PointPostion)
+                                                        .FirstOrDefaultAsync(p => p.Id == point.Id);
                 point.ChildrenPoints = await GetAllChildrenPoints(children.ChildrenPoints, isDeleteMode);
 
                 System.Console.WriteLine(point.ChildrenPoints.Count);
@@ -181,6 +187,5 @@ namespace FireSaverApi.Controllers
 
             return parentChildernPoints;
         }
-
     }
 }
