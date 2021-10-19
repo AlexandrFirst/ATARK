@@ -164,6 +164,21 @@ namespace FireSaverApi.Controllers
             return Ok(mapper.Map<RoutePointDto>(initPoint));
         }
 
+        [HttpPost("updateMapPos")]
+        public async Task<IActionResult> UpdateRoutePointPos([FromBody] RoutePointDto updatingRoutePoint)
+        {
+            var pointToUpdate = await context.RoutePoints.Include(p => p.PointPostion)
+                                                        .FirstOrDefaultAsync(d => d.Id == updatingRoutePoint.Id);
+
+            if(pointToUpdate == null){
+                throw new System.Exception("Can't find route point");
+            }
+
+
+
+            return Ok();
+        }
+
         private async Task<List<RoutePoint>> GetAllChildrenPoints(List<RoutePoint> parentChildernPoints, bool isDeleteMode = false)
         {
             if (parentChildernPoints.Count == 0)
