@@ -29,6 +29,11 @@ export class MyMapComponent implements AfterViewInit {
 
   @Output() clickedCoords: EventEmitter<Postion> = new EventEmitter<Postion>();
   postion: Postion;
+
+  fromRoutePoint: RoutePoint;
+  toRoutePoint: RoutePoint;
+
+
   ngAfterViewInit(): void {
     this.map = L.map('myMap', {
       crs: L.CRS.Simple,
@@ -137,7 +142,15 @@ export class MyMapComponent implements AfterViewInit {
           this.map.off("mousemove", trackCursor)
           isPointUnderTrack = false;
 
-          //TODO: send update coords for point in bd
+          const newPos: Postion = {
+            latitude: this.selectedRouteMarker.getLatLng().lat,
+            longtitude: this.selectedRouteMarker.getLatLng().lng
+          }
+
+          res.pointPostion = newPos;
+          this.http.updateRoutePos(res).subscribe(success => {
+            console.log("position is updated: ", success)
+          })
         }
       })
 
@@ -341,12 +354,33 @@ export class MyMapComponent implements AfterViewInit {
     }
 
     currentPoint.childrenPoints.forEach(elem => {
-    
+
       this.printRoute(elem);
 
       var newPolyline = L.polyline([this.routePoints[currentPoint.id.toString()].getLatLng(), this.routePoints[elem.id.toString()].getLatLng()]).addTo(this.map);
       this.routePolyline[elem.id.toString()] = newPolyline;
     });
+  }
+
+  setFromRoutePointBtnClick() {
+    this.fromRoutePoint = this.selectedRoutePoint;
+  }
+
+  setToRoutePointBtnClick() {
+    this.toRoutePoint = this.selectedRoutePoint;
+  }
+
+  getBuiltRoutByBointsClick() {
+    if (!this.fromRoutePoint || !this.toRoutePoint) {
+      console.log("Set from and to points")
+      return;
+    }
+
+    this.http.calculateRouteFromTo(this.fromRoutePoint.id, this.toRoutePoint.id).subscribe(newRoute => {
+      console.log(newRoute);
+    }, error => {
+      console.log(error)
+    })
   }
 
 }

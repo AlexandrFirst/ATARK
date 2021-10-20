@@ -170,13 +170,70 @@ namespace FireSaverApi.Controllers
             var pointToUpdate = await context.RoutePoints.Include(p => p.PointPostion)
                                                         .FirstOrDefaultAsync(d => d.Id == updatingRoutePoint.Id);
 
-            if(pointToUpdate == null){
+            if (pointToUpdate == null)
+            {
                 throw new System.Exception("Can't find route point");
             }
 
+            pointToUpdate.PointPostion = mapper.Map<Position>(updatingRoutePoint.PointPostion);
+
+            await context.SaveChangesAsync();
+
+            return Ok(pointToUpdate);
+        }
+
+        [HttpGet("buildRoute/{pointid1}/{pointid2}")]
+        public async Task<IActionResult> GetRouteBetweenPoints(int pointid1, int pointid2)
+        {
+            var point1 = context.RoutePoints.Any(p => p.Id == pointid1);
+
+            var point2 = context.RoutePoints.Any(p => p.Id == pointid2);
 
 
-            return Ok();
+            if ((!point1) || (!point2))
+                throw new System.Exception("Entered invalid points");
+
+            var route = await BuildRoute(pointid1, pointid2);
+            route.ParentPoint = null;
+            var routeToReturn = mapper.Map<RoutePointDto>(route);
+            return Ok(routeToReturn);
+        }
+
+        private async Task<RoutePoint> BuildRoute(int fromId, int toId, int fromChildId = -1)
+        {
+            RoutePoint currentPoint = await context.RoutePoints.Include(p => p.ChildrenPoints)
+                                                .Include(p => p.ParentPoint)
+                                                .Include(p => p.PointPostion)
+                                                .FirstOrDefaultAsync(p => p.Id == fromId);
+
+            if (currentPoint.Id == toId)
+                return currentPoint;
+            else if (currentPoint.ChildrenPoints.Count > (fromChildId == -1 ? 0 : 1))//have we come from child -> 1; not -> -1
+            {
+                foreach (var point in currentPoint.ChildrenPoints)
+                {
+                    if (fromChildId > -1 && fromChildId == point.Id)
+                        continue;
+                    var observedPoint = await BuildRoute(point.Id, toId);
+                    if (observedPoint != null)
+                    {
+                        currentPoint.ChildrenPoints = new List<RoutePoint>(){
+                            observedPoint
+                        };
+                        return currentPoint;
+                    }
+                }
+                return null;
+            }
+            else if (currentPoint.ParentPoint != null)
+            {
+                var parentPoint = await BuildRoute(currentPoint.ParentPoint.Id, toId, currentPoint.Id);
+                currentPoint.ChildrenPoints = new List<RoutePoint>(){
+                    parentPoint
+                };
+            }
+
+            return currentPoint;
         }
 
         private async Task<List<RoutePoint>> GetAllChildrenPoints(List<RoutePoint> parentChildernPoints, bool isDeleteMode = false)

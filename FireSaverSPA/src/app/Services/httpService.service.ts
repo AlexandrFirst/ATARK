@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { InputRoutePoint, Point, Postion } from '../Models/Dtos';
+import { InputRoutePoint, Point, Postion, RoutePoint } from '../Models/Dtos';
 
 @Injectable({
   providedIn: 'root'
@@ -50,5 +50,13 @@ export class HttpServiceService {
 
   getWholeRoute(): Observable<any> {
     return this.client.get(this.baseUrl + "RouteBuilder/route");
+  }
+
+  updateRoutePos(updatedRoutePoint: RoutePoint) {
+    return this.client.post(this.baseUrl + "RouteBuilder/updateMapPos", updatedRoutePoint);
+  }
+
+  calculateRouteFromTo(point1id: number, point2id: number):Observable<any> {
+    return this.client.get(this.baseUrl + "RouteBuilder/buildRoute/" + point1id + "/" + point2id);
   }
 }

@@ -11,3 +11,12 @@
 <button (click)="deleteRouteBtnClick()">Delete route</button>
 <button (click)="deleteSelectedRoutePoint()">Delete route point</button>
 <button (click)="placeRoutePointBtnClick()">Set route point</button>
+<button (click)="setFromRoutePointBtnClick()">Select first point</button>
+<button (click)="setToRoutePointBtnClick()">Select second point</button>
+<button (click)="getBuiltRoutByBointsClick()">Get route between points</button>
+<div>
+    from point id {{fromRoutePoint?.id}}
+</div>
+<div>
+    to point id {{toRoutePoint?.id}}
+</div>
