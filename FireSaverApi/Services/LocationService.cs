@@ -48,6 +48,34 @@ namespace FireSaverApi.Services
             return locationPointModel;
         }
 
+        public async Task<PositionDto> ImgToWorldPostion(PositionDto imgPostion)
+        {
+            var firstPoint = (await dataContext.Points.Include(w => w.WorldPosition).Include(m => m.MapPosition).Take(1).ToListAsync())[0];
+
+            locationPointModel = await CalculateLocationModel();
+
+            double x3PixelCoord = imgPostion.Latitude; 
+            double y3PixelCoord = imgPostion.Longtitude;
+
+            double x1PixelCoord = firstPoint.MapPosition.Latitude;
+            double y1PixelCoord = firstPoint.MapPosition.Longtitude;
+
+            double x1WorldCoord = firstPoint.WorldPosition.Latitude;
+            double y1WorldCoord = firstPoint.WorldPosition.Longtitude;
+
+            double x3WorldCoord = x1WorldCoord + (x3PixelCoord - x1PixelCoord) * locationPointModel.FromPixelXToCoordXCoef;
+            double y3WorldCoord = y1WorldCoord + (y3PixelCoord - y1PixelCoord) * locationPointModel.FromPixelYToCoordYCoef;
+
+            System.Console.WriteLine("locationPointModel.FromCoordXToPixelXCoef: " + locationPointModel.FromPixelXToCoordXCoef);
+            System.Console.WriteLine("locationPointModel.FromCoordYToPixelYCoef: " + locationPointModel.FromPixelYToCoordYCoef);
+
+            return new PositionDto()
+            {
+                Latitude = x3WorldCoord,
+                Longtitude = y3WorldCoord
+            };
+        }
+
         public async Task<PositionDto> WorldToImgPostion(PositionDto worldPostion)
         {
             var firstPoint = (await dataContext.Points.Include(w => w.WorldPosition).Include(m => m.MapPosition).Take(1).ToListAsync())[0];

@@ -24,6 +24,10 @@ export class HttpServiceService {
     return this.client.post(this.baseUrl + "Points/mapPos", position);
   }
 
+  calculateWorldPosition(position: Postion): Observable<any> {
+    return this.client.post(this.baseUrl + "Points/imgPos", position);
+  }
+
   deleteAllPoints(): Observable<any> {
     return this.client.delete(this.baseUrl + "Points/points");
   }

@@ -42,9 +42,16 @@ namespace FireSaverApi.Controllers
         }
 
         [HttpPost("mapPos")]
-        public async Task<IActionResult> ConvertMapToWorldPos([FromBody] PositionDto inputPosition)
+        public async Task<IActionResult> ConvertWorldToImgPos([FromBody] PositionDto inputPosition)
         {
             PositionDto imgPos = await locationService.WorldToImgPostion(inputPosition);
+            return Ok(imgPos);
+        }
+
+        [HttpPost("imgPos")]
+        public async Task<IActionResult> ConvertImgToWorldPos([FromBody] PositionDto inputPosition)
+        {
+            PositionDto imgPos = await locationService.ImgToWorldPostion(inputPosition);
             return Ok(imgPos);
         }
 
@@ -56,7 +63,7 @@ namespace FireSaverApi.Controllers
 
             return Ok(new { Message = "All points are deleted" });
         }
-    
-        
+
+
     }
 }

@@ -1,5 +1,6 @@
-import { AfterViewInit, Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import * as L from 'leaflet'
+import { Subject } from 'rxjs';
 import { Postion } from 'src/app/Models/Dtos';
 
 @Component({
@@ -13,12 +14,34 @@ export class WorldMapComponent implements AfterViewInit {
   map: any;
   marker: L.Marker;
 
+  @Input() inputPos: Subject<Postion>;
+  markersArray: L.Marker[] = [];
+
   ngAfterViewInit(): void {
     this.loadMap();
+
+    var icon = L.icon({
+      iconUrl: 'assets/images/marker-icon.png',
+      shadowUrl: 'assets/images/marker-shadow.png',
+      popupAnchor: [13, 0],
+    });
+
+    this.inputPos.subscribe((val: Postion) => {
+      console.log("Calculated pos received", val)
+      var newmarker = L.marker([val.latitude, val.longtitude], { icon }).addTo(this.map);
+      this.markersArray.push(newmarker);
+    })
+
   }
 
-  @Output() clickedCoords: EventEmitter<Postion> = new EventEmitter<Postion>();
-  postion: Postion;
+  removePlacedMarkers() {
+    this.markersArray.forEach(marker => {
+      this.map.removeLayer(marker)
+    });
+    this.markersArray = [];
+  }
+    @Output() clickedCoords: EventEmitter < Postion > = new EventEmitter<Postion>();
+    postion: Postion;
 
   private loadMap(): void {
     var icon = L.icon({
@@ -49,7 +72,7 @@ export class WorldMapComponent implements AfterViewInit {
         });
     }).then((pos: any) => {
       console.log(pos);
-      this.marker = L.marker([pos.lat, pos.lng], {icon}).addTo(this.map)
+      this.marker = L.marker([pos.lat, pos.lng], { icon }).addTo(this.map)
 
       this.map.flyTo([pos.lat, pos.lng], 17);
       L.marker([pos.lat + 0.001, pos.lng], { icon }).addTo(this.map)

@@ -16,6 +16,8 @@ export class AppComponent implements OnInit {
 
   inputPos: Subject<Postion> = new Subject<Postion>();
 
+  inputWorldPos: Subject<Postion> = new Subject<Postion>();
+
   ngOnInit(): void {
   }
 
@@ -75,6 +77,21 @@ export class AppComponent implements OnInit {
   DeleteAllPoints() {
     this.http.deleteAllPoints().subscribe(res => {
       console.log("Ok response: ", res);
+    }, error => {
+      console.log("smth went wrong ", error);
+    })
+  }
+
+
+  GetWorldMapPosition() {
+    if (!this.imgPosition) {
+      console.log("Select postion on image map")
+      return;
+    }
+
+    this.http.calculateWorldPosition(this.imgPosition).subscribe((res:Postion) => {
+      console.log("Ok response: ", res.latitude, res.longtitude);
+      this.inputWorldPos.next(res);
     }, error => {
       console.log("smth went wrong ", error);
     })
