@@ -28,8 +28,8 @@ namespace FireSaverApi.Controllers
         [HttpPost("newpos")]
         public async Task<IActionResult> WriteNewPosition([FromBody] PointDto inputPoint)
         {
-            var pointToInsert = mapper.Map<Point>(inputPoint);
-            await context.Points.AddAsync(pointToInsert);
+            var pointToInsert = mapper.Map<ScalePoint>(inputPoint);
+            await context.ScalePoints.AddAsync(pointToInsert);
             await context.SaveChangesAsync();
             return Ok(pointToInsert);
         }
@@ -58,7 +58,7 @@ namespace FireSaverApi.Controllers
         [HttpDelete("points")]
         public async Task<IActionResult> DeleteAllPoints()
         {
-            context.Points.RemoveRange(context.Points);
+            context.ScalePoints.RemoveRange(context.ScalePoints);
             await context.SaveChangesAsync();
 
             return Ok(new { Message = "All points are deleted" });

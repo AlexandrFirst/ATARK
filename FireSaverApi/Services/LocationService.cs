@@ -22,7 +22,7 @@ namespace FireSaverApi.Services
 
         public async Task<LocationPointModel> CalculateLocationModel()
         {
-            var points = await dataContext.Points.Include(w => w.WorldPosition).Include(m => m.MapPosition).Take(2).ToListAsync();
+            var points = await dataContext.ScalePoints.Include(w => w.WorldPosition).Include(m => m.MapPosition).Take(2).ToListAsync();
             //TODO: Add processing of multiple points
             double deltaXPixel = Math.Abs(points[0].MapPosition.Latitude - points[1].MapPosition.Latitude);
             double deltaYPixel = Math.Abs(points[0].MapPosition.Longtitude - points[1].MapPosition.Longtitude);
@@ -50,7 +50,7 @@ namespace FireSaverApi.Services
 
         public async Task<PositionDto> ImgToWorldPostion(PositionDto imgPostion)
         {
-            var firstPoint = (await dataContext.Points.Include(w => w.WorldPosition).Include(m => m.MapPosition).Take(1).ToListAsync())[0];
+            var firstPoint = (await dataContext.ScalePoints.Include(w => w.WorldPosition).Include(m => m.MapPosition).Take(1).ToListAsync())[0];
 
             locationPointModel = await CalculateLocationModel();
 
@@ -78,7 +78,7 @@ namespace FireSaverApi.Services
 
         public async Task<PositionDto> WorldToImgPostion(PositionDto worldPostion)
         {
-            var firstPoint = (await dataContext.Points.Include(w => w.WorldPosition).Include(m => m.MapPosition).Take(1).ToListAsync())[0];
+            var firstPoint = (await dataContext.ScalePoints.Include(w => w.WorldPosition).Include(m => m.MapPosition).Take(1).ToListAsync())[0];
 
             locationPointModel = await CalculateLocationModel();
 
