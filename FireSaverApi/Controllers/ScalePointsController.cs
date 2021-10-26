@@ -10,13 +10,13 @@ namespace FireSaverApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class PointsController : ControllerBase
+    public class ScalePointsController : ControllerBase
     {
         private readonly DatabaseContext context;
         private readonly IMapper mapper;
         private readonly ILocationService locationService;
 
-        public PointsController(DatabaseContext context,
+        public ScalePointsController(DatabaseContext context,
                                 IMapper mapper,
                                 ILocationService locationService)
         {

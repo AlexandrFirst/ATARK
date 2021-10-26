@@ -4,14 +4,16 @@ using FireSaverApi.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FireSaverApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20211026085813_make position for user nullable")]
+    partial class makepositionforusernullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,7 +53,7 @@ namespace FireSaverApi.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Mail")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -76,10 +78,6 @@ namespace FireSaverApi.Migrations
                     b.HasIndex("LastSeenBuildingPositionId")
                         .IsUnique()
                         .HasFilter("[LastSeenBuildingPositionId] IS NOT NULL");
-
-                    b.HasIndex("Mail")
-                        .IsUnique()
-                        .HasFilter("[Mail] IS NOT NULL");
 
                     b.ToTable("Users");
                 });

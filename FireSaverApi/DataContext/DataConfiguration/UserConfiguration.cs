@@ -11,6 +11,8 @@ namespace FireSaverApi.DataContext.DataConfiguration
                 .WithOne(position => position.User)
                 .HasForeignKey<User>(user => user.LastSeenBuildingPositionId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasIndex(user => user.Mail).IsUnique();
         }
     }
 }

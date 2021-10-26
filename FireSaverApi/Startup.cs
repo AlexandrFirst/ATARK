@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using AutoMapper;
 using FireSaverApi.Contracts;
 using FireSaverApi.DataContext;
+using FireSaverApi.Helpers;
+using FireSaverApi.Helpers.ExceptionHandler;
+using FireSaverApi.Profiles;
 using FireSaverApi.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -51,8 +55,19 @@ namespace FireSaverApi
             services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(Configuration.GetConnectionString("FireSaverDbConnectionString")));
 
             services.AddScoped<ILocationService, LocationService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAuthUserService, UserService>();
+            
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
-            services.AddAutoMapper(typeof(Startup));
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new PointProfile());
+                mc.AddProfile(new UserProfile());
+            });
+
+            IMapper mapper = mappingConfig.CreateMapper();
+            services.AddSingleton(mapper);
 
             services.AddSwaggerGen(c =>
             {
@@ -69,8 +84,11 @@ namespace FireSaverApi
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "FireSaverApi v1"));
             }
+            app.ConfigureCustomExceptionMiddleware();
 
             app.UseRouting();
+
+            app.UseMiddleware<JwtMiddleware>();
 
             app.UseCors("AnyHeadersAllowed");
 
