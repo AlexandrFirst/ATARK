@@ -24,7 +24,7 @@ namespace FireSaverApi.DataContext
         public Position LastSeenBuildingPosition { get; set; }
         public int? LastSeenBuildingPositionId { get; set; }
         public Building ResponsibleForBuilding { get; set; }
-        public Compartment CurrentCompartment { get; set; }
+        //public Compartment CurrentCompartment { get; set; }
 
     }
 }
