@@ -26,8 +26,8 @@ namespace FireSaverApi.DataContext.DataConfiguration
                 .WithOne(cmp => (TEntity)cmp.Compartment);
                 // .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasMany(usrs => usrs.InboundUsers)
-                .WithOne(cmp => (TEntity)cmp.CurrentCompartment);
+            // builder.HasMany(usrs => usrs.InboundUsers)
+            //     .WithOne(cmp => (TEntity)cmp.CurrentCompartment);
                 // .OnDelete(DeleteBehavior.SetNull);
 
         }

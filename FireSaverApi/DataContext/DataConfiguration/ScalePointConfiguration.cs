@@ -7,7 +7,7 @@ namespace FireSaverApi.DataContext.DataConfiguration
     {
         public void Configure(EntityTypeBuilder<ScalePoint> builder)
         {
-            builder.HasOne(p => p.WorldPosition).WithOne(p => p.ScalePoint).HasForeignKey<Position>(p => p.Id);
+            //builder.HasOne(p => p.WorldPosition).WithOne(p => p.ScalePoint).HasForeignKey<Position>(p => p.Id);
         }
     }
 }

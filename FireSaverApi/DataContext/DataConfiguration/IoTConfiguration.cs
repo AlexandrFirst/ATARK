@@ -7,9 +7,9 @@ namespace FireSaverApi.DataContext.DataConfiguration
     {
         public void Configure(EntityTypeBuilder<IoT> builder)
         {
-            builder.HasOne(iot => iot.MapPosition)
-                .WithOne(pos => pos.IotPostion)
-                .HasForeignKey<Position>(p => p.Id);
+            // builder.HasOne(iot => iot.MapPosition)
+            //     .WithOne(pos => pos.IotPostion)
+            //     .HasForeignKey<Position>(p => p.Id);
                 //.OnDelete(DeleteBehavior.Cascade);
         }
     }

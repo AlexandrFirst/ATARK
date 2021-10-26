@@ -13,7 +13,8 @@ namespace FireSaverApi.DataContext
         public int Id { get; set; }
         public IList<User> ResponsibleUsers { get; set; }
         public IList<Floor> Floors { get; set; }
-        public Position BuildingCenter { get; set; }
+        public Position BuildingCenterPosition { get; set; }
+        public int BuildingCenterPositionId { get; set; }
         public double SafetyDistance { get; set; }
     }
 }

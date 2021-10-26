@@ -15,14 +15,16 @@ namespace FireSaverApi.DataContext
         public int Id { get; set; }
         public string RolesList { get; set; }
         public string Name { get; set; }
+        public string Password { get; set; }
         public string Surname { get; set; }
         public string Patronymic { get; set; }
         public string Mail { get; set; }
         public string TelephoneNumber { get; set; }
         public DateTime DOB { get; set; }
         public Position LastSeenBuildingPosition { get; set; }
-        public Building ResponsibleForBuilding { get; set; } //TODO: make one user be responsible for many buildings???
-        public Compartment CurrentCompartment { get; set; }
+        public int LastSeenBuildingPositionId { get; set; }
+        // public Building ResponsibleForBuilding { get; set; }
+        // public Compartment CurrentCompartment { get; set; }
 
     }
 }

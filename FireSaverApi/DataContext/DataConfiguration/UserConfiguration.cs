@@ -7,10 +7,10 @@ namespace FireSaverApi.DataContext.DataConfiguration
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.HasOne(u => u.LastSeenBuildingPosition)
-                .WithOne(pos => pos.User)
-                .HasForeignKey<Position>(p => p.Id);
-                // .OnDelete(DeleteBehavior.SetNull);
+            builder.HasOne(user => user.LastSeenBuildingPosition)
+                .WithOne(position => position.User)
+                .HasForeignKey<User>(user => user.LastSeenBuildingPositionId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

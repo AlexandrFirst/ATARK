@@ -7,17 +7,17 @@ namespace FireSaverApi.DataContext.DataConfiguration
     {
         public void Configure(EntityTypeBuilder<Building> builder)
         {
-            builder.HasMany(u => u.ResponsibleUsers)
-                .WithOne(b => b.ResponsibleForBuilding);
+            // builder.HasMany(u => u.ResponsibleUsers)
+            //     .WithOne(b => b.ResponsibleForBuilding);
                 // .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasMany(f => f.Floors)
                 .WithOne(b => b.BuildingWithThisFloor);
                 // .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasOne(p => p.BuildingCenter)
-                .WithOne(b => b.Building)
-                .HasForeignKey<Position>(b => b.Id);
+            // builder.HasOne(building => building.BuildingCenterPosition)
+            //     .WithOne(position => position.Building)
+            //     .HasForeignKey<Building>(building => building.BuildingCenterPositionId);
                 // .OnDelete(DeleteBehavior.Cascade);
 
         }
