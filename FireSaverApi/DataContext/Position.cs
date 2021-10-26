@@ -9,7 +9,7 @@ namespace FireSaverApi.DataContext
         // public IoT IotPostion { get; set; }
         // public Point PointPostion { get; set; }
         // public ScalePoint ScalePoint { get; set; }
-        // public Building Building { get; set; }
+        public Building Building { get; set; }
         public User User { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using FireSaverApi.Contracts;
+using FireSaverApi.DataContext;
 using FireSaverApi.Dtos;
 using FireSaverApi.Helpers;
 using Microsoft.AspNetCore.Mvc;
@@ -12,9 +13,13 @@ namespace FireSaverApi.Controllers
     {
         private readonly IUserService userService;
         private readonly IAuthUserService authService;
+        private readonly IUserContextService userContextService;
 
-        public UserController(IUserService userService, IAuthUserService authService)
+        public UserController(IUserService userService,
+                            IAuthUserService authService,
+                            IUserContextService userContextService)
         {
+            this.userContextService = userContextService;
             this.authService = authService;
             this.userService = userService;
         }
@@ -36,12 +41,33 @@ namespace FireSaverApi.Controllers
 
         }
 
-        [Authorize]
+        [Authorize(Role = UserRole.ADMIN)]
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetUserInfo(int userId)
         {
             var userInfo = await userService.GetUserInfoById(userId);
             return Ok(userInfo);
+        }
+
+        [Authorize]
+        [HttpPut]
+        public async Task<IActionResult> UpdateUserInfo([FromBody] UserInfoDto currentUserInfo)
+        {
+            var currentUserId = userContextService.GetUserContext().Id;
+            currentUserInfo.Id = currentUserId;
+
+            var updatedUserInfo = await userService.UpdateUserInfo(currentUserInfo);
+            return Ok(updatedUserInfo);
+        }
+
+        [Authorize]
+        [HttpPost("changepassword")]
+        public async Task<IActionResult> ChangeUserPassword([FromBody] NewUserPasswordDto newUserPassword)
+        {
+            var currentUserId = userContextService.GetUserContext().Id;
+            await userService.ChangeOldPassword(currentUserId, newUserPassword);
+
+            return Ok(new { Message = "Password is updated" });
         }
 
     }

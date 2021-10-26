@@ -43,13 +43,13 @@ namespace FireSaverApi.Services
             return mapper.Map<UserInfoDto>(newUser);
         }
 
-        public async Task<UserContextInfo> GetUserContext(int userId)
+        public async Task<HttpUserContext> GetUserContext(int userId)
         {
             try
             {
                 var user = await GetUserById(userId);
                 var allUserInfo = mapper.Map<UserInfoDto>(user);
-                var contextUseInfo = mapper.Map<UserContextInfo>(allUserInfo);
+                var contextUseInfo = mapper.Map<HttpUserContext>(allUserInfo);
                 return contextUseInfo;
             }
             catch (UserNotFoundException)
@@ -86,20 +86,37 @@ namespace FireSaverApi.Services
                 throw new UserNotFoundException();
             }
 
-            var cntxUserPassword = user.Password;
-            var cachedUserInputPassword = ComputeSha256Hash(userAuth.Password);
-            if (cachedUserInputPassword != user.Password)
+            if (compareInputAndUserPasswords(userAuth.Password, user.Password))
+            {
+
+                var authToken = generateJwtToken(user);
+
+                return new UserAuthResponseDto()
+                {
+                    Token = authToken,
+                    UserId = user.Id
+                };
+            }
+            else
             {
                 throw new WrongPasswordException();
             }
+        }
 
-            var authToken = generateJwtToken(user);
-            
-            return new UserAuthResponseDto()
+        public async Task ChangeOldPassword(int userId, NewUserPasswordDto newUserPassword)
+        {
+            var user = await GetUserById(userId);
+
+            if (compareInputAndUserPasswords(newUserPassword.OldPassword, user.Password))
             {
-                Token = authToken,
-                UserId = user.Id
-            };
+                var hashedNewPassword = ComputeSha256Hash(newUserPassword.NewPassword);
+                user.Password = hashedNewPassword;
+                await context.SaveChangesAsync();
+            }
+            else
+            {
+                throw new InorrectOldPasswordException();
+            }
         }
 
         async Task<User> GetUserById(int userId)
@@ -111,6 +128,12 @@ namespace FireSaverApi.Services
             }
 
             return foundUser;
+        }
+
+        bool compareInputAndUserPasswords(string inputPassword, string userPassword)
+        {
+            var hashedInputPassword = ComputeSha256Hash(inputPassword);
+            return hashedInputPassword == userPassword;
         }
 
         string ComputeSha256Hash(string rawData)
@@ -146,6 +169,7 @@ namespace FireSaverApi.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+
 
     }
 }

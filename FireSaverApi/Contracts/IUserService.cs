@@ -8,6 +8,7 @@ namespace FireSaverApi.Contracts
         Task<UserInfoDto> CreateNewUser(RegisterUserDto newUserInfo);
         Task<UserInfoDto> UpdateUserInfo(UserInfoDto newUserInfo);
         Task<UserInfoDto> GetUserInfoById(int userId);
+        Task ChangeOldPassword(int userId, NewUserPasswordDto newUserPassword);
         
     }
 }

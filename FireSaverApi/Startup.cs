@@ -29,6 +29,36 @@ namespace FireSaverApi
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            AddAdminIfItNotExists();
+        }
+
+        void AddAdminIfItNotExists()
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<DatabaseContext>();
+            optionsBuilder.UseSqlServer(Configuration.GetConnectionString("FireSaverDbConnectionString"));
+
+            using (DatabaseContext dbContext
+                        = new DatabaseContext(optionsBuilder.Options))
+            {
+                var userWithAdminRights = dbContext.Users.FirstOrDefault(u => u.RolesList.Contains(UserRole.ADMIN));
+                if (userWithAdminRights == null)
+                {
+                    var userAdmin = new User()
+                    {
+                        Mail = "root@gmail.com",
+                        Name = "Admin",
+                        Password = "admin",
+                        RolesList = UserRole.ADMIN,
+                        TelephoneNumber = "000000000",
+                        Surname="Admin",
+                        Patronymic = "Admin",
+                        DOB = DateTime.MinValue
+                    };
+                    dbContext.Users.Add(userAdmin);
+                    dbContext.SaveChanges();
+                }
+            }
         }
 
         public IConfiguration Configuration { get; }
@@ -57,7 +87,7 @@ namespace FireSaverApi
             services.AddScoped<ILocationService, LocationService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthUserService, UserService>();
-            
+            services.AddScoped<IUserContextService, UserContextService>();
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
             var mappingConfig = new MapperConfiguration(mc =>

@@ -13,7 +13,7 @@ namespace FireSaverApi.Helpers
 
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            var user = (UserContextInfo)context.HttpContext.Items["User"];
+            var user = (HttpUserContext)context.HttpContext.Items["User"];
             if (user == null)
             {
                 context.Result = new JsonResult(new { message = "Unauthorized" }) { StatusCode = StatusCodes.Status401Unauthorized };

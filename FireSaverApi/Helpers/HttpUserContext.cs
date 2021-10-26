@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace FireSaverApi.Helpers
 {
-    public class UserContextInfo
+    public class HttpUserContext
     {
         public int Id { get; set; }
         public string Mail { get; set; }

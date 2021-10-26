@@ -6,7 +6,7 @@ namespace FireSaverApi.Contracts
 {
     public interface IAuthUserService
     {
-         Task<UserContextInfo> GetUserContext(int userId);
+         Task<HttpUserContext> GetUserContext(int userId);
          Task<UserAuthResponseDto> AuthUser(AuthUserDto userAuth);
     }
 }
