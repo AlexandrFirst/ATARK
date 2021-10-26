@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using FireSaverApi.Dtos.BuildingDtos;
 
 namespace FireSaverApi.Dtos
 {
@@ -12,6 +13,7 @@ namespace FireSaverApi.Dtos
         public string Patronymic { get; set; }
         public string Mail { get; set; }
         public string TelephoneNumber { get; set; }
+        public BuildingInfoDto ResponsibleForBuilding { get; set; }
         public DateTime DOB { get; set; }
     }
 }

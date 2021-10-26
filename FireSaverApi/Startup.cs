@@ -12,11 +12,13 @@ using FireSaverApi.Profiles;
 using FireSaverApi.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
@@ -88,16 +90,25 @@ namespace FireSaverApi
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthUserService, UserService>();
             services.AddScoped<IUserContextService, UserContextService>();
+            services.AddScoped<IUserHelper, UserService>();
+            services.AddScoped<IBuildingService, BuildingService>();
+
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
             var mappingConfig = new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new PointProfile());
                 mc.AddProfile(new UserProfile());
+                mc.AddProfile(new BuildingProfile());
             });
 
             IMapper mapper = mappingConfig.CreateMapper();
+
             services.AddSingleton(mapper);
+            
+
 
             services.AddSwaggerGen(c =>
             {

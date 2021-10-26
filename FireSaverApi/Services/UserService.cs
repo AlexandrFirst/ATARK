@@ -16,7 +16,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace FireSaverApi.Services
 {
-    public class UserService : IUserService, IAuthUserService
+    public class UserService : IUserService, IAuthUserService, IUserHelper
     {
         private readonly DatabaseContext context;
         private readonly IMapper mapper;
@@ -119,9 +119,9 @@ namespace FireSaverApi.Services
             }
         }
 
-        async Task<User> GetUserById(int userId)
+        public async Task<User> GetUserById(int userId)
         {
-            var foundUser = await context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            var foundUser = await context.Users.Include(b => b.ResponsibleForBuilding).FirstOrDefaultAsync(u => u.Id == userId);
             if (foundUser == null)
             {
                 throw new UserNotFoundException();

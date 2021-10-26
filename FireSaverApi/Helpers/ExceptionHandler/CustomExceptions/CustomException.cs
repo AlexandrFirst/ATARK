@@ -2,23 +2,27 @@ using System;
 
 namespace FireSaverApi.Helpers.ExceptionHandler.CustomExceptions
 {
-    public class UserNotFoundException:Exception
+    public class UserNotFoundException : Exception
     {
-        public UserNotFoundException():base("Can't find the user! Try again later"){}
+        public UserNotFoundException() : base("Can't find the user! Try again later") { }
     }
 
-    public class WrongPasswordException:Exception
+    public class WrongPasswordException : Exception
     {
-        public WrongPasswordException():base("Password or mail is incorrect"){}
+        public WrongPasswordException() : base("Password or mail is incorrect") { }
     }
 
-    public class UserContextNotFoundException:Exception
+    public class UserContextNotFoundException : Exception
     {
-        public UserContextNotFoundException():base("Can't find user context. Request should be authorized"){}
+        public UserContextNotFoundException() : base("Can't find user context. Request should be authorized") { }
     }
 
-    public class InorrectOldPasswordException:Exception
+    public class InorrectOldPasswordException : Exception
     {
-        public InorrectOldPasswordException():base("You have entered wrong old password"){}
+        public InorrectOldPasswordException() : base("You have entered wrong old password") { }
+    }
+    public class UserIsAlredyResponsibleForBuilding : Exception
+    {
+        public UserIsAlredyResponsibleForBuilding() : base("User is alredy assigned to building") { }
     }
 }

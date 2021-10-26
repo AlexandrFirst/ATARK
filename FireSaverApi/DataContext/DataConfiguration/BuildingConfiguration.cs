@@ -11,8 +11,8 @@ namespace FireSaverApi.DataContext.DataConfiguration
                 .WithOne(b => b.ResponsibleForBuilding);
             //.OnDelete(DeleteBehavior.SetNull);
 
-            // builder.HasMany(f => f.Floors)
-            //     .WithOne(b => b.BuildingWithThisFloor);
+            builder.HasMany(f => f.Floors)
+                .WithOne(b => b.BuildingWithThisFloor);
             // .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(building => building.BuildingCenterPosition)
