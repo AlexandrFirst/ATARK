@@ -50,7 +50,7 @@ namespace FireSaverApi
                     {
                         Mail = "root@gmail.com",
                         Name = "Admin",
-                        Password = "admin",
+                        //Password = "admin",
                         RolesList = UserRole.ADMIN,
                         TelephoneNumber = "000000000",
                         Surname="Admin",

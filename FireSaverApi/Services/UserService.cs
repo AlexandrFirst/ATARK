@@ -86,7 +86,7 @@ namespace FireSaverApi.Services
                 throw new UserNotFoundException();
             }
 
-            if (compareInputAndUserPasswords(userAuth.Password, user.Password))
+            if (compareInputAndUserPasswords(userAuth.Password,user.Password))
             {
 
                 var authToken = generateJwtToken(user);

@@ -9,6 +9,7 @@ namespace FireSaverApi.DataContext
         public string PublicId { get; set; }
         public DateTime UploadTime { get; set; }
         public ScaleModel ScaleModel { get; set; }
+        public int? ScaleModelId { get; set; }
         public Compartment Compartment { get; set; }
     }
 }

@@ -4,6 +4,6 @@ namespace FireSaverApi.DataContext
     {
         public int Id { get; set; }
         public Position MapPosition { get; set; }
-        public int MapPositionId { get; set; }
+        public int? MapPositionId { get; set; }
     }
 }

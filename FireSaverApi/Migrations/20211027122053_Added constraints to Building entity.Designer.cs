@@ -4,14 +4,16 @@ using FireSaverApi.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FireSaverApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20211027122053_Added constraints to Building entity")]
+    partial class AddedconstraintstoBuildingentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -273,9 +275,6 @@ namespace FireSaverApi.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Password")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Patronymic")
                         .HasColumnType("nvarchar(max)");
 
@@ -389,13 +388,11 @@ namespace FireSaverApi.Migrations
                 {
                     b.HasOne("FireSaverApi.DataContext.Test", "CompartmentTest")
                         .WithOne("Compartment")
-                        .HasForeignKey("FireSaverApi.DataContext.Compartment", "CompartmentTestId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("FireSaverApi.DataContext.Compartment", "CompartmentTestId");
 
                     b.HasOne("FireSaverApi.DataContext.EvacuationPlan", "EvacuationPlan")
                         .WithOne("Compartment")
-                        .HasForeignKey("FireSaverApi.DataContext.Compartment", "EvacuationPlanId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("FireSaverApi.DataContext.Compartment", "EvacuationPlanId");
 
                     b.Navigation("CompartmentTest");
 
@@ -406,8 +403,7 @@ namespace FireSaverApi.Migrations
                 {
                     b.HasOne("FireSaverApi.DataContext.ScaleModel", "ScaleModel")
                         .WithOne("ApplyingEvacPlans")
-                        .HasForeignKey("FireSaverApi.DataContext.EvacuationPlan", "ScaleModelId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("FireSaverApi.DataContext.EvacuationPlan", "ScaleModelId");
 
                     b.Navigation("ScaleModel");
                 });
@@ -416,13 +412,11 @@ namespace FireSaverApi.Migrations
                 {
                     b.HasOne("FireSaverApi.DataContext.Compartment", "Compartment")
                         .WithMany("Iots")
-                        .HasForeignKey("CompartmentId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("CompartmentId");
 
                     b.HasOne("FireSaverApi.DataContext.Position", "MapPosition")
                         .WithOne("IotPostion")
-                        .HasForeignKey("FireSaverApi.DataContext.IoT", "MapPositionId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("FireSaverApi.DataContext.IoT", "MapPositionId");
 
                     b.Navigation("Compartment");
 
@@ -433,8 +427,7 @@ namespace FireSaverApi.Migrations
                 {
                     b.HasOne("FireSaverApi.DataContext.Position", "MapPosition")
                         .WithOne("PointPostion")
-                        .HasForeignKey("FireSaverApi.DataContext.Point", "MapPositionId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("FireSaverApi.DataContext.Point", "MapPositionId");
 
                     b.Navigation("MapPosition");
                 });
@@ -499,8 +492,7 @@ namespace FireSaverApi.Migrations
                 {
                     b.HasOne("FireSaverApi.DataContext.Compartment", "Compartment")
                         .WithMany("RoutePoints")
-                        .HasForeignKey("CompartmentId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("CompartmentId");
 
                     b.HasOne("FireSaverApi.DataContext.RoutePoint", "ParentPoint")
                         .WithMany("ChildrenPoints")

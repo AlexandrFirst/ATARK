@@ -4,14 +4,16 @@ using FireSaverApi.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FireSaverApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20211027122621_Added constraints to Compartment entity")]
+    partial class AddedconstraintstoCompartmententity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -273,9 +275,6 @@ namespace FireSaverApi.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Password")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Patronymic")
                         .HasColumnType("nvarchar(max)");
 
@@ -406,8 +405,7 @@ namespace FireSaverApi.Migrations
                 {
                     b.HasOne("FireSaverApi.DataContext.ScaleModel", "ScaleModel")
                         .WithOne("ApplyingEvacPlans")
-                        .HasForeignKey("FireSaverApi.DataContext.EvacuationPlan", "ScaleModelId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("FireSaverApi.DataContext.EvacuationPlan", "ScaleModelId");
 
                     b.Navigation("ScaleModel");
                 });
@@ -421,8 +419,7 @@ namespace FireSaverApi.Migrations
 
                     b.HasOne("FireSaverApi.DataContext.Position", "MapPosition")
                         .WithOne("IotPostion")
-                        .HasForeignKey("FireSaverApi.DataContext.IoT", "MapPositionId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("FireSaverApi.DataContext.IoT", "MapPositionId");
 
                     b.Navigation("Compartment");
 
@@ -433,8 +430,7 @@ namespace FireSaverApi.Migrations
                 {
                     b.HasOne("FireSaverApi.DataContext.Position", "MapPosition")
                         .WithOne("PointPostion")
-                        .HasForeignKey("FireSaverApi.DataContext.Point", "MapPositionId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("FireSaverApi.DataContext.Point", "MapPositionId");
 
                     b.Navigation("MapPosition");
                 });

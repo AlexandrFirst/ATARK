@@ -4,14 +4,16 @@ using FireSaverApi.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FireSaverApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20211027122919_Added constraints to Iot")]
+    partial class AddedconstraintstoIot
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -273,9 +275,6 @@ namespace FireSaverApi.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Password")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Patronymic")
                         .HasColumnType("nvarchar(max)");
 
@@ -433,8 +432,7 @@ namespace FireSaverApi.Migrations
                 {
                     b.HasOne("FireSaverApi.DataContext.Position", "MapPosition")
                         .WithOne("PointPostion")
-                        .HasForeignKey("FireSaverApi.DataContext.Point", "MapPositionId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("FireSaverApi.DataContext.Point", "MapPositionId");
 
                     b.Navigation("MapPosition");
                 });

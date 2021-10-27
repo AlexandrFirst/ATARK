@@ -7,10 +7,10 @@ namespace FireSaverApi.DataContext.DataConfiguration
     {
         public void Configure(EntityTypeBuilder<EvacuationPlan> builder)
         {
-            builder.HasOne(ev => ev.ScaleModel)
-                .WithOne(sm => sm.ApplyingEvacPlans)
-                .HasForeignKey<ScaleModel>(s => s.Id);
-                //.OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(evacuationPlan => evacuationPlan.ScaleModel)
+                .WithOne(scaleModel => scaleModel.ApplyingEvacPlans)
+                .HasForeignKey<EvacuationPlan>(evacuationPlan => evacuationPlan.ScaleModelId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
