@@ -94,8 +94,8 @@ namespace FireSaverApi
             services.AddScoped<IUserHelper, UserService>();
             services.AddScoped<IBuildingService, BuildingService>();
 
-            services.AddScoped<ICompartmentCRUDService<FloorDto, Floor>, FloorService>();
-            //TODO: Add impementation for room entities
+            services.AddScoped<ICompartmentService<FloorDto, Floor>, FloorService>();
+            services.AddScoped<ICompartmentService<RoomDto, Room>, RoomService>();
 
 
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();

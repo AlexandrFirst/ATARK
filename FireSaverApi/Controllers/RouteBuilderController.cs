@@ -210,7 +210,7 @@ namespace FireSaverApi.Controllers
         //         return currentPoint;
         //     else if (currentPoint.ChildrenPoints.Count > (fromChildId == -1 ? 0 : 1))//have we come from child -> 1; not -> -1
         //     {
-        //         //TODO: add multiple children to parent.
+        //         //TODO: make map tp hoave more than one route.
         //         foreach (var point in currentPoint.ChildrenPoints)
         //         {
         //             if (fromChildId > -1 && fromChildId == point.Id)

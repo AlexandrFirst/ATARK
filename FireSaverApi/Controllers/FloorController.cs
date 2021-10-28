@@ -3,6 +3,7 @@ using AutoMapper;
 using FireSaverApi.Contracts;
 using FireSaverApi.DataContext;
 using FireSaverApi.Dtos.CompartmentDtos;
+using FireSaverApi.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FireSaverApi.Controllers
@@ -11,10 +12,10 @@ namespace FireSaverApi.Controllers
     [Route("[controller]")]
     public class FloorController : ControllerBase
     {
-        private readonly ICompartmentCRUDService<FloorDto, Floor> floorService;
+        private readonly ICompartmentService<FloorDto, Floor> floorService;
         private readonly IMapper mapper;
 
-        public FloorController(ICompartmentCRUDService<FloorDto, Floor> floorService, IMapper mapper)
+        public FloorController(ICompartmentService<FloorDto, Floor> floorService, IMapper mapper)
         {
             this.floorService = floorService;
             this.mapper = mapper;
@@ -27,7 +28,7 @@ namespace FireSaverApi.Controllers
             var result = await floorService.AddCompartment(buildingId, newFloorDto);
             var resultToDto = mapper.Map<FloorDto>(result);
 
-            return Ok(result);
+            return Ok(resultToDto);
         }
 
         [HttpPut("changeFloorInfo/{floorId}")]
@@ -35,13 +36,24 @@ namespace FireSaverApi.Controllers
         {
             var result = await floorService.ChangeCompartmentInfo(floorId, newFloorDto);
             var resultToDto = mapper.Map<FloorDto>(result);
-            return Ok();
+            return Ok(resultToDto);
         }
 
-        public async Task<IActionResult> RemoveFloorFromBuilding()
+        [HttpDelete("{floorId}")]
+        public async Task<IActionResult> RemoveFloorFromBuilding(int floorId)
         {
-            //TODO: implement removal in floor controller
-            return Ok();
+            await floorService.DeleteCompartment(floorId);
+            return Ok(new ServerResponse(){
+                Message = "Floor is deleted"
+            });
+        }
+
+        [HttpGet("{floorId}")]
+        public async Task<IActionResult> GetFloorInfo(int floorId)
+        {
+             var result = await floorService.GetCompartmentInfo(floorId);
+            var resultToDto = mapper.Map<FloorDto>(result);
+            return Ok(resultToDto);
         }
     }
 }

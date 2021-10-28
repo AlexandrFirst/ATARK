@@ -8,7 +8,8 @@ namespace FireSaverApi.Profiles
     {
         public CompartmentProfile()
         {
-            CreateMap<FloorDto, Floor>().ReverseMap();
+            CreateMap<FloorDto, Floor>().ForMember(dest => dest.Id, opt => opt.Condition(src => src.Id >= 0)).ReverseMap();
+            CreateMap<RoomDto, Room>().ForMember(dest => dest.Id, opt => opt.Condition(src => src.Id >= 0)).ReverseMap();
         }
     }
 }

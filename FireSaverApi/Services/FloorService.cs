@@ -7,14 +7,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FireSaverApi.Services
 {
-    public class FloorService : CompartmentCRUDService<FloorDto, Floor, Building>
+    public class FloorService : CompartmentService<FloorDto, Floor, Building>
     {
         public FloorService(DatabaseContext databaseContext, IMapper mapper)
                     : base(databaseContext, mapper)
         {
         }
 
-        public override async Task<Building> GetBaseCompartment(int baseCompartmentId)
+        protected override async Task<Building> GetBaseCompartment(int baseCompartmentId)
         {
             var building = await databaseContext.Buildings.FirstOrDefaultAsync(b => b.Id == baseCompartmentId);
             if (building == null)
@@ -25,9 +25,13 @@ namespace FireSaverApi.Services
             return building;
         }
 
-        public override async Task<Floor> GetCompartmentById(int CompartmentId)
+        protected override async Task<Floor> GetCompartmentById(int CompartmentId)
         {
-            var compartment = await databaseContext.Floors.FirstOrDefaultAsync(b => b.Id == CompartmentId);
+            var compartment = await databaseContext.Floors.Include(u => u.InboundUsers).FirstOrDefaultAsync(b => b.Id == CompartmentId);
+            if (compartment == null)
+            {
+                throw new System.Exception("floor is not found");
+            }
             return compartment;
         }
     }

@@ -9,13 +9,13 @@ using FireSaverApi.Dtos.CompartmentDtos;
 
 namespace FireSaverApi.Services
 {
-    public abstract class CompartmentCRUDService<TEntityDto, Entity, BaseEntity> :
-                ICompartmentCRUDService<TEntityDto, Entity> where TEntityDto : CompartmentDto
+    public abstract class CompartmentService<TEntityDto, Entity, BaseEntity> :
+                ICompartmentService<TEntityDto, Entity> where TEntityDto : CompartmentDto
                                                             where Entity : Compartment
     {
         protected readonly DatabaseContext databaseContext;
         protected readonly IMapper mapper;
-        public CompartmentCRUDService(DatabaseContext databaseContext, IMapper mapper)
+        public CompartmentService(DatabaseContext databaseContext, IMapper mapper)
         {
             this.mapper = mapper;
             this.databaseContext = databaseContext;
@@ -49,24 +49,44 @@ namespace FireSaverApi.Services
         }
 
 
-        public Task<Entity> ChangeCompartmentInfo(int compartmentId, TEntityDto newCompartmentDto)
+        public async Task<Entity> ChangeCompartmentInfo(int compartmentId, TEntityDto newCompartmentDto)
         {
-            throw new System.NotImplementedException();
+            var entity = await GetCompartmentById(compartmentId);
+            if (compartmentId != entity.Id)
+                throw new System.Exception("something went wrong");
+
+            entity = mapper.Map<Entity>(newCompartmentDto);
+            databaseContext.Update(entity);
+            await databaseContext.SaveChangesAsync();
+
+            return entity;
         }
 
-        public Task DeleteCompartment(int compartmentId)
+        public async Task DeleteCompartment(int compartmentId)
         {
-            throw new System.NotImplementedException();
+            var entity = await GetCompartmentById(compartmentId);
+            
+            if(CanCompartmentBeDeleted(entity))
+                databaseContext.Remove(entity);
+
+            await databaseContext.SaveChangesAsync();
         }
 
-        public Task<Entity> GetCompartmentInfo(int compartmentId, TEntityDto newCompartmentDto)
+        public async Task<Entity> GetCompartmentInfo(int compartmentId)
         {
-            throw new System.NotImplementedException();
+            var entity = await GetCompartmentById(compartmentId);
+            return entity;
         }
 
 
+        private bool CanCompartmentBeDeleted(Entity compartment){
+            if(compartment.InboundUsers.Count > 0){
+                return false;
+            }
+            return true;
+        }
 
-        public abstract Task<BaseEntity> GetBaseCompartment(int baseCompartmentId);
-        public abstract Task<Entity> GetCompartmentById(int CompartmentId);
+        protected abstract Task<BaseEntity> GetBaseCompartment(int baseCompartmentId);
+        protected abstract Task<Entity> GetCompartmentById(int CompartmentId);
     }
 }

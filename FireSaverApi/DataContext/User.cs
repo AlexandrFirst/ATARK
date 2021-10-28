@@ -23,7 +23,7 @@ namespace FireSaverApi.DataContext
         public DateTime DOB { get; set; }
         public Position LastSeenBuildingPosition { get; set; }
         public int? LastSeenBuildingPositionId { get; set; }
-        public Building ResponsibleForBuilding { get; set; } //TODO: make one user be responsible for many buildings???
+        public Building ResponsibleForBuilding { get; set; }
         public Compartment CurrentCompartment { get; set; }
 
     }
