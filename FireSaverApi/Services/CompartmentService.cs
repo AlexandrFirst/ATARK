@@ -32,6 +32,10 @@ namespace FireSaverApi.Services
                 var floor = newCompartment as Floor;
                 var building = baseCompartment as Building;
 
+                if(building.Floors.Any(f => f.Level == floor.Level)){
+                    throw new Exception("Building can't have to same floors");
+                }
+
                 floor.BuildingWithThisFloor = building;
             }
             else if (typeof(Room) == typeof(Entity))
