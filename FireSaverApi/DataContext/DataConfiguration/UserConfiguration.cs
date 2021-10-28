@@ -10,7 +10,7 @@ namespace FireSaverApi.DataContext.DataConfiguration
             builder.HasOne(user => user.LastSeenBuildingPosition)
                 .WithOne(position => position.User)
                 .HasForeignKey<User>(user => user.LastSeenBuildingPositionId);
-
+        
             builder.HasIndex(user => user.Mail).IsUnique();
         }
     }

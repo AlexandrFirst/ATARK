@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FireSaverApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20211028161229_building entity changed")]
-    partial class buildingentitychanged
+    [Migration("20211028175030_Check2")]
+    partial class Check2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -28,14 +28,8 @@ namespace FireSaverApi.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("BuildingCenterPositionId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Info")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("SafetyDistance")
                         .HasColumnType("float");
@@ -276,7 +270,7 @@ namespace FireSaverApi.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Mail")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -307,10 +301,6 @@ namespace FireSaverApi.Migrations
                         .IsUnique()
                         .HasFilter("[LastSeenBuildingPositionId] IS NOT NULL");
 
-                    b.HasIndex("Mail")
-                        .IsUnique()
-                        .HasFilter("[Mail] IS NOT NULL");
-
                     b.HasIndex("ResponsibleForBuildingId");
 
                     b.ToTable("Users");
@@ -323,15 +313,10 @@ namespace FireSaverApi.Migrations
                     b.Property<int?>("BuildingWithThisFloorId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CurrentFloorId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Level")
                         .HasColumnType("int");
 
                     b.HasIndex("BuildingWithThisFloorId");
-
-                    b.HasIndex("CurrentFloorId");
 
                     b.HasDiscriminator().HasValue("Floor");
                 });
@@ -489,13 +474,7 @@ namespace FireSaverApi.Migrations
                         .HasForeignKey("BuildingWithThisFloorId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("FireSaverApi.DataContext.Floor", "CurrentFloor")
-                        .WithMany("NearFloors")
-                        .HasForeignKey("CurrentFloorId");
-
                     b.Navigation("BuildingWithThisFloor");
-
-                    b.Navigation("CurrentFloor");
                 });
 
             modelBuilder.Entity("FireSaverApi.DataContext.Room", b =>
@@ -588,8 +567,6 @@ namespace FireSaverApi.Migrations
 
             modelBuilder.Entity("FireSaverApi.DataContext.Floor", b =>
                 {
-                    b.Navigation("NearFloors");
-
                     b.Navigation("Rooms");
                 });
 

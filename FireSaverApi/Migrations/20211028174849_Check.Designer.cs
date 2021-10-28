@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FireSaverApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20211027132915_Some migration removed")]
-    partial class Somemigrationremoved
+    [Migration("20211028174849_Check")]
+    partial class Check
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

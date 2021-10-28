@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FireSaverApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20211028132419_Changed current floor prop")]
-    partial class Changedcurrentfloorprop
+    [Migration("20211028175822_One more migration")]
+    partial class Onemoremigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -314,18 +314,19 @@ namespace FireSaverApi.Migrations
                 {
                     b.HasBaseType("FireSaverApi.DataContext.Compartment");
 
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("BuildingWithThisFloorId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CurrentFloorId")
-                        .HasColumnType("int");
+                    b.Property<string>("Info")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Level")
                         .HasColumnType("int");
 
                     b.HasIndex("BuildingWithThisFloorId");
-
-                    b.HasIndex("CurrentFloorId");
 
                     b.HasDiscriminator().HasValue("Floor");
                 });
@@ -483,13 +484,7 @@ namespace FireSaverApi.Migrations
                         .HasForeignKey("BuildingWithThisFloorId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("FireSaverApi.DataContext.Floor", "CurrentFloor")
-                        .WithMany("NearFloors")
-                        .HasForeignKey("CurrentFloorId");
-
                     b.Navigation("BuildingWithThisFloor");
-
-                    b.Navigation("CurrentFloor");
                 });
 
             modelBuilder.Entity("FireSaverApi.DataContext.Room", b =>
@@ -582,8 +577,6 @@ namespace FireSaverApi.Migrations
 
             modelBuilder.Entity("FireSaverApi.DataContext.Floor", b =>
                 {
-                    b.Navigation("NearFloors");
-
                     b.Navigation("Rooms");
                 });
 

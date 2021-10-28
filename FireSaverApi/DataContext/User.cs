@@ -17,8 +17,8 @@ namespace FireSaverApi.DataContext
         public string Name { get; set; }
         public string Surname { get; set; }
         public string Patronymic { get; set; }
-        public string Mail { get; set; }
         public string Password { get; set; }
+        public string Mail { get; set; }
         public string TelephoneNumber { get; set; }
         public DateTime DOB { get; set; }
         public Position LastSeenBuildingPosition { get; set; }

@@ -2,7 +2,7 @@
 
 namespace FireSaverApi.Migrations
 {
-    public partial class Usermailuniqnessadd : Migration
+    public partial class Onemoremigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,6 +14,18 @@ namespace FireSaverApi.Migrations
                 oldClrType: typeof(string),
                 oldType: "nvarchar(max)",
                 oldNullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "Address",
+                table: "Compartment",
+                type: "nvarchar(max)",
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "Info",
+                table: "Compartment",
+                type: "nvarchar(max)",
+                nullable: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_Mail",
@@ -28,6 +40,14 @@ namespace FireSaverApi.Migrations
             migrationBuilder.DropIndex(
                 name: "IX_Users_Mail",
                 table: "Users");
+
+            migrationBuilder.DropColumn(
+                name: "Address",
+                table: "Compartment");
+
+            migrationBuilder.DropColumn(
+                name: "Info",
+                table: "Compartment");
 
             migrationBuilder.AlterColumn<string>(
                 name: "Mail",

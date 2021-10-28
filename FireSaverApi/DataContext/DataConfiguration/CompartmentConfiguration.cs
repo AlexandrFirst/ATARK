@@ -28,6 +28,7 @@ namespace FireSaverApi.DataContext.DataConfiguration
 
             builder.HasMany(compartment => compartment.InboundUsers)
                 .WithOne(iot => (TEntity)iot.CurrentCompartment);
+
         }
     }
 }

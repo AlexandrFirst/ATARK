@@ -26,14 +26,8 @@ namespace FireSaverApi.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("BuildingCenterPositionId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Info")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("SafetyDistance")
                         .HasColumnType("float");
@@ -318,8 +312,14 @@ namespace FireSaverApi.Migrations
                 {
                     b.HasBaseType("FireSaverApi.DataContext.Compartment");
 
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("BuildingWithThisFloorId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Info")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Level")
                         .HasColumnType("int");
