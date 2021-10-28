@@ -9,6 +9,7 @@ namespace FireSaverApi.DataContext.DataConfiguration
         {
             builder.HasMany(f => f.Rooms).WithOne(r => r.RoomFloor);
             builder.HasOne(f => f.CurrentFloor).WithMany(r => r.NearFloors);
+
         }
     }
 }

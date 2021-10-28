@@ -54,6 +54,24 @@ namespace FireSaverApi.Services
             }
         }
 
+        public async Task DeleteBuilding(int buildingId)
+        {
+            var building = await GetBuildingById(buildingId);
+            foreach (var floor in building.Floors)
+            {
+                foreach (var room in floor.Rooms)
+                {
+                    if (room.InboundUsers.Count > 0)
+                    {
+                        throw new DeleteBuildingException();
+                    }
+                }
+            }
+
+            context.Buildings.Remove(building);
+            await context.SaveChangesAsync();
+        }
+
         public async Task<BuildingInfoDto> RemoveResponsibleUser(int userId)
         {
             var user = await userHelper.GetUserById(userId);
@@ -90,12 +108,16 @@ namespace FireSaverApi.Services
         {
             HttpUserContext userContext = userContextService.GetUserContext();
             return building.ResponsibleUsers.Any(u => u.Id == userContext.Id) ||
-                    userContext.Roles.Contains(UserRole.ADMIN);
+                    userContext.RolesList.Contains(UserRole.ADMIN);
         }
 
         private async Task<Building> GetBuildingById(int buildingId)
         {
-            var building = await context.Buildings.Include(b => b.ResponsibleUsers).FirstOrDefaultAsync(b => b.Id == buildingId);
+            var building = await context.Buildings.Include(b => b.ResponsibleUsers)
+                                                    .Include(f => f.Floors)
+                                                    .ThenInclude(r => r.Rooms)
+                                                    .ThenInclude(u => u.InboundUsers)
+                                                    .FirstOrDefaultAsync(b => b.Id == buildingId);
 
             if (building == null)
                 throw new System.Exception("Building is not found by id");

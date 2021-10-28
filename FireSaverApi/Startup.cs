@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using FireSaverApi.Contracts;
 using FireSaverApi.DataContext;
+using FireSaverApi.Dtos.CompartmentDtos;
 using FireSaverApi.Helpers;
 using FireSaverApi.Helpers.ExceptionHandler;
 using FireSaverApi.Profiles;
@@ -50,10 +51,10 @@ namespace FireSaverApi
                     {
                         Mail = "root@gmail.com",
                         Name = "Admin",
-                        //Password = "admin",
+                        Password = HashHelper.ComputeSha256Hash("admin"),
                         RolesList = UserRole.ADMIN,
                         TelephoneNumber = "000000000",
-                        Surname="Admin",
+                        Surname = "Admin",
                         Patronymic = "Admin",
                         DOB = DateTime.MinValue
                     };
@@ -93,6 +94,10 @@ namespace FireSaverApi
             services.AddScoped<IUserHelper, UserService>();
             services.AddScoped<IBuildingService, BuildingService>();
 
+            services.AddScoped<ICompartmentCRUDService<FloorDto, Floor>, FloorService>();
+            //TODO: Add impementation for room entities
+
+
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
@@ -102,12 +107,13 @@ namespace FireSaverApi
                 mc.AddProfile(new PointProfile());
                 mc.AddProfile(new UserProfile());
                 mc.AddProfile(new BuildingProfile());
+                mc.AddProfile(new CompartmentProfile());
             });
 
             IMapper mapper = mappingConfig.CreateMapper();
 
             services.AddSingleton(mapper);
-            
+
 
 
             services.AddSwaggerGen(c =>

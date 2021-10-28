@@ -1,7 +1,9 @@
 using System.Threading.Tasks;
 using FireSaverApi.Contracts;
+using FireSaverApi.DataContext;
 using FireSaverApi.Dtos.BuildingDtos;
 using FireSaverApi.Helpers;
+using FireSaverApi.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FireSaverApi.Controllers
@@ -26,15 +28,13 @@ namespace FireSaverApi.Controllers
             return Ok(response);
         }
 
-
-        public async Task<IActionResult> RemoveBuilding()
+        [HttpDelete("{buildingId}")]
+        [Authorize(Role = UserRole.ADMIN)]
+        public async Task<IActionResult> RemoveBuilding(int buildingId)
         {
+            await buildingService.DeleteBuilding(buildingId);
 
-            //remove Iots -> compartmet set null
-            //remove floors -> according compartmnets deleted
-            //for responsible uses builing is set to null
-            //if floors can't be deleted(as there are some people on that floors, building can't be deleted)
-            return Ok();
+            return Ok(new ServerResponse(){Message = "Building is deleted successfully"});
         }
 
         [HttpPost("adduser/{userId}/{buildingId}")]

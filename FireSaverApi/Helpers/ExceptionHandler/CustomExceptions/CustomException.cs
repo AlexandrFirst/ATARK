@@ -25,4 +25,9 @@ namespace FireSaverApi.Helpers.ExceptionHandler.CustomExceptions
     {
         public UserIsAlredyResponsibleForBuilding() : base("User is alredy assigned to building") { }
     }
+
+    public class DeleteBuildingException : Exception
+    {
+        public DeleteBuildingException() : base("Building can't be deleted") { }
+    }
 }

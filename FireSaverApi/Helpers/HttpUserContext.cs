@@ -6,6 +6,6 @@ namespace FireSaverApi.Helpers
     {
         public int Id { get; set; }
         public string Mail { get; set; }
-        public List<string> Roles { get; set; }
+        public List<string> RolesList { get; set; }
     }
 }

@@ -4,14 +4,16 @@ using FireSaverApi.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FireSaverApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20211027150256_User mail uniqness add")]
+    partial class Usermailuniqnessadd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,14 +28,8 @@ namespace FireSaverApi.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("BuildingCenterPositionId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Info")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("SafetyDistance")
                         .HasColumnType("float");
@@ -321,10 +317,15 @@ namespace FireSaverApi.Migrations
                     b.Property<int?>("BuildingWithThisFloorId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("CurrentFloorId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Level")
                         .HasColumnType("int");
 
                     b.HasIndex("BuildingWithThisFloorId");
+
+                    b.HasIndex("CurrentFloorId");
 
                     b.HasDiscriminator().HasValue("Floor");
                 });
@@ -482,7 +483,13 @@ namespace FireSaverApi.Migrations
                         .HasForeignKey("BuildingWithThisFloorId")
                         .OnDelete(DeleteBehavior.Cascade);
 
+                    b.HasOne("FireSaverApi.DataContext.Floor", "CurrentFloor")
+                        .WithMany("NearFloors")
+                        .HasForeignKey("CurrentFloorId");
+
                     b.Navigation("BuildingWithThisFloor");
+
+                    b.Navigation("CurrentFloor");
                 });
 
             modelBuilder.Entity("FireSaverApi.DataContext.Room", b =>
@@ -575,6 +582,8 @@ namespace FireSaverApi.Migrations
 
             modelBuilder.Entity("FireSaverApi.DataContext.Floor", b =>
                 {
+                    b.Navigation("NearFloors");
+
                     b.Navigation("Rooms");
                 });
 

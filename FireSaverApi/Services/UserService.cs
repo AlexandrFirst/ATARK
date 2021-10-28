@@ -35,7 +35,7 @@ namespace FireSaverApi.Services
             User newUser = mapper.Map<User>(newUserInfo);
 
             newUser.RolesList = UserRole.AUTHORIZED_USER;
-            newUser.Password = ComputeSha256Hash(newUser.Password);
+            newUser.Password = HashHelper.ComputeSha256Hash(newUser.Password);
 
             await context.Users.AddAsync(newUser);
             await context.SaveChangesAsync();
@@ -109,7 +109,7 @@ namespace FireSaverApi.Services
 
             if (compareInputAndUserPasswords(newUserPassword.OldPassword, user.Password))
             {
-                var hashedNewPassword = ComputeSha256Hash(newUserPassword.NewPassword);
+                var hashedNewPassword = HashHelper.ComputeSha256Hash(newUserPassword.NewPassword);
                 user.Password = hashedNewPassword;
                 await context.SaveChangesAsync();
             }
@@ -132,23 +132,8 @@ namespace FireSaverApi.Services
 
         bool compareInputAndUserPasswords(string inputPassword, string userPassword)
         {
-            var hashedInputPassword = ComputeSha256Hash(inputPassword);
+            var hashedInputPassword = HashHelper.ComputeSha256Hash(inputPassword);
             return hashedInputPassword == userPassword;
-        }
-
-        string ComputeSha256Hash(string rawData)
-        {
-            using (SHA256 sha256Hash = SHA256.Create())
-            {
-                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
-
-                StringBuilder builder = new StringBuilder();
-                for (int i = 0; i < bytes.Length; i++)
-                {
-                    builder.Append(bytes[i].ToString("x2"));
-                }
-                return builder.ToString();
-            }
         }
 
         private string generateJwtToken(User user)

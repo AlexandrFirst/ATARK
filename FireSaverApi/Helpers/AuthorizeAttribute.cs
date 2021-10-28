@@ -22,7 +22,7 @@ namespace FireSaverApi.Helpers
             {
                 if(!String.IsNullOrEmpty(Role))
                 {
-                    if(!user.Roles.Contains(this.Role)){
+                    if(!user.RolesList.Contains(this.Role)){
                         context.Result = new JsonResult(new { message = "Forbidden" }) { StatusCode = StatusCodes.Status403Forbidden };
                     }
                 }

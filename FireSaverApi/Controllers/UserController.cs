@@ -3,6 +3,7 @@ using FireSaverApi.Contracts;
 using FireSaverApi.DataContext;
 using FireSaverApi.Dtos;
 using FireSaverApi.Helpers;
+using FireSaverApi.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FireSaverApi.Controllers
@@ -67,7 +68,7 @@ namespace FireSaverApi.Controllers
             var currentUserId = userContextService.GetUserContext().Id;
             await userService.ChangeOldPassword(currentUserId, newUserPassword);
 
-            return Ok(new { Message = "Password is updated" });
+            return Ok(new ServerResponse(){ Message = "Password is updated" });
         }
 
     }
