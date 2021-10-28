@@ -12,8 +12,5 @@ namespace FireSaverApi.DataContext
         public int Level { get; set; }
         public IList<Room> Rooms { get; set; }
         public Building BuildingWithThisFloor { get; set; }
-        public string Address { get; set; }
-        public string Info { get; set; }
-
     }
 }
