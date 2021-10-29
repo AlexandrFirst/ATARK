@@ -102,6 +102,9 @@ namespace FireSaverApi
 
             services.AddScoped<IEvacuationService, EvacuationService>();
 
+            services.AddScoped<IScalePointService, ScalePointService>();
+            services.AddScoped<IPositionTransformHelper, ScalePointService>();
+
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
@@ -113,6 +116,8 @@ namespace FireSaverApi
                 mc.AddProfile(new UserProfile());
                 mc.AddProfile(new BuildingProfile());
                 mc.AddProfile(new CompartmentProfile());
+                mc.AddProfile(new EvacuationPlanProfile());
+                mc.AddProfile(new ScaleModelProfile());
             });
 
             IMapper mapper = mappingConfig.CreateMapper();
