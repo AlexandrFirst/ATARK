@@ -15,16 +15,19 @@ namespace FireSaverApi.Services
         private readonly IMapper mapper;
         private readonly ICompartmentHelper compartmentHelper;
         private readonly IPlanImageUploadService planImageUploadService;
+        private readonly IEvacuationServiceHelper evacServiceHelper;
 
         public EvacuationService(DatabaseContext dataContext,
                                  IMapper mapper,
                                  ICompartmentHelper compartmentHelper,
-                                 IPlanImageUploadService planImageUploadService)
+                                 IPlanImageUploadService planImageUploadService,
+                                 IEvacuationServiceHelper evacServiceHelper)
         {
             this.dataContext = dataContext;
             this.mapper = mapper;
             this.compartmentHelper = compartmentHelper;
             this.planImageUploadService = planImageUploadService;
+            this.evacServiceHelper = evacServiceHelper;
         }
 
         public async Task<EvacuationPlanDto> addEvacuationPlanToCompartment(int compartmentId, IFormFile planImage)
@@ -80,14 +83,6 @@ namespace FireSaverApi.Services
             await dataContext.SaveChangesAsync();
         }
 
-        private async Task<EvacuationPlan> GetEvacPlanById(int evacPlanId)
-        {
-            var evacPlan = await dataContext.EvacuationPlans.FirstOrDefaultAsync(e => e.Id == evacPlanId);
-            if (evacPlan == null)
-            {
-                throw new Exception("Evac plan is not found");
-            }
-            return evacPlan;
-        }
+       //TODO: make evacuation plan builder
     }
 }

@@ -8,11 +8,7 @@ namespace FireSaverApi.Profiles
     {
         public ScaleModelProfile()
         {
-            CreateMap<ScaleModel, ScaleModelDto>()
-            .ConstructUsing(src => new ScaleModelDto(src.CoordToPixelCoef,
-                                                     src.PixelToXoordCoef, 
-                                                     src.MinDistanceDifferenceLatitudeCoef, 
-                                                     src.MinDistanceDifferenceLongtitudeCoef));
+            CreateMap<ScaleModel, ScaleModelDto>();
                                                      
             CreateMap<ScaleModelDto, ScaleModel>().IgnoreAllPropertiesWithAnInaccessibleSetter();
         }
