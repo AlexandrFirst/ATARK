@@ -101,6 +101,7 @@ namespace FireSaverApi
             services.AddScoped<IPlanImageUploadService, PlanImageUploadService>();
 
             services.AddScoped<IEvacuationService, EvacuationService>();
+            services.AddScoped<IEvacuationServiceHelper, EvacuationServiceHelper>();
 
             services.AddScoped<IScalePointService, ScalePointService>();
             services.AddScoped<IPositionTransformHelper, ScalePointService>();
