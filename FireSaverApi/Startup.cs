@@ -97,10 +97,15 @@ namespace FireSaverApi
             services.AddScoped<ICompartmentService<FloorDto, Floor>, FloorService>();
             services.AddScoped<ICompartmentService<RoomDto, Room>, RoomService>();
 
+            services.AddScoped<ICompartmentHelper, CompartmentHelper>();
+            services.AddScoped<IPlanImageUploadService, PlanImageUploadService>();
+
+            services.AddScoped<IEvacuationService, EvacuationService>();
 
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+            services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
 
             var mappingConfig = new MapperConfiguration(mc =>
             {

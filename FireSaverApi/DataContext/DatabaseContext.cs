@@ -16,6 +16,7 @@ namespace FireSaverApi.DataContext
         public virtual DbSet<Room> Rooms { get; set; }
         public virtual DbSet<ScaleModel> ScaleModels { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Compartment> Compartment { get; set; }
 
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
         {
