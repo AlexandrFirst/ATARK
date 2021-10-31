@@ -106,6 +106,9 @@ namespace FireSaverApi
             services.AddScoped<IScalePointService, ScalePointService>();
             services.AddScoped<IPositionTransformHelper, ScalePointService>();
 
+
+            services.AddScoped<IRoutebuilderService, RoutebuilderService>();
+
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));

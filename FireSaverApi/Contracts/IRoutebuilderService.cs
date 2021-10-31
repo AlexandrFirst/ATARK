@@ -1,0 +1,23 @@
+using System.Threading.Tasks;
+using FireSaverApi.DataContext;
+using FireSaverApi.Dtos;
+using FireSaverApi.Helpers;
+
+namespace FireSaverApi.Contracts
+{
+    public interface IRoutebuilderService
+    {
+        Task<RoutePoint> SetNewPoint(NewRoutePointDto routePoint);
+        Task<RoutePoint> SetNewRoute(int compartmentId, NewRoutePointDto routePoint);
+        Task<DeletePointOutputDto> DeletePoint(int routePointId);
+        Task<RoutePoint> GetRoutePoint(int routePointId);
+        Task DeleteRoute(int rootRoutePointId);
+        Task<RoutePoint> GetRoute(int rootRoutePointId);
+        Task<RoutePoint> UpdateRoutePointPos(RoutePointDto updatingRoutePoint);
+        Task<RoutePoint> GetRouteBetweenPoints(int pointid1, int pointid2);
+
+
+
+
+    }
+}
