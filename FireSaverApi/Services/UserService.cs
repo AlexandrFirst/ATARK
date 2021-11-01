@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -20,22 +22,30 @@ namespace FireSaverApi.Services
     {
         private readonly DatabaseContext context;
         private readonly IMapper mapper;
+        private readonly IOptions<AppSettings> appsettings;
+        private readonly ILocationService locationService;
+        private readonly IRoutebuilderService routebuilderService;
         private readonly AppSettings appSettings;
 
         public UserService(DatabaseContext context,
                             IMapper mapper,
-                            IOptions<AppSettings> appsettings)
+                            IOptions<AppSettings> appsettings,
+                            ILocationService locationService,
+                            IRoutebuilderService routebuilderService)
         {
             this.appSettings = appsettings.Value;
             this.context = context;
             this.mapper = mapper;
+            this.appsettings = appsettings;
+            this.locationService = locationService;
+            this.routebuilderService = routebuilderService;
         }
         public async Task<UserInfoDto> CreateNewUser(RegisterUserDto newUserInfo)
         {
             User newUser = mapper.Map<User>(newUserInfo);
 
             newUser.RolesList = UserRole.AUTHORIZED_USER;
-            newUser.Password = HashHelper.ComputeSha256Hash(newUser.Password);
+            newUser.Password = CalcHelper.ComputeSha256Hash(newUser.Password);
 
             await context.Users.AddAsync(newUser);
             await context.SaveChangesAsync();
@@ -86,7 +96,7 @@ namespace FireSaverApi.Services
                 throw new UserNotFoundException();
             }
 
-            if (compareInputAndUserPasswords(userAuth.Password,user.Password))
+            if (compareInputAndUserPasswords(userAuth.Password, user.Password))
             {
 
                 var authToken = generateJwtToken(user);
@@ -109,7 +119,7 @@ namespace FireSaverApi.Services
 
             if (compareInputAndUserPasswords(newUserPassword.OldPassword, user.Password))
             {
-                var hashedNewPassword = HashHelper.ComputeSha256Hash(newUserPassword.NewPassword);
+                var hashedNewPassword = CalcHelper.ComputeSha256Hash(newUserPassword.NewPassword);
                 user.Password = hashedNewPassword;
                 await context.SaveChangesAsync();
             }
@@ -119,9 +129,76 @@ namespace FireSaverApi.Services
             }
         }
 
+
+        public async Task<List<RoutePoint>> BuildEvacuationRootForCompartment(int userId)
+        {
+            var user = await GetUserById(userId);
+
+            if (user.CurrentCompartment == null)
+            {
+                throw new Exception("Current compartment for user is not set");
+            }
+
+            var compartmentPoints = await context.RoutePoints.Include(p => p.MapPosition)
+                                                             .Where(p => p.Compartment.Id == user.CurrentCompartment.Id)
+                                                             .ToListAsync();
+
+            if (compartmentPoints.Count == 0)
+            {
+                throw new Exception("No points for the compartment found");
+            }
+
+            var worldPosition = mapper.Map<PositionDto>(user.LastSeenBuildingPosition);
+            var mappedWorldPostion = await locationService.WorldToImgPostion(worldPosition, user.CurrentCompartment.Id);
+
+            RoutePoint closestPoint = GetClosestPoint(compartmentPoints, mappedWorldPostion);
+
+            var rootPointFotCurrentRoutePoint = await routebuilderService.GetRootPointForRoutePoint(closestPoint.Id);
+
+            var exitPoints = compartmentPoints.Where(p => p.RoutePointType == RoutePointType.EXIT ||
+                                                          p.RoutePointType == RoutePointType.ADDITIONAL_EXIT).ToList();
+            if (exitPoints.Count == 0)
+            {
+                return new List<RoutePoint>() { await routebuilderService.GetAllRoute(rootPointFotCurrentRoutePoint.Id) };
+            }
+            else
+            {
+                var possibleEvacuationList = new List<RoutePoint>();
+                for (int i = 0; i < exitPoints.Count; i++)
+                {
+                    var evacuationRoute = await routebuilderService.GetRouteBetweenPoints(closestPoint.Id, exitPoints[i].Id);
+                    possibleEvacuationList.Add(evacuationRoute);
+                }
+                return possibleEvacuationList;
+            }
+
+        }
+
+        private RoutePoint GetClosestPoint(List<RoutePoint> compartmentPoints, PositionDto mappedWorldPostion)
+        {
+            double minDistance = double.MaxValue;
+            var closestPoint = compartmentPoints.First();
+
+            for (int i = 0; i < compartmentPoints.Count; i++)
+            {
+                var currentPointPostion = mapper.Map<PositionDto>(compartmentPoints[i].MapPosition);
+                double distance = CalcHelper.ComputeDistanceBetweenPoints(mappedWorldPostion, currentPointPostion);
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    closestPoint = compartmentPoints[i];
+                }
+            }
+
+            return closestPoint;
+        }
+
         public async Task<User> GetUserById(int userId)
         {
-            var foundUser = await context.Users.Include(b => b.ResponsibleForBuilding).FirstOrDefaultAsync(u => u.Id == userId);
+            var foundUser = await context.Users.Include(b => b.ResponsibleForBuilding)
+                                               .Include(c => c.CurrentCompartment)
+                                               .Include(p => p.LastSeenBuildingPosition)
+                                               .FirstOrDefaultAsync(u => u.Id == userId);
             if (foundUser == null)
             {
                 throw new UserNotFoundException();
@@ -132,9 +209,10 @@ namespace FireSaverApi.Services
 
         bool compareInputAndUserPasswords(string inputPassword, string userPassword)
         {
-            var hashedInputPassword = HashHelper.ComputeSha256Hash(inputPassword);
+            var hashedInputPassword = CalcHelper.ComputeSha256Hash(inputPassword);
             return hashedInputPassword == userPassword;
         }
+
 
         private string generateJwtToken(User user)
         {

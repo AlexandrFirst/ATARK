@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using FireSaverApi.DataContext;
 
 namespace FireSaverApi.Dtos
 {
@@ -8,5 +9,6 @@ namespace FireSaverApi.Dtos
         public PositionDto PointPostion { get; set; }
         public List<RoutePointDto> ChildrenPoints { get; set; }
         public RoutePointDto ParentPoint { get; set; }
+        public RoutePointType RoutePointType { get; set; }
     }
 }

@@ -1,9 +1,11 @@
+using System;
 using System.Security.Cryptography;
 using System.Text;
+using FireSaverApi.Dtos;
 
 namespace FireSaverApi.Helpers
 {
-    public static class HashHelper
+    public static class CalcHelper
     {
         public static string ComputeSha256Hash(string rawData)
         {
@@ -18,6 +20,12 @@ namespace FireSaverApi.Helpers
                 }
                 return builder.ToString();
             }
+        }
+
+        public static double ComputeDistanceBetweenPoints(PositionDto p1, PositionDto p2)
+        {
+            var dist = Math.Sqrt(Math.Pow(p1.Latitude - p2.Latitude, 2) + Math.Pow(p1.Longtitude - p2.Longtitude, 2));
+            return dist;
         }
     }
 }

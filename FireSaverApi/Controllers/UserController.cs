@@ -71,5 +71,17 @@ namespace FireSaverApi.Controllers
             return Ok(new ServerResponse(){ Message = "Password is updated" });
         }
 
+        [Authorize]
+        [HttpGet("evacuate/{fromCompartmentId}")]
+        public async Task<IActionResult> GetEvacuationRouteForCompartment(int fromCompartmentId)
+        {
+            var currentUserId = userContextService.GetUserContext().Id;
+            var response = await userService.BuildEvacuationRootForCompartment(fromCompartmentId);
+
+            return Ok(new ServerResponse(){ Message = "Password is updated" });
+        }
+
+
+
     }
 }

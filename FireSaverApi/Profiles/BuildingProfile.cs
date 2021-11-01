@@ -11,6 +11,7 @@ namespace FireSaverApi.Profiles
         {
             CreateMap<Building, BuildingInfoDto>().ReverseMap();
             CreateMap<NewBuildingDto, Building>().ReverseMap();
+            CreateMap<BuildingCenterDto, Building>().ReverseMap();
         }
     }
 }

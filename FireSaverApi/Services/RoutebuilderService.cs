@@ -121,6 +121,21 @@ namespace FireSaverApi.Services
             return deletePointOutputDto;
         }
 
+        public async Task<RoutePoint> GetRootPointForRoutePoint(int routePointId)
+        {
+            var currentRoute = await context.RoutePoints.Include(r => r.ParentPoint).FirstOrDefaultAsync(r => r.Id == routePointId);
+        
+            return await GetParentPointForCurrentpoint(currentRoute);
+        }
+
+        async Task<RoutePoint> GetParentPointForCurrentpoint(RoutePoint currentRoutePoint)
+        {
+            if(currentRoutePoint.ParentPoint == null)
+                return currentRoutePoint;
+
+            return await GetParentPointForCurrentpoint(currentRoutePoint.ParentPoint);
+        }
+
         public async Task<RoutePoint> GetRoutePoint(int routePointId)
         {
             var retrievingPoint = await context.RoutePoints.Include(c => c.ChildrenPoints)
@@ -153,7 +168,7 @@ namespace FireSaverApi.Services
             await context.SaveChangesAsync();
         }
 
-        public async Task<RoutePoint> GetRoute(int rootRoutePointId)
+        public async Task<RoutePoint> GetAllRoute(int rootRoutePointId)
         {
             var initPoint = await context.RoutePoints.Include(p => p.ParentPoint)
                                                    .Include(c => c.ChildrenPoints)
@@ -184,7 +199,7 @@ namespace FireSaverApi.Services
 
             return pointToUpdate;
         }
-     
+
         public async Task<RoutePoint> GetRouteBetweenPoints(int pointid1, int pointid2)
         {
             var point1 = context.RoutePoints.Any(p => p.Id == pointid1);
@@ -262,5 +277,7 @@ namespace FireSaverApi.Services
 
             return currentPoint;
         }
+
+
     }
 }

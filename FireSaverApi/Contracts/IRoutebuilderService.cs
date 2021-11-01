@@ -12,12 +12,9 @@ namespace FireSaverApi.Contracts
         Task<DeletePointOutputDto> DeletePoint(int routePointId);
         Task<RoutePoint> GetRoutePoint(int routePointId);
         Task DeleteRoute(int rootRoutePointId);
-        Task<RoutePoint> GetRoute(int rootRoutePointId);
+        Task<RoutePoint> GetAllRoute(int rootRoutePointId);
         Task<RoutePoint> UpdateRoutePointPos(RoutePointDto updatingRoutePoint);
         Task<RoutePoint> GetRouteBetweenPoints(int pointid1, int pointid2);
-
-
-
-
+        Task<RoutePoint> GetRootPointForRoutePoint(int routePointId);
     }
 }

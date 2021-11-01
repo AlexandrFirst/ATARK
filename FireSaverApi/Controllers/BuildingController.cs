@@ -34,7 +34,7 @@ namespace FireSaverApi.Controllers
         {
             await buildingService.DeleteBuilding(buildingId);
 
-            return Ok(new ServerResponse(){Message = "Building is deleted successfully"});
+            return Ok(new ServerResponse() { Message = "Building is deleted successfully" });
         }
 
         [HttpPost("adduser/{userId}/{buildingId}")]
@@ -51,9 +51,17 @@ namespace FireSaverApi.Controllers
             return Ok(alteredBuilding);
         }
 
+        [HttpPut("updateBuilding/{userId}")]
         public async Task<IActionResult> UpdateBuildingInfo(int buildingId, [FromBody] NewBuildingDto newBuildingInfo)
         {
             var alteredBuilding = await buildingService.UpdateBuildingInfo(buildingId, newBuildingInfo);
+            return Ok(alteredBuilding);
+        }
+
+        [HttpPost("setBuildingCenter/{buildingId}")]
+        public async Task<IActionResult> SetBuildingCenter(int buildingId, [FromBody] BuildingCenterDto buildingCentre)
+        {
+            BuildingInfoDto alteredBuilding = await buildingService.UpdateBuildingCenter(buildingId, buildingCentre);
             return Ok(alteredBuilding);
         }
     }

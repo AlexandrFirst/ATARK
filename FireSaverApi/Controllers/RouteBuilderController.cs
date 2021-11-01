@@ -64,7 +64,7 @@ namespace FireSaverApi.Controllers
         [HttpGet("route/{routePointId}")]
         public async Task<IActionResult> GetRoute(int routePointId)
         {
-            var initPoint = await routeBuilder.GetRoute(routePointId);
+            var initPoint = await routeBuilder.GetAllRoute(routePointId);
             return Ok(mapper.Map<RoutePointDto>(initPoint));
         }
 

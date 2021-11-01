@@ -83,6 +83,16 @@ namespace FireSaverApi.Services
             return mapper.Map<BuildingInfoDto>(building);
         }
 
+        public async Task<BuildingInfoDto> UpdateBuildingCenter(int buildingId, BuildingCenterDto buildingCenter)
+        {
+            var updatedBuilding = await GetBuildingById(buildingId);
+            updatedBuilding = mapper.Map<Building>(buildingCenter);
+            context.Buildings.Update(updatedBuilding);
+            await context.SaveChangesAsync();
+
+            return mapper.Map<BuildingInfoDto>(updatedBuilding);
+        }
+
         public async Task<BuildingInfoDto> UpdateBuildingInfo(int buildingId, NewBuildingDto newBuildingInfo)
         {
 
