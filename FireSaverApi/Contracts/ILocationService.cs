@@ -7,8 +7,8 @@ namespace FireSaverApi.Contracts
 {
     public interface ILocationService
     {
-        Task<LocationPointModel> CalculateLocationModel();
-        Task<PositionDto> WorldToImgPostion(PositionDto worldPostion);
-        Task<PositionDto> ImgToWorldPostion(PositionDto worldPostion);
+        Task<LocationPointModel> CalculateLocationModel(int compartmentId);
+        Task<PositionDto> WorldToImgPostion(PositionDto worldPostion, int compartmentId);
+        Task<PositionDto> ImgToWorldPostion(PositionDto worldPostion, int compartmentId);
     }
 }

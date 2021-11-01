@@ -74,13 +74,5 @@ namespace FireSaverApi.Controllers
             var pointToUpdate = await routeBuilder.UpdateRoutePointPos(updatingRoutePoint);
             return Ok(pointToUpdate);
         }
-
-        [HttpGet("buildRoute/{pointid1}/{pointid2}")]
-        public async Task<IActionResult> GetRouteBetweenPoints(int pointid1, int pointid2)
-        {
-            var route = await routeBuilder.GetRouteBetweenPoints(pointid1, pointid2);
-            var routeToReturn = mapper.Map<RoutePointDto>(route);
-            return Ok(routeToReturn);
-        }
     }
 }

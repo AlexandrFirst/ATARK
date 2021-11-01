@@ -8,5 +8,13 @@ namespace FireSaverApi.Models
         public double FromPixelYToCoordYCoef { get; set; }
         public double FromCoordYToPixelYCoef { get; set; }
 
+        public bool isInvalid()
+        {
+            return FromPixelXToCoordXCoef == 0 || 
+                   FromCoordXToPixelXCoef == 0 || 
+                   FromPixelYToCoordYCoef == 0 || 
+                   FromCoordYToPixelYCoef == 0;
+        }
+
     }
 }

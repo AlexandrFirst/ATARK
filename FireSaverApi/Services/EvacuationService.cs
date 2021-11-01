@@ -42,7 +42,8 @@ namespace FireSaverApi.Services
                 PublicId = uploadPlanResponse.PublicId,
                 Url = uploadPlanResponse.Url,
                 UploadTime = DateTime.Now,
-                Compartment = compartment
+                Compartment = compartment,
+                ScaleModel = new ScaleModel()
             };
 
             await dataContext.EvacuationPlans.AddAsync(newEvacPlan);

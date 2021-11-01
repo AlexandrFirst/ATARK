@@ -42,15 +42,15 @@ namespace FireSaverApi.Services
             return mapper.Map<ScalePointDto>(pointToInsert);
         }
 
-        public async Task<PositionDto> ConvertImgToWorldPos(PositionDto inputPosition)
+        public async Task<PositionDto> ConvertImgToWorldPos(PositionDto inputPosition, int compartmentId)
         {
-            PositionDto worldPos = await locationService.ImgToWorldPostion(inputPosition);
+            PositionDto worldPos = await locationService.ImgToWorldPostion(inputPosition, compartmentId);
             return worldPos;
         }
 
-        public async Task<PositionDto> ConvertWorldToImgPos(PositionDto inputPosition)
+        public async Task<PositionDto> ConvertWorldToImgPos(PositionDto inputPosition, int compartmentId)
         {
-            PositionDto imgPos = await locationService.WorldToImgPostion(inputPosition);
+            PositionDto imgPos = await locationService.WorldToImgPostion(inputPosition, compartmentId);
             return imgPos;
         }
 
@@ -73,7 +73,10 @@ namespace FireSaverApi.Services
 
         public async Task DeleteSinglePoint(int scalePointId)
         {
-            var point = await context.ScalePoints.Include(m => m.ScaleModel).FirstOrDefaultAsync(s => s.Id == scalePointId);
+            var point = await context.ScalePoints.Include(m => m.ScaleModel)
+                                                .ThenInclude(evPlan => evPlan.ApplyingEvacPlans)
+                                                .ThenInclude(c => c.Compartment)
+                                                .FirstOrDefaultAsync(s => s.Id == scalePointId);
             if (point == null)
             {
                 throw new System.Exception("Scale point is not found");
@@ -82,10 +85,10 @@ namespace FireSaverApi.Services
             context.ScalePoints.Remove(point);
             await context.SaveChangesAsync();
 
-            await recalculateScaleModel(point.ScaleModel);
+            await recalculateScaleModel(point.ScaleModel, point.ScaleModel.ApplyingEvacPlans.Compartment.Id);
         }
 
-        private async Task recalculateScaleModel(ScaleModel scaleModel)
+        private async Task recalculateScaleModel(ScaleModel scaleModel, int compartmentId)
         {
             var allScalePoints = (await context.ScalePoints.Include(s => s.ScaleModel)
                                                         .ToListAsync())
@@ -97,7 +100,7 @@ namespace FireSaverApi.Services
             }
             else
             {
-                var newModel = await locationService.CalculateLocationModel();
+                var newModel = await locationService.CalculateLocationModel(compartmentId);
                 UpdateScaleModel(scaleModel, newModel);
             }
 

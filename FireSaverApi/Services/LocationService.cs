@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using FireSaverApi.Contracts;
 using FireSaverApi.DataContext;
 using FireSaverApi.Dtos;
@@ -13,99 +14,192 @@ namespace FireSaverApi.Services
     public class LocationService : ILocationService
     {
         private readonly DatabaseContext dataContext;
+        private readonly IMapper mapper;
         private LocationPointModel locationPointModel;
-        public LocationService(DatabaseContext dataContext)
+        public LocationService(DatabaseContext dataContext, IMapper mapper)
         {
             this.dataContext = dataContext;
+            this.mapper = mapper;
         }
 
 
-        public async Task<LocationPointModel> CalculateLocationModel()
+        public async Task<LocationPointModel> CalculateLocationModel(int compartmentId)
         {
-            // var points = await dataContext.ScalePoints.Include(w => w.WorldPosition).Include(m => m.MapPosition).Take(2).ToListAsync();
-            // //TODO: Add processing of multiple points
-            // double deltaXPixel = Math.Abs(points[0].MapPosition.Latitude - points[1].MapPosition.Latitude);
-            // double deltaYPixel = Math.Abs(points[0].MapPosition.Longtitude - points[1].MapPosition.Longtitude);
+            var compartment = await dataContext.Compartment.Include(s => s.EvacuationPlan)
+                                                            .ThenInclude(m => m.ScaleModel)
+                                                            .ThenInclude(p => p.ScalePoints)
+                                                            .FirstOrDefaultAsync(c => c.Id == compartmentId);
 
-            // double deltaXCoord = Math.Abs(points[0].WorldPosition.Latitude - points[1].WorldPosition.Latitude);
-            // double deltaYCoord = Math.Abs(points[0].WorldPosition.Longtitude - points[1].WorldPosition.Longtitude);
+            if (compartment.EvacuationPlan == null && compartment.EvacuationPlan.ScaleModel == null)
+            {
+                throw new Exception("Evacuation plan or scale model is not set");
+            }
 
-            // double fromPixelXToCoordXCoef = deltaXCoord / deltaXPixel;
-            // double fromCoordXToPixelXCoef = 1 / fromPixelXToCoordXCoef;
+            var points = compartment.EvacuationPlan.ScaleModel.ScalePoints;
+            if (points.Count < 2)
+            {
+                throw new Exception("Not enough points to caclulate model");
+            }
 
-            // double fromPixelYToCoordYCoef = deltaYCoord / deltaYPixel;
-            // double fromCoordYToPixelYCoef = 1 / fromPixelYToCoordYCoef;
+            double avgFromPixelXToCoordXCoef = 0;
+            double avgFromPixelYToCoordYCoef = 0;
 
-            // locationPointModel = new LocationPointModel()
-            // {
-            //     FromCoordXToPixelXCoef = fromCoordXToPixelXCoef,
-            //     FromPixelXToCoordXCoef = fromPixelXToCoordXCoef,
+            double avgFromCoordXToPixelXCoef = 0;
+            double avgFromCoordYToPixelYCoef = 0;
 
-            //     FromCoordYToPixelYCoef = fromCoordYToPixelYCoef,
-            //     FromPixelYToCoordYCoef = fromPixelYToCoordYCoef
-            // };
+            for (int i = 1; i < points.Count; i++)
+            {
+                double fromPixelXToCoordXCoef = getPixelXToCoordXCoef(points[0], points[i]);
+                double fromPixelYToCoordYCoef = getPixelYToCoordYCoef(points[0], points[i]);
 
-            // return locationPointModel;
+                avgFromPixelXToCoordXCoef += fromPixelXToCoordXCoef;
+                avgFromPixelYToCoordYCoef += fromPixelYToCoordYCoef;
+            }
 
-            return null;
+            avgFromPixelXToCoordXCoef /= (points.Count - 1);
+            avgFromPixelYToCoordYCoef /= (points.Count - 1);
+
+            avgFromCoordXToPixelXCoef = 1 / avgFromPixelXToCoordXCoef;
+            avgFromCoordYToPixelYCoef = 1 / avgFromPixelYToCoordYCoef;
+
+
+            locationPointModel = new LocationPointModel()
+            {
+                FromCoordXToPixelXCoef = avgFromCoordXToPixelXCoef,
+                FromPixelXToCoordXCoef = avgFromPixelXToCoordXCoef,
+
+                FromCoordYToPixelYCoef = avgFromCoordYToPixelYCoef,
+                FromPixelYToCoordYCoef = avgFromPixelYToCoordYCoef
+            };
+
+            compartment.EvacuationPlan.ScaleModel = mapper.Map<ScaleModel>(locationPointModel);
+            dataContext.Update(compartment.EvacuationPlan.ScaleModel);
+            await dataContext.SaveChangesAsync();
+
+
+            return locationPointModel;
         }
 
-        public async Task<PositionDto> ImgToWorldPostion(PositionDto imgPostion)
+        double getDelta(double a, double b)
         {
-            // var firstPoint = (await dataContext.ScalePoints.Include(w => w.WorldPosition).Include(m => m.MapPosition).Take(1).ToListAsync())[0];
-
-            // locationPointModel = await CalculateLocationModel();
-
-            // double x3PixelCoord = imgPostion.Latitude; 
-            // double y3PixelCoord = imgPostion.Longtitude;
-
-            // double x1PixelCoord = firstPoint.MapPosition.Latitude;
-            // double y1PixelCoord = firstPoint.MapPosition.Longtitude;
-
-            // double x1WorldCoord = firstPoint.WorldPosition.Latitude;
-            // double y1WorldCoord = firstPoint.WorldPosition.Longtitude;
-
-            // double x3WorldCoord = x1WorldCoord + (x3PixelCoord - x1PixelCoord) * locationPointModel.FromPixelXToCoordXCoef;
-            // double y3WorldCoord = y1WorldCoord + (y3PixelCoord - y1PixelCoord) * locationPointModel.FromPixelYToCoordYCoef;
-
-            // System.Console.WriteLine("locationPointModel.FromCoordXToPixelXCoef: " + locationPointModel.FromPixelXToCoordXCoef);
-            // System.Console.WriteLine("locationPointModel.FromCoordYToPixelYCoef: " + locationPointModel.FromPixelYToCoordYCoef);
-
-            // return new PositionDto()
-            // {
-            //     Latitude = x3WorldCoord,
-            //     Longtitude = y3WorldCoord
-            //};
-            return null;
+            return Math.Abs(a - b);
         }
 
-        public async Task<PositionDto> WorldToImgPostion(PositionDto worldPostion)
+        double getPixelXToCoordXCoef(ScalePoint p1, ScalePoint p2)
         {
-            // var firstPoint = (await dataContext.ScalePoints.Include(w => w.WorldPosition).Include(m => m.MapPosition).Take(1).ToListAsync())[0];
+            double deltaXPixel = getDelta(p1.MapPosition.Latitude, p2.MapPosition.Latitude);
 
-            // locationPointModel = await CalculateLocationModel();
+            double deltaXCoord = getDelta(p1.WorldPosition.Latitude, p2.WorldPosition.Latitude);
 
-            // double x3WorldCoord = worldPostion.Latitude; 
-            // double y3WorldCoord = worldPostion.Longtitude;
+            double fromPixelXToCoordXCoef = deltaXCoord / deltaXPixel;
 
-            // double x1WorldCoord = firstPoint.WorldPosition.Latitude;
-            // double y1WorldCoord = firstPoint.WorldPosition.Longtitude;
+            return fromPixelXToCoordXCoef;
 
-            // double x1PixelCoord = firstPoint.MapPosition.Latitude;
-            // double y1PixelCoord = firstPoint.MapPosition.Longtitude;
+        }
+        double getPixelYToCoordYCoef(ScalePoint p1, ScalePoint p2)
+        {
+            double deltaYPixel = getDelta(p1.MapPosition.Longtitude, p2.MapPosition.Longtitude);
 
-            // double x3PixelCoord = x1PixelCoord + (x3WorldCoord - x1WorldCoord) * locationPointModel.FromCoordXToPixelXCoef;
-            // double y3PixelCoord = y1PixelCoord + (y3WorldCoord - y1WorldCoord) * locationPointModel.FromCoordYToPixelYCoef;
+            double deltaYCoord = getDelta(p1.WorldPosition.Longtitude, p2.WorldPosition.Longtitude);
 
-            // System.Console.WriteLine("locationPointModel.FromCoordXToPixelXCoef: " + locationPointModel.FromCoordXToPixelXCoef);
-            // System.Console.WriteLine("locationPointModel.FromCoordYToPixelYCoef: " + locationPointModel.FromCoordYToPixelYCoef);
+            double fromPixelYToCoordYCoef = deltaYCoord / deltaYPixel;
 
-            // return new PositionDto()
-            // {
-            //     Latitude = x3PixelCoord,
-            //     Longtitude = y3PixelCoord
-            // };
-            return null;
+            return fromPixelYToCoordYCoef;
+
+        }
+
+        public async Task<PositionDto> ImgToWorldPostion(PositionDto imgPostion, int compartmentId)
+        {
+            ScalePoint firstPoint = await GetFirstPointAndScaleModel(compartmentId);
+
+            double x3PixelCoord = imgPostion.Latitude;
+            double y3PixelCoord = imgPostion.Longtitude;
+
+            double x1PixelCoord = firstPoint.MapPosition.Latitude;
+            double y1PixelCoord = firstPoint.MapPosition.Longtitude;
+
+            double x1WorldCoord = firstPoint.WorldPosition.Latitude;
+            double y1WorldCoord = firstPoint.WorldPosition.Longtitude;
+
+            double x3WorldCoord = x1WorldCoord + (x3PixelCoord - x1PixelCoord) * locationPointModel.FromPixelXToCoordXCoef;
+            double y3WorldCoord = y1WorldCoord + (y3PixelCoord - y1PixelCoord) * locationPointModel.FromPixelYToCoordYCoef;
+
+            System.Console.WriteLine("locationPointModel.FromPixelXToCoordXCoef: " + locationPointModel.FromPixelXToCoordXCoef);
+            System.Console.WriteLine("locationPointModel.FromPixelYToCoordYCoef: " + locationPointModel.FromPixelYToCoordYCoef);
+
+            return new PositionDto()
+            {
+                Latitude = x3WorldCoord,
+                Longtitude = y3WorldCoord
+            };
+
+        }
+
+        public async Task<PositionDto> WorldToImgPostion(PositionDto worldPostion, int compartmentId)
+        {
+            ScalePoint firstPoint = await GetFirstPointAndScaleModel(compartmentId);
+
+            double x3WorldCoord = worldPostion.Latitude;
+            double y3WorldCoord = worldPostion.Longtitude;
+
+            double x1WorldCoord = firstPoint.WorldPosition.Latitude;
+            double y1WorldCoord = firstPoint.WorldPosition.Longtitude;
+
+            double x1PixelCoord = firstPoint.MapPosition.Latitude;
+            double y1PixelCoord = firstPoint.MapPosition.Longtitude;
+
+            double x3PixelCoord = x1PixelCoord + (x3WorldCoord - x1WorldCoord) * locationPointModel.FromCoordXToPixelXCoef;
+            double y3PixelCoord = y1PixelCoord + (y3WorldCoord - y1WorldCoord) * locationPointModel.FromCoordYToPixelYCoef;
+
+            System.Console.WriteLine("locationPointModel.FromCoordXToPixelXCoef: " + locationPointModel.FromCoordXToPixelXCoef);
+            System.Console.WriteLine("locationPointModel.FromCoordYToPixelYCoef: " + locationPointModel.FromCoordYToPixelYCoef);
+
+            return new PositionDto()
+            {
+                Latitude = x3PixelCoord,
+                Longtitude = y3PixelCoord
+            };
+        }
+
+        async Task<ScalePoint> GetFirstPointAndScaleModel(int compartmentId)
+        {
+            var compartment = await GetCompartmentById(compartmentId);
+
+            var scalePoints = compartment.EvacuationPlan.ScaleModel.ScalePoints;
+
+            var firstPoint = scalePoints.Take(1).ToList()[0];
+
+            locationPointModel = mapper.Map<LocationPointModel>(compartment.EvacuationPlan.ScaleModel);
+
+            await CheckScaleModelValidityAndUpdateIfInvalid(locationPointModel, compartmentId);
+            return firstPoint;
+        }
+
+        async Task CheckScaleModelValidityAndUpdateIfInvalid(LocationPointModel locationPointModel, int compartmentId)
+        {
+            if (locationPointModel.isInvalid())
+            {
+                locationPointModel = await CalculateLocationModel(compartmentId);
+                if (locationPointModel.isInvalid())
+                {
+                    throw new Exception("Location scale model is invalid.Reset scale points");
+                }
+            }
+        }
+
+        async Task<Compartment> GetCompartmentById(int compartmentId)
+        {
+            var compartment = await dataContext.Compartment.Include(ev => ev.EvacuationPlan)
+                                                                            .ThenInclude(s => s.ScaleModel)
+                                                                            .ThenInclude(p => p.ScalePoints)
+                                                                            .ThenInclude(mPos => mPos.MapPosition)
+                                                                        .Include(ev => ev.EvacuationPlan)
+                                                                            .ThenInclude(s => s.ScaleModel)
+                                                                            .ThenInclude(p => p.ScalePoints)
+                                                                            .ThenInclude(wPos => wPos.WorldPosition)
+                                                                        .FirstOrDefaultAsync(c => c.Id == compartmentId);
+
+            return compartment;
         }
     }
 }
