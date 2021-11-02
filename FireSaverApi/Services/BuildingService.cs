@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FireSaverApi.Services
 {
-    public class BuildingService : IBuildingService
+    public class BuildingService : IBuildingService, IBuildingHelper
     {
         private readonly DatabaseContext context;
         private readonly IMapper mapper;
@@ -72,6 +72,10 @@ namespace FireSaverApi.Services
             await context.SaveChangesAsync();
         }
 
+
+
+
+
         public async Task<BuildingInfoDto> RemoveResponsibleUser(int userId)
         {
             var user = await userHelper.GetUserById(userId);
@@ -121,18 +125,19 @@ namespace FireSaverApi.Services
                     userContext.RolesList.Contains(UserRole.ADMIN);
         }
 
-        private async Task<Building> GetBuildingById(int buildingId)
+        public async Task<Building> GetBuildingById(int buildingId)
         {
             var building = await context.Buildings.Include(b => b.ResponsibleUsers)
-                                                    .Include(f => f.Floors)
-                                                    .ThenInclude(r => r.Rooms)
-                                                    .ThenInclude(u => u.InboundUsers)
-                                                    .FirstOrDefaultAsync(b => b.Id == buildingId);
+                                                   .Include(f => f.Floors)
+                                                   .ThenInclude(r => r.Rooms)
+                                                   .ThenInclude(u => u.InboundUsers)
+                                                   .FirstOrDefaultAsync(b => b.Id == buildingId);
 
             if (building == null)
                 throw new System.Exception("Building is not found by id");
 
             return building;
         }
+
     }
 }

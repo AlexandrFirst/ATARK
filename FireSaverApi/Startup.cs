@@ -92,7 +92,9 @@ namespace FireSaverApi
             services.AddScoped<IAuthUserService, UserService>();
             services.AddScoped<IUserContextService, UserContextService>();
             services.AddScoped<IUserHelper, UserService>();
+
             services.AddScoped<IBuildingService, BuildingService>();
+            services.AddScoped<IBuildingHelper, BuildingService>();
 
             services.AddScoped<ICompartmentService<FloorDto, Floor>, FloorService>();
             services.AddScoped<ICompartmentService<RoomDto, Room>, RoomService>();
@@ -106,10 +108,13 @@ namespace FireSaverApi
             services.AddScoped<IScalePointService, ScalePointService>();
             services.AddScoped<IPositionTransformHelper, ScalePointService>();
 
-
             services.AddScoped<IRoutebuilderService, RoutebuilderService>();
 
+            services.AddScoped<IIoTService, IoTService>();
+
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            
 
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));

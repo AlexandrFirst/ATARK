@@ -4,6 +4,7 @@ namespace FireSaverApi.DataContext
     {
         public int Id { get; set; }
         public Position MapPosition { get; set; }
+        public string IotIdentifier { get; set; }
         public int? MapPositionId { get; set; }
         public bool IsAuthNeeded { get; set; }
         public double LastRecordedTemperature { get; set; }
@@ -13,5 +14,6 @@ namespace FireSaverApi.DataContext
         public double LastRecordedSmokeLevel { get; set; }
         public double LastRecordedPetrolLevel { get; set; }
         public Compartment Compartment { get; set; }
+        public Building Building { get; set; }
     }
 }

@@ -8,11 +8,13 @@ namespace FireSaverApi.DataContext
         {
             ResponsibleUsers = new List<User>();
             Floors = new List<Floor>();
+            IoTs = new List<IoT>();
         }
 
         public int Id { get; set; }
         public IList<User> ResponsibleUsers { get; set; }
         public IList<Floor> Floors { get; set; }
+        public IList<IoT> IoTs { get; set; }
         public string Address { get; set; }
         public string Info { get; set; }
         public Position BuildingCenterPosition { get; set; }
