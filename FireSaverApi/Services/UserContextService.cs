@@ -22,9 +22,9 @@ namespace FireSaverApi.Services
             }
         }
 
-        public HttpUserContext GetUserContext()
+        public MyHttpContext GetUserContext()
         {
-            var userContext = (HttpUserContext)Context.Items["User"];
+            var userContext = (MyHttpContext)Context.Items["User"];
             if (userContext == null)
             {
                 throw new UserContextNotFoundException();

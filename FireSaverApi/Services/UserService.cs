@@ -10,8 +10,12 @@ using AutoMapper;
 using FireSaverApi.Contracts;
 using FireSaverApi.DataContext;
 using FireSaverApi.Dtos;
+using FireSaverApi.Dtos.IoTDtos;
+using FireSaverApi.Dtos.TestDtos;
 using FireSaverApi.Helpers;
 using FireSaverApi.Helpers.ExceptionHandler.CustomExceptions;
+using FireSaverApi.hub;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -25,13 +29,19 @@ namespace FireSaverApi.Services
         private readonly IOptions<AppSettings> appsettings;
         private readonly ILocationService locationService;
         private readonly IRoutebuilderService routebuilderService;
+        private readonly ITestService testService;
+        private readonly IHubContext<SocketHub> socketHub;
+        private readonly IGuestStorage guestStorage;
         private readonly AppSettings appSettings;
 
         public UserService(DatabaseContext context,
                             IMapper mapper,
                             IOptions<AppSettings> appsettings,
                             ILocationService locationService,
-                            IRoutebuilderService routebuilderService)
+                            IRoutebuilderService routebuilderService,
+                            ITestService testService,
+                            IHubContext<SocketHub> socketHub,
+                            IGuestStorage guestStorage)
         {
             this.appSettings = appsettings.Value;
             this.context = context;
@@ -39,12 +49,15 @@ namespace FireSaverApi.Services
             this.appsettings = appsettings;
             this.locationService = locationService;
             this.routebuilderService = routebuilderService;
+            this.testService = testService;
+            this.socketHub = socketHub;
+            this.guestStorage = guestStorage;
         }
-        public async Task<UserInfoDto> CreateNewUser(RegisterUserDto newUserInfo)
+        public async Task<UserInfoDto> CreateNewUser(RegisterUserDto newUserInfo, string Role)
         {
             User newUser = mapper.Map<User>(newUserInfo);
 
-            newUser.RolesList = UserRole.AUTHORIZED_USER;
+            newUser.RolesList = Role;
             newUser.Password = CalcHelper.ComputeSha256Hash(newUser.Password);
 
             await context.Users.AddAsync(newUser);
@@ -53,13 +66,13 @@ namespace FireSaverApi.Services
             return mapper.Map<UserInfoDto>(newUser);
         }
 
-        public async Task<HttpUserContext> GetUserContext(int userId)
+        public async Task<MyHttpContext> GetUserContext(int userId)
         {
             try
             {
                 var user = await GetUserById(userId);
                 var allUserInfo = mapper.Map<UserInfoDto>(user);
-                var contextUseInfo = mapper.Map<HttpUserContext>(allUserInfo);
+                var contextUseInfo = mapper.Map<MyHttpContext>(allUserInfo);
                 return contextUseInfo;
             }
             catch (UserNotFoundException)
@@ -88,7 +101,7 @@ namespace FireSaverApi.Services
 
         }
 
-        public async Task<UserAuthResponseDto> AuthUser(AuthUserDto userAuth)
+        public async Task<AuthResponseDto> AuthUser(AuthUserDto userAuth)
         {
             var user = await context.Users.FirstOrDefaultAsync(u => u.Mail == userAuth.Mail);
             if (user == null)
@@ -99,9 +112,9 @@ namespace FireSaverApi.Services
             if (compareInputAndUserPasswords(userAuth.Password, user.Password))
             {
 
-                var authToken = generateJwtToken(user);
+                var authToken = generateJwtTokenForAuthUsers(user);
 
-                return new UserAuthResponseDto()
+                return new AuthResponseDto()
                 {
                     Token = authToken,
                     UserId = user.Id
@@ -110,6 +123,47 @@ namespace FireSaverApi.Services
             else
             {
                 throw new WrongPasswordException();
+            }
+        }
+
+        public async Task<AuthResponseDto> AuthGuest()
+        {
+            var guestUser = new RegisterUserDto()
+            {
+                DOB = DateTime.Now,
+                Mail = "",
+                Name = Guid.NewGuid().ToString(),
+                Password = Guid.NewGuid().ToString(),
+                Patronymic = "",
+                RolesList = new List<string>(),
+                Surname = "",
+                TelephoneNumber = "",
+            };
+
+            var response = await CreateNewUser(guestUser, UserRole.GUEST);
+
+            await guestStorage.AddGuest(response.Id);
+
+            var token = generateJwtTokenForGuests(response.Id);
+            return new AuthResponseDto()
+            {
+                Token = token,
+                UserId = response.Id
+            };
+        }
+
+        public async Task LogoutGuest(int guestId)
+        {
+            var userToLogout = await context.Users.FirstOrDefaultAsync(u => u.Id == guestId);
+            if (userToLogout != null)
+            {
+                await guestStorage.RemoveGuest(guestId);
+                context.Remove(userToLogout);
+                await context.SaveChangesAsync();
+            }
+            else
+            {
+                throw new UserNotFoundException();
             }
         }
 
@@ -207,14 +261,42 @@ namespace FireSaverApi.Services
             return foundUser;
         }
 
+        public async Task<TestOutputDto> EnterCompartmentById(int userId, int compartmentId, int? iotId)
+        {
+            var compartment = await context.Compartment
+                            .Include(t => t.CompartmentTest)
+                            .ThenInclude(q => q.Questions)
+                            .FirstOrDefaultAsync(c => c.Id == compartmentId);
+
+            if (compartment.CompartmentTest != null)
+            {
+                var testToComplete = await testService.GetTestInfo(compartment.CompartmentTest.Id);
+                return mapper.Map<TestOutputDto>(testToComplete);
+            }
+            else
+            {
+                var user = await GetUserById(userId);
+                //send to iot if there is such an open signal
+                if (iotId != null)
+                {
+                    await socketHub.Clients.Group(iotId.Value.ToString()).SendAsync("OpenDoor");
+                }
+
+                user.CurrentCompartment = compartment;
+                context.Update(user);
+                await context.SaveChangesAsync();
+
+                return null;
+            }
+        }
+
         bool compareInputAndUserPasswords(string inputPassword, string userPassword)
         {
             var hashedInputPassword = CalcHelper.ComputeSha256Hash(inputPassword);
             return hashedInputPassword == userPassword;
         }
 
-
-        private string generateJwtToken(User user)
+        private string generateJwtTokenForAuthUsers(User user)
         {
             // generate token that is valid for 7 days
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -224,7 +306,29 @@ namespace FireSaverApi.Services
                 Subject = new ClaimsIdentity(new[]
                 {
                      new Claim("id", user.Id.ToString()),
+                     new Claim("type", "user"),
                      new Claim(ClaimTypes.Role, user.RolesList)
+                }),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
+
+
+        private string generateJwtTokenForGuests(int guestId)
+        {
+            // generate token that is valid for 7 days
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+                     new Claim("id", guestId.ToString()),
+                     new Claim("type", "guest"),
+                     new Claim(ClaimTypes.Role, UserRole.GUEST)
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

@@ -1,6 +1,6 @@
 namespace FireSaverApi.Dtos
 {
-    public class UserAuthResponseDto
+    public class AuthResponseDto
     {
         public int UserId { get; set; }
         public string Token { get; set; }

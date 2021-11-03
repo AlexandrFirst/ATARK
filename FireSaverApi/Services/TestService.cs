@@ -40,6 +40,16 @@ namespace FireSaverApi.Services
             return mapper.Map<TestInputDto>(testToAdd);
         }
 
+        public async Task<TestInputDto> UpdateTestToCompartment(int testId, TestInputDto newTestInfo)
+        {
+            var test = await dataContext.Tests.Include(t => t.Questions).FirstOrDefaultAsync(t => t.Id == testId);
+            test = mapper.Map<Test>(newTestInfo);
+            dataContext.Update(test);
+            await dataContext.SaveChangesAsync();
+
+            return mapper.Map<TestInputDto>(test);
+        }
+
         private async Task AddTestToCompartment(Compartment compartment, Test testToAdd)
         {
             compartment.CompartmentTest = testToAdd;
@@ -116,10 +126,12 @@ namespace FireSaverApi.Services
 
         public async Task RemoveTestFromCompartment(int compartmentId)
         {
-              var compartment = await compartmentHelper.GetCompartmentById(compartmentId);
-              compartment.CompartmentTest = null;
-              dataContext.Update(compartment);
-              await dataContext.SaveChangesAsync();
+            var compartment = await compartmentHelper.GetCompartmentById(compartmentId);
+            compartment.CompartmentTest = null;
+            dataContext.Update(compartment);
+            await dataContext.SaveChangesAsync();
         }
+
+
     }
 }

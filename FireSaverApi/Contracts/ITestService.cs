@@ -5,10 +5,11 @@ namespace FireSaverApi.Contracts
 {
     public interface ITestService
     {
-         Task<TestInputDto> AddTestToCompartment(int compartmentId, TestInputDto newTestInfo);
-         Task RemoveTestFromCompartment(int compartmentId);
-         Task<TestOutputDto> GetTestInfo(int testId);
-         Task<bool> CheckTestAnwears(AnswerListDto answears);
+        Task<TestInputDto> AddTestToCompartment(int compartmentId, TestInputDto newTestInfo);
+        Task<TestInputDto> UpdateTestToCompartment(int testId, TestInputDto newTestInfo);
+        Task RemoveTestFromCompartment(int compartmentId);
+        Task<TestOutputDto> GetTestInfo(int testId);
+        Task<bool> CheckTestAnwears(AnswerListDto answears);
 
     }
 }

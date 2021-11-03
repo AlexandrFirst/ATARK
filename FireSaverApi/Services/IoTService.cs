@@ -1,10 +1,18 @@
+using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using FireSaverApi.Contracts;
 using FireSaverApi.DataContext;
 using FireSaverApi.Dtos;
 using FireSaverApi.Dtos.IoTDtos;
+using FireSaverApi.Helpers;
+using FireSaverApi.Helpers.ExceptionHandler.CustomExceptions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 
 namespace FireSaverApi.Services
 {
@@ -13,15 +21,18 @@ namespace FireSaverApi.Services
         private readonly DatabaseContext dataContext;
         private readonly IBuildingHelper buildingHelper;
         private readonly IMapper mapper;
+        private readonly AppSettings appSettings;
         private readonly ICompartmentHelper compartmentHelper;
 
         public IoTService(DatabaseContext dataContext,
                             IBuildingHelper buildingHelper,
                             ICompartmentHelper compartmentHelper,
-                            IMapper mapper)
+                            IMapper mapper,
+                            IOptions<AppSettings> appSettings)
         {
             this.compartmentHelper = compartmentHelper;
             this.mapper = mapper;
+            this.appSettings = appSettings.Value;
             this.buildingHelper = buildingHelper;
             this.dataContext = dataContext;
         }
@@ -80,5 +91,64 @@ namespace FireSaverApi.Services
             dataContext.Update(iot);
             await dataContext.SaveChangesAsync();
         }
+
+        public async Task<AuthResponseDto> LoginIot(LoginIoTDto loginIoTDto)
+        {
+            var iot = await dataContext.IoTs.FirstOrDefaultAsync(i => i.IotIdentifier == loginIoTDto.Identifier);
+            if (iot == null)
+            {
+                throw new Exception("Can't login iot");
+            }
+
+            var token = generateJwtToken(iot);
+            return new AuthResponseDto()
+            {
+                Token = token,
+                UserId = iot.Id
+            };
+        }
+
+        private string generateJwtToken(IoT iot)
+        {
+            // generate token that is valid for 7 days
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+                     new Claim("id", iot.Id.ToString()),
+                     new Claim("type", "iot"),
+                     new Claim(ClaimTypes.Role, UserRole.AUTHORIZED_USER)
+                }),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
+
+        public async Task<MyHttpContext> GetIotContext(int iotId)
+        {
+            try
+            {
+                var iot = await dataContext.IoTs.FirstOrDefaultAsync(i => i.Id == iotId);
+                if (iot == null)
+                    throw new IotNotFoundException();
+                return new MyHttpContext()
+                {
+                    Id = iot.Id
+                };
+            }
+            catch (IotNotFoundException)
+            {
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
+
 }

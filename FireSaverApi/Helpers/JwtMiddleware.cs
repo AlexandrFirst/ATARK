@@ -23,7 +23,7 @@ namespace FireSaverApi.Helpers
             this.appSettings = appSettings.Value;
         }
 
-        public async Task Invoke(HttpContext context, IAuthUserService authService)
+        public async Task Invoke(HttpContext context, IAuthUserService authService, IIoTService ioTService)
         {
             var token = context.Request.Headers["Authorization"].FirstOrDefault();
 
@@ -32,22 +32,22 @@ namespace FireSaverApi.Helpers
                 var token_str = token.Split(" ").Last();
 
 
-                await attachUserToContext(context, authService, token_str);
+                await attachUserToContext(context, authService, ioTService, token_str);
             }
             else
             {
                 var request = context.Request;
-                if (request.Path.StartsWithSegments("/chat", StringComparison.OrdinalIgnoreCase) &&
+                if (request.Path.StartsWithSegments("/socket", StringComparison.OrdinalIgnoreCase) &&
                 request.Query.TryGetValue("access_token", out var accessToken))
                 {
-                    await attachUserToContext(context, authService, accessToken);
+                    await attachUserToContext(context, authService, ioTService, accessToken);
                 }
             }
 
             await next(context);
         }
 
-        private async Task attachUserToContext(HttpContext context, IAuthUserService authService, string token)
+        private async Task attachUserToContext(HttpContext context, IAuthUserService authService, IIoTService ioTService, string token)
         {
             try
             {
@@ -65,10 +65,18 @@ namespace FireSaverApi.Helpers
                 }, out SecurityToken validatedToken);
 
                 var jwtToken = (JwtSecurityToken)validatedToken;
-                var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
+                var requestorId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
+                var userType = jwtToken.Claims.First(x => x.Type == "type").Value;
 
                 // attach user to context on successful jwt validation
-                context.Items["User"] = await authService.GetUserContext(userId);
+                if (userType == "iot")
+                {
+                    context.Items["User"] = await ioTService.GetIotContext(requestorId);
+                }
+                else
+                {
+                    context.Items["User"] = await authService.GetUserContext(requestorId);
+                }
             }
             catch
             {

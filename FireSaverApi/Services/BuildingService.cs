@@ -120,7 +120,7 @@ namespace FireSaverApi.Services
 
         private bool CanUserUpdateBuildingInfo(Building building)
         {
-            HttpUserContext userContext = userContextService.GetUserContext();
+            MyHttpContext userContext = userContextService.GetUserContext();
             return building.ResponsibleUsers.Any(u => u.Id == userContext.Id) ||
                     userContext.RolesList.Contains(UserRole.ADMIN);
         }

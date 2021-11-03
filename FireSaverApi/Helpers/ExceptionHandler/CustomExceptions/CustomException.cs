@@ -30,4 +30,8 @@ namespace FireSaverApi.Helpers.ExceptionHandler.CustomExceptions
     {
         public DeleteBuildingException() : base("Building can't be deleted") { }
     }
+    public class IotNotFoundException : Exception
+    {
+        public IotNotFoundException() : base("IoT is not found") { }
+    }
 }

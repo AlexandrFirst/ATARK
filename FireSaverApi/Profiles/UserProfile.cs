@@ -21,7 +21,7 @@ namespace FireSaverApi.Profiles
                     .ForMember(userInfo => userInfo.RolesList,
                     memberOptions => memberOptions.MapFrom(user => string.Join(',', user.RolesList)));
         
-            CreateMap<UserInfoDto, HttpUserContext>();
+            CreateMap<UserInfoDto, MyHttpContext>();
         }
     }
 }

@@ -4,6 +4,6 @@ namespace FireSaverApi.Contracts
 {
     public interface IUserContextService
     {
-         HttpUserContext GetUserContext();
+         MyHttpContext GetUserContext();
     }
 }

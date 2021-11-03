@@ -28,7 +28,7 @@ namespace FireSaverApi.Controllers
         [HttpPost("newuser")]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterUserDto newUserInfo)
         {
-            var registeredUser = await userService.CreateNewUser(newUserInfo);
+            var registeredUser = await userService.CreateNewUser(newUserInfo, UserRole.AUTHORIZED_USER);
 
             return Ok(registeredUser);
         }
@@ -41,6 +41,29 @@ namespace FireSaverApi.Controllers
             return Ok(authResponse);
 
         }
+
+        [HttpGet("guestAuth")]
+        public async Task<IActionResult> AuthGuestUser()
+        {
+            var authResponse = await authService.AuthGuest();
+
+            return Ok(authResponse);
+
+        }
+
+        [Authorize(Role = UserRole.GUEST)]
+        [HttpGet("guestAuth/{userId}")]
+        public async Task<IActionResult> LogoutGuestUser(int userId)
+        {   
+            await authService.LogoutGuest(userId);
+
+            return Ok(new ServerResponse()
+            {
+                Message = "Guest is logged out"
+            });
+
+        }
+
 
         [Authorize(Role = UserRole.ADMIN)]
         [HttpGet("{userId}")]
@@ -68,7 +91,7 @@ namespace FireSaverApi.Controllers
             var currentUserId = userContextService.GetUserContext().Id;
             await userService.ChangeOldPassword(currentUserId, newUserPassword);
 
-            return Ok(new ServerResponse(){ Message = "Password is updated" });
+            return Ok(new ServerResponse() { Message = "Password is updated" });
         }
 
         [Authorize]
@@ -78,10 +101,23 @@ namespace FireSaverApi.Controllers
             var currentUserId = userContextService.GetUserContext().Id;
             var response = await userService.BuildEvacuationRootForCompartment(fromCompartmentId);
 
-            return Ok(new ServerResponse(){ Message = "Password is updated" });
+            return Ok(new ServerResponse() { Message = "Password is updated" });
         }
 
-
-
+        [Authorize]
+        [HttpPost("enter")]
+        public async Task<IActionResult> EnterCompartment([FromBody] UserEnterCompartmentDto enterCompartmentDto)
+        {
+            int userId = userContextService.GetUserContext().Id;
+            var testOutput = await userService.EnterCompartmentById(userId, enterCompartmentDto.compartmentId, enterCompartmentDto.iotId);
+            if (testOutput == null)
+            {
+                return Ok();
+            }
+            else
+            {
+                return Ok(testOutput);
+            }
+        }
     }
 }

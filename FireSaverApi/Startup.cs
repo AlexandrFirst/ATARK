@@ -9,6 +9,7 @@ using FireSaverApi.DataContext;
 using FireSaverApi.Dtos.CompartmentDtos;
 using FireSaverApi.Helpers;
 using FireSaverApi.Helpers.ExceptionHandler;
+using FireSaverApi.hub;
 using FireSaverApi.Profiles;
 using FireSaverApi.Services;
 using Microsoft.AspNetCore.Builder;
@@ -86,6 +87,11 @@ namespace FireSaverApi
                 o.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             });
             services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(Configuration.GetConnectionString("FireSaverDbConnectionString")));
+            services.AddSignalR(options =>
+            {
+                options.EnableDetailedErrors = true;
+            });
+
 
             services.AddScoped<ILocationService, LocationService>();
             services.AddScoped<IUserService, UserService>();
@@ -116,7 +122,7 @@ namespace FireSaverApi
 
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.TryAddSingleton<ITimerService, TimerService>();
-
+            services.TryAddSingleton<IGuestStorage, GuestStorage>();
 
 
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
@@ -130,13 +136,12 @@ namespace FireSaverApi
                 mc.AddProfile(new CompartmentProfile());
                 mc.AddProfile(new EvacuationPlanProfile());
                 mc.AddProfile(new ScaleModelProfile());
+                mc.AddProfile(new ScaleModelProfile());
             });
 
             IMapper mapper = mappingConfig.CreateMapper();
 
             services.AddSingleton(mapper);
-
-
 
             services.AddSwaggerGen(c =>
             {
@@ -164,6 +169,7 @@ namespace FireSaverApi
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<SocketHub>("/socket");
             });
         }
     }
