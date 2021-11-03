@@ -112,9 +112,12 @@ namespace FireSaverApi
 
             services.AddScoped<IIoTService, IoTService>();
 
-            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped<ITestService, TestService>();
 
-            
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.TryAddSingleton<ITimerService, TimerService>();
+
+
 
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));

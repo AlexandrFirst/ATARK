@@ -14,6 +14,5 @@ namespace FireSaverApi.DataContext
         public double LastRecordedSmokeLevel { get; set; }
         public double LastRecordedPetrolLevel { get; set; }
         public Compartment Compartment { get; set; }
-        public Building Building { get; set; }
     }
 }

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FireSaverApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20211102221608_Iot building ref added")]
-    partial class Iotbuildingrefadded
+    [Migration("20211103144237_test answers to choose added")]
+    partial class testanswerstochooseadded
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -125,9 +125,6 @@ namespace FireSaverApi.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("BuildingId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("CompartmentId")
                         .HasColumnType("int");
 
@@ -159,8 +156,6 @@ namespace FireSaverApi.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BuildingId");
 
                     b.HasIndex("CompartmentId");
 
@@ -226,6 +221,9 @@ namespace FireSaverApi.Migrations
 
                     b.Property<int>("Content")
                         .HasColumnType("int");
+
+                    b.Property<string>("PossibleAnswears")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("TestId")
                         .HasColumnType("int");
@@ -438,10 +436,6 @@ namespace FireSaverApi.Migrations
 
             modelBuilder.Entity("FireSaverApi.DataContext.IoT", b =>
                 {
-                    b.HasOne("FireSaverApi.DataContext.Building", "Building")
-                        .WithMany("IoTs")
-                        .HasForeignKey("BuildingId");
-
                     b.HasOne("FireSaverApi.DataContext.Compartment", "Compartment")
                         .WithMany("Iots")
                         .HasForeignKey("CompartmentId")
@@ -451,8 +445,6 @@ namespace FireSaverApi.Migrations
                         .WithOne("IotPostion")
                         .HasForeignKey("FireSaverApi.DataContext.IoT", "MapPositionId")
                         .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("Building");
 
                     b.Navigation("Compartment");
 
@@ -553,8 +545,6 @@ namespace FireSaverApi.Migrations
             modelBuilder.Entity("FireSaverApi.DataContext.Building", b =>
                 {
                     b.Navigation("Floors");
-
-                    b.Navigation("IoTs");
 
                     b.Navigation("ResponsibleUsers");
                 });

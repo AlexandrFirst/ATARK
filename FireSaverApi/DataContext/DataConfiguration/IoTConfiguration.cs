@@ -11,10 +11,6 @@ namespace FireSaverApi.DataContext.DataConfiguration
                 .WithOne(pos => pos.IotPostion)
                 .HasForeignKey<IoT>(iot => iot.MapPositionId)
                 .OnDelete(DeleteBehavior.Cascade);
-            
-            builder.HasOne(iot => iot.Building)
-                    .WithMany(building => building.IoTs)
-                    .OnDelete(DeleteBehavior.ClientSetNull);
         }
     }
 }

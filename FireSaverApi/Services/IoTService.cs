@@ -54,25 +54,6 @@ namespace FireSaverApi.Services
             return iot;
         }
 
-        public async Task RemoveIoTFromBuilding(int buildingId, string IotIdentifier)
-        {
-            var building = await buildingHelper.GetBuildingById(buildingId);
-            var iot = await GetIoTById(IotIdentifier);
-            building.IoTs.Remove(iot);
-            dataContext.Update(building);
-            await dataContext.SaveChangesAsync();
-        }
-        public async Task AddIoTToBuilding(int buildingId, string IotIdentifier)
-        {
-            var building = await buildingHelper.GetBuildingById(buildingId);
-            var iot = await GetIoTById(IotIdentifier);
-            building.IoTs.Add(iot);
-            dataContext.Update(building);
-            await dataContext.SaveChangesAsync();
-        }
-
-
-
         public async Task RemoveIoTFromCompartment(int compartmentId, string IotIdentifier)
         {
             var iot = await GetIoTById(IotIdentifier);
