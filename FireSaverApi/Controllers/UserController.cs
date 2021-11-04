@@ -54,7 +54,7 @@ namespace FireSaverApi.Controllers
         [Authorize(Role = UserRole.GUEST)]
         [HttpGet("guestAuth/{userId}")]
         public async Task<IActionResult> LogoutGuestUser(int userId)
-        {   
+        {
             await authService.LogoutGuest(userId);
 
             return Ok(new ServerResponse()
@@ -109,7 +109,9 @@ namespace FireSaverApi.Controllers
         public async Task<IActionResult> EnterCompartment([FromBody] UserEnterCompartmentDto enterCompartmentDto)
         {
             int userId = userContextService.GetUserContext().Id;
-            var testOutput = await userService.EnterCompartmentById(userId, enterCompartmentDto.compartmentId, enterCompartmentDto.iotId);
+            var testOutput = await userService.EnterCompartmentById(userId,
+                                                                    enterCompartmentDto.compartmentId,
+                                                                    enterCompartmentDto.iotId);
             if (testOutput == null)
             {
                 return Ok();
@@ -118,6 +120,15 @@ namespace FireSaverApi.Controllers
             {
                 return Ok(testOutput);
             }
+        }
+
+        [Authorize]
+        [HttpGet("alarm")]
+        public async Task<IActionResult> SetAlarm()
+        {
+            var userId = userContextService.GetUserContext().Id;
+            await userService.SetAlaramForBuilding(userId);
+            return Ok(new ServerResponse() { Message = "Alarm is set" });
         }
     }
 }

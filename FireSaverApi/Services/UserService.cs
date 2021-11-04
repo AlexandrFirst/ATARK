@@ -30,7 +30,7 @@ namespace FireSaverApi.Services
         private readonly ILocationService locationService;
         private readonly IRoutebuilderService routebuilderService;
         private readonly ITestService testService;
-        private readonly IHubContext<SocketHub> socketHub;
+        private readonly ISocketService socketService;
         private readonly IGuestStorage guestStorage;
         private readonly AppSettings appSettings;
 
@@ -40,7 +40,7 @@ namespace FireSaverApi.Services
                             ILocationService locationService,
                             IRoutebuilderService routebuilderService,
                             ITestService testService,
-                            IHubContext<SocketHub> socketHub,
+                            ISocketService socketService,
                             IGuestStorage guestStorage)
         {
             this.appSettings = appsettings.Value;
@@ -50,7 +50,7 @@ namespace FireSaverApi.Services
             this.locationService = locationService;
             this.routebuilderService = routebuilderService;
             this.testService = testService;
-            this.socketHub = socketHub;
+            this.socketService = socketService;
             this.guestStorage = guestStorage;
         }
         public async Task<UserInfoDto> CreateNewUser(RegisterUserDto newUserInfo, string Role)
@@ -112,7 +112,8 @@ namespace FireSaverApi.Services
             if (compareInputAndUserPasswords(userAuth.Password, user.Password))
             {
 
-                var authToken = generateJwtTokenForAuthUsers(user);
+                // var authToken = generateJwtTokenForAuthUsers(user);
+                var authToken = TokenGenerator.generateJwtToken(user.Id, TokenGenerator.UserJWTType, user.RolesList, appSettings.Secret);
 
                 return new AuthResponseDto()
                 {
@@ -144,7 +145,7 @@ namespace FireSaverApi.Services
 
             await guestStorage.AddGuest(response.Id);
 
-            var token = generateJwtTokenForGuests(response.Id);
+            var token = TokenGenerator.generateJwtToken(response.Id, TokenGenerator.UserJWTType, UserRole.GUEST, appSettings.Secret);
             return new AuthResponseDto()
             {
                 Token = token,
@@ -279,7 +280,7 @@ namespace FireSaverApi.Services
                 //send to iot if there is such an open signal
                 if (iotId != null)
                 {
-                    await socketHub.Clients.Group(iotId.Value.ToString()).SendAsync("OpenDoor");
+                    await socketService.OpenDoorWithIot(iotId.Value);
                 }
 
                 user.CurrentCompartment = compartment;
@@ -290,51 +291,23 @@ namespace FireSaverApi.Services
             }
         }
 
+        public async Task SetAlaramForBuilding(int userId)
+        {
+            var user = await GetUserById(userId);
+            if (user.ResponsibleForBuilding != null)
+            {
+                await socketService.SetAlarmForBuilding(user.ResponsibleForBuilding.Id);
+            }
+            else
+            {
+                throw new Exception("Illegal action");
+            }
+        }
+
         bool compareInputAndUserPasswords(string inputPassword, string userPassword)
         {
             var hashedInputPassword = CalcHelper.ComputeSha256Hash(inputPassword);
             return hashedInputPassword == userPassword;
-        }
-
-        private string generateJwtTokenForAuthUsers(User user)
-        {
-            // generate token that is valid for 7 days
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[]
-                {
-                     new Claim("id", user.Id.ToString()),
-                     new Claim("type", "user"),
-                     new Claim(ClaimTypes.Role, user.RolesList)
-                }),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
-        }
-
-
-        private string generateJwtTokenForGuests(int guestId)
-        {
-            // generate token that is valid for 7 days
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[]
-                {
-                     new Claim("id", guestId.ToString()),
-                     new Claim("type", "guest"),
-                     new Claim(ClaimTypes.Role, UserRole.GUEST)
-                }),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
         }
 
 

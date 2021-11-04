@@ -14,6 +14,6 @@ namespace FireSaverApi.Contracts
         Task ChangeOldPassword(int userId, NewUserPasswordDto newUserPassword);
         Task<List<RoutePoint>> BuildEvacuationRootForCompartment(int userId);
         Task<TestOutputDto> EnterCompartmentById(int userId, int compartmentId, int? iotId);
-       
+        Task SetAlaramForBuilding(int userId);
     }
 }

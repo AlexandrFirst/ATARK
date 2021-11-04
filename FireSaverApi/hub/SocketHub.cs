@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using FireSaverApi.Contracts;
+using FireSaverApi.Dtos.IoTDtos;
 using FireSaverApi.Helpers;
 using Microsoft.AspNetCore.SignalR;
 
@@ -10,9 +11,21 @@ namespace FireSaverApi.hub
     public class SocketHub : Hub
     {
         private readonly IUserContextService userContextService;
+        private readonly IIoTService iotService;
+        private readonly IUserHelper userHelper;
+        private readonly IBuildingHelper buildingHelper;
+        private readonly ISocketService socketService;
 
-        public SocketHub(IUserContextService userContextService)
+        public SocketHub(IUserContextService userContextService,
+                        IIoTService iotService,
+                        IUserHelper userHelper,
+                        IBuildingHelper buildingHelper,
+                        ISocketService socketService)
         {
+            this.userHelper = userHelper;
+            this.buildingHelper = buildingHelper;
+            this.socketService = socketService;
+            this.iotService = iotService;
             this.userContextService = userContextService;
         }
 
@@ -29,9 +42,16 @@ namespace FireSaverApi.hub
             await base.OnDisconnectedAsync(exception);
         }
 
-        // public async Task SendMessageTo(int Id, string message)
-        // {
-        //     await Clients.Group(Id.ToString()).SendAsync("RecieveMessage", message);
-        // }
+        public async Task RecieveMessage(int fromUserId, string message)
+        {
+            var compartmentId = (await userHelper.GetUserById(fromUserId)).Id;
+            var buildingId = await iotService.FindBuildingWithCompartmentId(compartmentId);
+            await socketService.SendMessageToResponsibleBuildingUsers(buildingId, message);
+        }
+
+        public async Task RecieveIotInfo(string id, IoTDataInfo dataInfo)
+        {
+            await iotService.AnalizeIoTDataInfo(id, dataInfo);
+        }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +22,7 @@ namespace FireSaverApi.Services
         private readonly DatabaseContext dataContext;
         private readonly IBuildingHelper buildingHelper;
         private readonly IMapper mapper;
+        private readonly ISocketService sockerService;
         private readonly AppSettings appSettings;
         private readonly ICompartmentHelper compartmentHelper;
 
@@ -28,10 +30,12 @@ namespace FireSaverApi.Services
                             IBuildingHelper buildingHelper,
                             ICompartmentHelper compartmentHelper,
                             IMapper mapper,
-                            IOptions<AppSettings> appSettings)
+                            IOptions<AppSettings> appSettings,
+                            ISocketService sockerService)
         {
             this.compartmentHelper = compartmentHelper;
             this.mapper = mapper;
+            this.sockerService = sockerService;
             this.appSettings = appSettings.Value;
             this.buildingHelper = buildingHelper;
             this.dataContext = dataContext;
@@ -57,7 +61,7 @@ namespace FireSaverApi.Services
 
         public async Task<IoT> GetIoTById(string IotIdentifier)
         {
-            var iot = await dataContext.IoTs.Include(p => p.MapPosition).FirstOrDefaultAsync(i => i.IotIdentifier == IotIdentifier);
+            var iot = await dataContext.IoTs.Include(p => p.MapPosition).Include(c => c.Compartment).FirstOrDefaultAsync(i => i.IotIdentifier == IotIdentifier);
             if (iot == null)
             {
                 throw new System.Exception("iot is not found");
@@ -83,13 +87,14 @@ namespace FireSaverApi.Services
             await dataContext.SaveChangesAsync();
         }
 
-        public async Task UpdateIoTPostion(string IotIdentifier, PositionDto newPos)
+        public async Task<IoT> UpdateIoTPostion(string IotIdentifier, PositionDto newPos)
         {
             var iot = await GetIoTById(IotIdentifier);
             var pos = mapper.Map<Position>(newPos);
             iot.MapPosition = pos;
             dataContext.Update(iot);
             await dataContext.SaveChangesAsync();
+            return iot;
         }
 
         public async Task<AuthResponseDto> LoginIot(LoginIoTDto loginIoTDto)
@@ -100,32 +105,12 @@ namespace FireSaverApi.Services
                 throw new Exception("Can't login iot");
             }
 
-            var token = generateJwtToken(iot);
+            var token = TokenGenerator.generateJwtToken(iot.Id, TokenGenerator.IoTJWTType, UserRole.AUTHORIZED_USER, appSettings.Secret);
             return new AuthResponseDto()
             {
                 Token = token,
                 UserId = iot.Id
             };
-        }
-
-        private string generateJwtToken(IoT iot)
-        {
-            // generate token that is valid for 7 days
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[]
-                {
-                     new Claim("id", iot.Id.ToString()),
-                     new Claim("type", "iot"),
-                     new Claim(ClaimTypes.Role, UserRole.AUTHORIZED_USER)
-                }),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
         }
 
         public async Task<MyHttpContext> GetIotContext(int iotId)
@@ -149,6 +134,41 @@ namespace FireSaverApi.Services
                 throw ex;
             }
         }
+
+        public async Task AnalizeIoTDataInfo(string iotId, IoTDataInfo dataInfo)
+        {
+            var iot = await GetIoTById(iotId);
+
+            iot = mapper.Map<IoT>(dataInfo);
+            dataContext.Update(iot);
+
+            if (dataInfo.LastRecordedAmmoniaLevel > 10)  //FIXME: check values when to add real iot
+            {
+                var compartmentId = iot.Compartment.Id;
+                var buildingId = await FindBuildingWithCompartmentId(compartmentId);
+                await sockerService.SetAlarmForBuilding(buildingId);
+            }
+
+            await dataContext.SaveChangesAsync();
+        }
+
+        public async Task<int> FindBuildingWithCompartmentId(int compartmentid)
+        {
+            var building = await dataContext.Buildings.Include(b => b.Floors).FirstOrDefaultAsync(b => b.Floors.Any(f => f.Id == compartmentid));
+            if (building != null)
+            {
+                return building.Id;
+            }
+
+            building = await dataContext.Buildings.Include(b => b.Floors).ThenInclude(f => f.Rooms).FirstOrDefaultAsync(b => b.Floors.Any(f => f.Rooms.Any(r => r.Id == compartmentid)));
+            if (building != null)
+            {
+                return building.Id;
+            }
+
+            throw new Exception("Error while building seraching");
+        }
+
     }
 
 }

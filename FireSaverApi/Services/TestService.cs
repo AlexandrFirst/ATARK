@@ -104,7 +104,6 @@ namespace FireSaverApi.Services
 
                 return false;
             }
-
             return true;
         }
 

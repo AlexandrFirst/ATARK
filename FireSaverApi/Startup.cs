@@ -120,6 +120,8 @@ namespace FireSaverApi
 
             services.AddScoped<ITestService, TestService>();
 
+            services.AddScoped<ISocketService, SocketService>();
+
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.TryAddSingleton<ITimerService, TimerService>();
             services.TryAddSingleton<IGuestStorage, GuestStorage>();
@@ -136,7 +138,9 @@ namespace FireSaverApi
                 mc.AddProfile(new CompartmentProfile());
                 mc.AddProfile(new EvacuationPlanProfile());
                 mc.AddProfile(new ScaleModelProfile());
-                mc.AddProfile(new ScaleModelProfile());
+                mc.AddProfile(new IoTProfile());
+                mc.AddProfile(new TestProfile());
+
             });
 
             IMapper mapper = mappingConfig.CreateMapper();

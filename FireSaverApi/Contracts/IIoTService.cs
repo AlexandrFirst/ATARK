@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using FireSaverApi.DataContext;
 using FireSaverApi.Dtos;
 using FireSaverApi.Dtos.IoTDtos;
 using FireSaverApi.Helpers;
@@ -13,7 +14,11 @@ namespace FireSaverApi.Contracts
         Task AddIoTToCompartment(int compartmentId, string IotIdentifier);
         Task RemoveIoTFromCompartment(int compartmentId, string IotIdentifier);
         
-        Task UpdateIoTPostion(string IotIdentifier, PositionDto newPos);
+        Task<IoT> UpdateIoTPostion(string IotIdentifier, PositionDto newPos);
         Task<MyHttpContext> GetIotContext(int iotId);
+        Task<AuthResponseDto> LoginIot(LoginIoTDto loginIoTDto);
+
+        Task AnalizeIoTDataInfo(string iotId, IoTDataInfo dataInfo);
+        Task<int> FindBuildingWithCompartmentId(int compartmentid);
     }
 }
