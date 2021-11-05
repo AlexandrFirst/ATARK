@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -43,7 +44,10 @@ namespace FireSaverApi.Services
         public async Task<TestInputDto> UpdateTestToCompartment(int testId, TestInputDto newTestInfo)
         {
             var test = await dataContext.Tests.Include(t => t.Questions).FirstOrDefaultAsync(t => t.Id == testId);
-            test = mapper.Map<Test>(newTestInfo);
+            dataContext.RemoveRange(test.Questions);
+            await dataContext.SaveChangesAsync();
+
+            mapper.Map(newTestInfo, test);
             dataContext.Update(test);
             await dataContext.SaveChangesAsync();
 
@@ -90,20 +94,27 @@ namespace FireSaverApi.Services
                     throw new System.Exception("Take test again please");
                 }
 
-                if (!trueAnswer.AnswearsList.Equals(answears.Answears[i].Answear))
+                var realAnswers = trueAnswer.AnswearsList.ToLower().Split(',');
+                var inputAnswers = answears.Answears[i].Answear.ToLower().Split(',');
+                Array.Sort(realAnswers);
+                Array.Sort(inputAnswers);
+
+                if (!realAnswers.SequenceEqual(inputAnswers))
                 {
                     wrongCount++;
                 }
             }
 
             double passThreshold = 80;
-            double currentThreshold = (double)(answears.Answears.Count - wrongCount) / (double)answears.Answears.Count;
+            double currentThreshold = ((double)(answears.Answears.Count - wrongCount) / (double)answears.Answears.Count) * 100d;
             if (currentThreshold < passThreshold)
             {
                 timerService.IncreaseFailedUserTestFaledCount(userId, answears.TestId, test.TryCount);
 
                 return false;
             }
+
+            timerService.ClearUSerFailedTest(userId, answears.TestId);
             return true;
         }
 
@@ -126,11 +137,9 @@ namespace FireSaverApi.Services
         public async Task RemoveTestFromCompartment(int compartmentId)
         {
             var compartment = await compartmentHelper.GetCompartmentById(compartmentId);
-            compartment.CompartmentTest = null;
-            dataContext.Update(compartment);
+            dataContext.RemoveRange(compartment.CompartmentTest.Questions);
+            dataContext.Remove(compartment.CompartmentTest);
             await dataContext.SaveChangesAsync();
         }
-
-
     }
 }

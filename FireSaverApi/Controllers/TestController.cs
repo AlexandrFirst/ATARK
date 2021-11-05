@@ -1,11 +1,13 @@
 using System.Threading.Tasks;
 using FireSaverApi.Contracts;
 using FireSaverApi.Dtos.TestDtos;
+using FireSaverApi.Helpers;
 using FireSaverApi.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FireSaverApi.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class TestController : ControllerBase
@@ -17,11 +19,18 @@ namespace FireSaverApi.Controllers
             this.testService = testService;
         }
 
-        [HttpPost("compartmentTest/{compartmentId}")]
+        [HttpPost("addCompartmentTest/{compartmentId}")]
         public async Task<IActionResult> AddTestToCompartment(int compartmentId, [FromBody] TestInputDto newTest)
         {
             var response = await testService.AddTestToCompartment(compartmentId, newTest);
             return Ok(response);
+        }
+
+        [HttpDelete("removeCompartmentTest/{compartmentId}")]
+        public async Task<IActionResult> RemoveTestFromCompartment(int compartmentId)
+        {
+            await testService.RemoveTestFromCompartment(compartmentId);
+            return Ok(new ServerResponse() { Message = "Test is removed" });
         }
 
         [HttpPut("updateCompartmentTest/{testId}")]

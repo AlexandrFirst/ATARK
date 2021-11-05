@@ -6,13 +6,13 @@ namespace FireSaverApi.Helpers.SceduledTaskManager
 {
     public class Scheduler
     {
-        private readonly ConcurrentDictionary<Action, ScheduledTask> _scheduledTasks = new ConcurrentDictionary<Action, ScheduledTask>();
+        private readonly ConcurrentDictionary<Action, ScheduledTask> scheduledTasks = new ConcurrentDictionary<Action, ScheduledTask>();
 
         public void Execute(Action action, int timeoutMs)
         {
             var task = new ScheduledTask(action, timeoutMs);
             task.TaskComplete += RemoveTask;
-            _scheduledTasks.TryAdd(action, task);
+            scheduledTasks.TryAdd(action, task);
             task.Timer.Start();
         }
 
@@ -20,8 +20,9 @@ namespace FireSaverApi.Helpers.SceduledTaskManager
         {
             try
             {
-                var retVal = _scheduledTasks[action];
-                return retVal;
+                if(scheduledTasks.ContainsKey(action))
+                    return scheduledTasks[action];
+                return null;
             }
             catch (Exception e)
             {
@@ -34,7 +35,7 @@ namespace FireSaverApi.Helpers.SceduledTaskManager
             var task = (ScheduledTask)sender;
             task.TaskComplete -= RemoveTask;
             ScheduledTask deleted;
-            _scheduledTasks.TryRemove(task.Action, out deleted);
+            scheduledTasks.TryRemove(task.Action, out deleted);
         }
     }
 }

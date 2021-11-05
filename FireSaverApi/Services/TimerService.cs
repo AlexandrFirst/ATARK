@@ -56,7 +56,7 @@ namespace FireSaverApi.Services
             if (userFailedTestList.ContainsKey(userTestKey))
                 throw new Exception("Use is already blocked");
 
-            if (userFailedTestCount.ContainsKey(userTestKey))
+            if (!userFailedTestCount.ContainsKey(userTestKey))
             {
                 userFailedTestCount.Add(userTestKey, 1);
             }
@@ -77,23 +77,44 @@ namespace FireSaverApi.Services
         {
             Action releasingAction = () =>
             {
-                userFailedTestList.Remove(userTestKey);
-                userFailedTestCount.Remove(userTestKey);
+                DeleteFailures(userTestKey);
             };
 
             int fiveMinutesInMilliseconds = 300000;
 
             blockUserScheduler.Execute(releasingAction, fiveMinutesInMilliseconds);
+
+            if (!userFailedTestList.ContainsKey(userTestKey))
+            {
+                userFailedTestList.Add(userTestKey, releasingAction);
+            }
+        }
+
+        public void ClearUSerFailedTest(int userId, int testId)
+        {
+            UserFailedTestKey userTestKey = new UserFailedTestKey()
+            {
+                testId = testId,
+                userId = userId
+            };
+
+            DeleteFailures(userTestKey);
+        }
+
+        private void DeleteFailures(UserFailedTestKey userTestKey)
+        {
+            userFailedTestList.Remove(userTestKey);
+            userFailedTestCount.Remove(userTestKey);
         }
 
         public List<int> GetFailedTestUsers()
         {
-            return userFailedTestCount.Keys.Select(k => k.userId).ToList();
+            return userFailedTestList.Keys.Select(k => k.userId).ToList();
         }
 
         public bool IsUserForTestBanned(int userId, int testId)
         {
-            return userFailedTestCount.Keys.Where(k => k.testId == testId).Select(k => k.userId).ToList().Contains(userId);
+            return userFailedTestList.Keys.Where(k => k.testId == testId).Select(k => k.userId).ToList().Contains(userId);
         }
     }
 }
