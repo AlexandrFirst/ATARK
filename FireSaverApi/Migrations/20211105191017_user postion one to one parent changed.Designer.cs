@@ -4,14 +4,16 @@ using FireSaverApi.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FireSaverApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20211105191017_user postion one to one parent changed")]
+    partial class userpostiononetooneparentchanged
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -464,8 +466,7 @@ namespace FireSaverApi.Migrations
 
                     b.HasOne("FireSaverApi.DataContext.User", "User")
                         .WithOne("LastSeenBuildingPosition")
-                        .HasForeignKey("FireSaverApi.DataContext.Position", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("FireSaverApi.DataContext.Position", "UserId");
 
                     b.Navigation("Building");
 
