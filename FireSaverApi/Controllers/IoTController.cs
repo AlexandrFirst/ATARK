@@ -1,7 +1,9 @@
 using System.Threading.Tasks;
 using FireSaverApi.Contracts;
+using FireSaverApi.DataContext;
 using FireSaverApi.Dtos;
 using FireSaverApi.Dtos.IoTDtos;
+using FireSaverApi.Helpers;
 using FireSaverApi.Models;
 using FireSaverApi.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +12,7 @@ namespace FireSaverApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+
     public class IoTController : ControllerBase
     {
         private readonly IIoTService iotService;
@@ -20,6 +23,7 @@ namespace FireSaverApi.Controllers
         }
 
         [HttpPost("newIot")]
+        [Authorize(Roles = new string[] { UserRole.ADMIN })]
         public async Task<IActionResult> AddNewIoT([FromBody] NewIoTDto newIoT)
         {
             await iotService.AddIoTToDB(newIoT);
@@ -28,6 +32,7 @@ namespace FireSaverApi.Controllers
 
 
         [HttpPost("newIotToCompartment")]
+        [Authorize(Roles = new string[] { UserRole.ADMIN, UserRole.AUTHORIZED_USER })]
         public async Task<IActionResult> AddNewIoTToCompartment([FromBody] NewIoTCompartmentDto newIoT)
         {
             await iotService.AddIoTToCompartment(newIoT.CompartmentId, newIoT.IoTIdentifier);
@@ -42,6 +47,7 @@ namespace FireSaverApi.Controllers
         }
 
         [HttpDelete("removeIoTFromCompartment/{iotId}/{compartmentId}")]
+        [Authorize(Roles = new string[] { UserRole.ADMIN, UserRole.AUTHORIZED_USER })]
         public async Task<IActionResult> RemoveIoTFromCompartment(string iotId, int compartmentId)
         {
             await iotService.RemoveIoTFromCompartment(compartmentId, iotId);
@@ -49,6 +55,7 @@ namespace FireSaverApi.Controllers
         }
 
         [HttpPut("updateIotPos/{iotId}")]
+        [Authorize(Roles = new string[] { UserRole.ADMIN, UserRole.AUTHORIZED_USER })]
         public async Task<IActionResult> UpdateIoTPostion(string iotId, [FromBody] PositionDto newPos)
         {
             var response = await iotService.UpdateIoTPostion(iotId, newPos);

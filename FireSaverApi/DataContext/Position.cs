@@ -7,7 +7,7 @@ namespace FireSaverApi.DataContext
         public double Latitude { get; set; }
 
         public IoT IotPostion { get; set; }
-
+        public int? IotId { get; set; }
 
         public Point PointPostion { get; set; }
 

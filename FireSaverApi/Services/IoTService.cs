@@ -73,6 +73,10 @@ namespace FireSaverApi.Services
         {
             var iot = await GetIoTById(IotIdentifier);
             var compartment = await compartmentHelper.GetCompartmentById(compartmentId);
+            
+            if(!compartment.Iots.Any(i => i.IotIdentifier == IotIdentifier))
+                throw new Exception("iot doesn't belong to compartment");
+                
             compartment.Iots.Remove(iot);
             dataContext.Update(compartment);
             await dataContext.SaveChangesAsync();

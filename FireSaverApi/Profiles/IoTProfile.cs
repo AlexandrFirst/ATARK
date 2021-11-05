@@ -9,6 +9,7 @@ namespace FireSaverApi.Profiles
         public IoTProfile()
         {
             CreateMap<IoTDataInfo, IoT>();
+            CreateMap<NewIoTDto, IoT>();
         }
     }
 }

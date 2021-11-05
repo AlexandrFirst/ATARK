@@ -24,7 +24,7 @@ namespace FireSaverApi.Services
 
         protected override async Task<Room> GetCompartmentById(int CompartmentId)
         {
-            var room = await databaseContext.Rooms.Include(u => u.InboundUsers).FirstOrDefaultAsync(r => r.Id == CompartmentId);
+            var room = await databaseContext.Rooms.Include(u => u.InboundUsers).Include(i => i.Iots).FirstOrDefaultAsync(r => r.Id == CompartmentId);
             if (room == null)
             {
                 throw new System.Exception("Room is not found");

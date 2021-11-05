@@ -27,7 +27,7 @@ namespace FireSaverApi.Services
 
         protected override async Task<Floor> GetCompartmentById(int CompartmentId)
         {
-            var compartment = await databaseContext.Floors.Include(u => u.InboundUsers).FirstOrDefaultAsync(b => b.Id == CompartmentId);
+            var compartment = await databaseContext.Floors.Include(u => u.InboundUsers).Include(i => i.Iots).FirstOrDefaultAsync(b => b.Id == CompartmentId);
             if (compartment == null)
             {
                 throw new System.Exception("floor is not found");
