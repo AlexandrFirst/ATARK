@@ -124,7 +124,6 @@ namespace FireSaverApi
 
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.TryAddSingleton<ITimerService, TimerService>();
-            services.TryAddSingleton<IGuestStorage, GuestStorage>();
 
 
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));

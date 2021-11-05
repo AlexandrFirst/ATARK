@@ -15,5 +15,6 @@ namespace FireSaverApi.Contracts
         Task<List<RoutePoint>> BuildEvacuationRootForCompartment(int userId);
         Task<TestOutputDto> EnterCompartmentById(int userId, int compartmentId, int? iotId);
         Task SetAlaramForBuilding(int userId);
+        Task<IList<User>> GetAllGuests();
     }
 }

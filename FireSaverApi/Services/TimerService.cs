@@ -81,9 +81,9 @@ namespace FireSaverApi.Services
                 userFailedTestCount.Remove(userTestKey);
             };
 
-            int fiveMinInMilliseconds = 300000;
+            int fiveMinutesInMilliseconds = 300000;
 
-            blockUserScheduler.Execute(releasingAction, fiveMinInMilliseconds);
+            blockUserScheduler.Execute(releasingAction, fiveMinutesInMilliseconds);
         }
 
         public List<int> GetFailedTestUsers()

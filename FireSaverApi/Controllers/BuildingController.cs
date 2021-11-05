@@ -29,7 +29,7 @@ namespace FireSaverApi.Controllers
         }
 
         [HttpDelete("{buildingId}")]
-        [Authorize(Role = UserRole.ADMIN)]
+        [Authorize(Roles = new string[] { UserRole.ADMIN })]
         public async Task<IActionResult> RemoveBuilding(int buildingId)
         {
             await buildingService.DeleteBuilding(buildingId);

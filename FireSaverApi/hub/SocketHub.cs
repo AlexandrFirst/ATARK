@@ -1,9 +1,11 @@
 using System;
 using System.Threading.Tasks;
 using FireSaverApi.Contracts;
+using FireSaverApi.DataContext;
 using FireSaverApi.Dtos.IoTDtos;
 using FireSaverApi.Helpers;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 
 namespace FireSaverApi.hub
 {
@@ -14,17 +16,17 @@ namespace FireSaverApi.hub
         private readonly IIoTService iotService;
         private readonly IUserHelper userHelper;
         private readonly IBuildingHelper buildingHelper;
-        private readonly ISocketService socketService;
+        private readonly DatabaseContext databaseContext;
 
         public SocketHub(IUserContextService userContextService,
                         IIoTService iotService,
                         IUserHelper userHelper,
                         IBuildingHelper buildingHelper,
-                        ISocketService socketService)
+                        DatabaseContext databaseContext)
         {
             this.userHelper = userHelper;
             this.buildingHelper = buildingHelper;
-            this.socketService = socketService;
+            this.databaseContext = databaseContext;
             this.iotService = iotService;
             this.userContextService = userContextService;
         }
@@ -46,7 +48,17 @@ namespace FireSaverApi.hub
         {
             var compartmentId = (await userHelper.GetUserById(fromUserId)).Id;
             var buildingId = await iotService.FindBuildingWithCompartmentId(compartmentId);
-            await socketService.SendMessageToResponsibleBuildingUsers(buildingId, message);
+
+            var building = await databaseContext.Buildings.Include(b => b.ResponsibleUsers).FirstOrDefaultAsync(b => b.Id == buildingId);
+            if (building == null)
+            {
+                throw new System.Exception("Building is not found");
+            }
+
+            foreach (var user in building.ResponsibleUsers)
+            {
+                await Clients.Group(user.Id.ToString()).SendAsync("RecieveMessage", message);
+            }
         }
 
         public async Task RecieveIotInfo(string id, IoTDataInfo dataInfo)

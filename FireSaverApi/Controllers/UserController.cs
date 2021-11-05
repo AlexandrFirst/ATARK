@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using FireSaverApi.Contracts;
 using FireSaverApi.DataContext;
@@ -51,7 +52,7 @@ namespace FireSaverApi.Controllers
 
         }
 
-        [Authorize(Role = UserRole.GUEST)]
+        [Authorize(Roles = new string[] { UserRole.GUEST })]
         [HttpGet("guestAuth/{userId}")]
         public async Task<IActionResult> LogoutGuestUser(int userId)
         {
@@ -65,7 +66,7 @@ namespace FireSaverApi.Controllers
         }
 
 
-        [Authorize(Role = UserRole.ADMIN)]
+        [Authorize(Roles = new string[] { UserRole.ADMIN })]
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetUserInfo(int userId)
         {

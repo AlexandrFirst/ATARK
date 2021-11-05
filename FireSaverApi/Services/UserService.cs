@@ -31,7 +31,6 @@ namespace FireSaverApi.Services
         private readonly IRoutebuilderService routebuilderService;
         private readonly ITestService testService;
         private readonly ISocketService socketService;
-        private readonly IGuestStorage guestStorage;
         private readonly AppSettings appSettings;
 
         public UserService(DatabaseContext context,
@@ -40,8 +39,7 @@ namespace FireSaverApi.Services
                             ILocationService locationService,
                             IRoutebuilderService routebuilderService,
                             ITestService testService,
-                            ISocketService socketService,
-                            IGuestStorage guestStorage)
+                            ISocketService socketService)
         {
             this.appSettings = appsettings.Value;
             this.context = context;
@@ -51,7 +49,6 @@ namespace FireSaverApi.Services
             this.routebuilderService = routebuilderService;
             this.testService = testService;
             this.socketService = socketService;
-            this.guestStorage = guestStorage;
         }
         public async Task<UserInfoDto> CreateNewUser(RegisterUserDto newUserInfo, string Role)
         {
@@ -111,8 +108,6 @@ namespace FireSaverApi.Services
 
             if (compareInputAndUserPasswords(userAuth.Password, user.Password))
             {
-
-                // var authToken = generateJwtTokenForAuthUsers(user);
                 var authToken = TokenGenerator.generateJwtToken(user.Id, TokenGenerator.UserJWTType, user.RolesList, appSettings.Secret);
 
                 return new AuthResponseDto()
@@ -143,8 +138,6 @@ namespace FireSaverApi.Services
 
             var response = await CreateNewUser(guestUser, UserRole.GUEST);
 
-            await guestStorage.AddGuest(response.Id);
-
             var token = TokenGenerator.generateJwtToken(response.Id, TokenGenerator.UserJWTType, UserRole.GUEST, appSettings.Secret);
             return new AuthResponseDto()
             {
@@ -153,12 +146,17 @@ namespace FireSaverApi.Services
             };
         }
 
+        public async Task<IList<User>> GetAllGuests()
+        {
+             var allGuests = await context.Users.Where(u => u.RolesList.Contains(UserRole.GUEST)).ToListAsync();
+             return allGuests;
+        }
+
         public async Task LogoutGuest(int guestId)
         {
             var userToLogout = await context.Users.FirstOrDefaultAsync(u => u.Id == guestId);
             if (userToLogout != null)
             {
-                await guestStorage.RemoveGuest(guestId);
                 context.Remove(userToLogout);
                 await context.SaveChangesAsync();
             }
@@ -183,8 +181,6 @@ namespace FireSaverApi.Services
                 throw new InorrectOldPasswordException();
             }
         }
-
-
         public async Task<List<RoutePoint>> BuildEvacuationRootForCompartment(int userId)
         {
             var user = await GetUserById(userId);
