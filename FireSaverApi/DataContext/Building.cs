@@ -16,7 +16,6 @@ namespace FireSaverApi.DataContext
         public string Address { get; set; }
         public string Info { get; set; }
         public Position BuildingCenterPosition { get; set; }
-        public int? BuildingCenterPositionId { get; set; }
         public double SafetyDistance { get; set; }
     }
 }
