@@ -58,7 +58,9 @@ namespace FireSaverApi.Services
             var response = new PlanUploadResponse()
             {
                 PublicId = result.PublicId,
-                Url = result.Url.ToString()
+                Url = result.Url.ToString(),
+                Height = result.Height,
+                Width = result.Width
             };
 
             return response;

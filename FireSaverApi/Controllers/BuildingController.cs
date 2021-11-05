@@ -50,7 +50,7 @@ namespace FireSaverApi.Controllers
         {
             var userContext = userContextService.GetUserContext();
 
-            if (await isUserResponsobleForBuildingOrAdmin(userContext, buildingId))
+            if (await BuildingCRUDHelper.isUserResponsobleForBuildingOrAdmin(userHelper, userContext, buildingId))
             {
                 var alteredBuilding = await buildingService.AddResponsibleUser(userId, buildingId);
                 return Ok(alteredBuilding);
@@ -76,7 +76,7 @@ namespace FireSaverApi.Controllers
                 return BadRequest(new ServerResponse() { Message = "This user is not responsible" });
             }
 
-            if (await isUserResponsobleForBuildingOrAdmin(userContext, user.ResponsibleForBuilding.Id))
+            if (await BuildingCRUDHelper.isUserResponsobleForBuildingOrAdmin(userHelper, userContext, user.ResponsibleForBuilding.Id))
             {
                 if (currentUserId == userId)
                 {
@@ -96,7 +96,7 @@ namespace FireSaverApi.Controllers
         {
             var userContext = userContextService.GetUserContext();
 
-            if (await isUserResponsobleForBuildingOrAdmin(userContext, buildingId))
+            if (await BuildingCRUDHelper.isUserResponsobleForBuildingOrAdmin(userHelper, userContext, buildingId))
             {
                 var alteredBuilding = await buildingService.UpdateBuildingInfo(buildingId, newBuildingInfo);
                 return Ok(alteredBuilding);
@@ -111,7 +111,7 @@ namespace FireSaverApi.Controllers
         {
             var userContext = userContextService.GetUserContext();
 
-            if (await isUserResponsobleForBuildingOrAdmin(userContext, buildingId))
+            if (await BuildingCRUDHelper.isUserResponsobleForBuildingOrAdmin(userHelper, userContext, buildingId))
             {
                 BuildingInfoDto alteredBuilding = await buildingService.UpdateBuildingCenter(buildingId, buildingCentre);
                 return Ok(alteredBuilding);
@@ -119,22 +119,6 @@ namespace FireSaverApi.Controllers
             return BadRequest(new ServerResponse() { Message = "Only responsible users can set building center" });
         }
 
-        private async Task<bool> isUserResponsobleForBuildingOrAdmin(MyHttpContext currentUserContext, int buildingId)
-        {
-            var userContext = currentUserContext;
-            var currentUserId = userContext.Id;
-            var user = await userHelper.GetUserById(currentUserId);
 
-            if (isUserResponsibleForBuilding(user, buildingId) || userContext.RolesList.Contains(UserRole.ADMIN))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        private bool isUserResponsibleForBuilding(User user, int buildingId)
-        {
-            return user.ResponsibleForBuilding != null && user.ResponsibleForBuilding.Id == buildingId;
-        }
     }
 }

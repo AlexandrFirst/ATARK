@@ -72,7 +72,7 @@ namespace FireSaverApi.Controllers
         {
             var currentUser = userContextService.GetUserContext();
 
-            if(currentUser.Id != userId && !currentUser.RolesList.Contains(UserRole.ADMIN))
+            if (currentUser.Id != userId && !currentUser.RolesList.Contains(UserRole.ADMIN))
                 return BadRequest("You are not the admin");
 
             var userInfo = await userService.GetUserInfoById(userId);
@@ -126,6 +126,15 @@ namespace FireSaverApi.Controllers
             {
                 return Ok(testOutput);
             }
+        }
+
+        [Authorize]
+        [HttpPost("setWorldPosition")]
+        public async Task<IActionResult> SetCurrentUserWorldPosition([FromBody] PositionDto userWorldPostion)
+        {
+            int userId = userContextService.GetUserContext().Id;
+            var result = await userService.SetWorldPostion(userId, userWorldPostion);
+            return Ok(result);
         }
 
         [Authorize]

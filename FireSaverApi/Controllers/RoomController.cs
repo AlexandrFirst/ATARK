@@ -3,6 +3,7 @@ using AutoMapper;
 using FireSaverApi.Contracts;
 using FireSaverApi.DataContext;
 using FireSaverApi.Dtos.CompartmentDtos;
+using FireSaverApi.Helpers;
 using FireSaverApi.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,6 +11,7 @@ namespace FireSaverApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+
     public class RoomController : ControllerBase
     {
         private readonly ICompartmentService<RoomDto, Room> roomService;
@@ -22,6 +24,7 @@ namespace FireSaverApi.Controllers
         }
 
         [HttpPost("addRoomToFloor/{floorId}")]
+        [Authorize(Roles = new string[] { UserRole.ADMIN, UserRole.AUTHORIZED_USER })]
         public async Task<IActionResult> AddRoomToFloor(int floorId, [FromBody] RoomDto newRoomDto)
         {
             var result = await roomService.AddCompartment(floorId, newRoomDto);
@@ -31,25 +34,27 @@ namespace FireSaverApi.Controllers
         }
 
         [HttpPut("changeRoomInfo/{roomId}")]
-        public async Task<IActionResult> ChangeFloorInfo(int floorId, [FromBody] RoomDto newRoomDto)
+        [Authorize(Roles = new string[] { UserRole.ADMIN, UserRole.AUTHORIZED_USER })]
+        public async Task<IActionResult> ChangeRoomInfo(int roomId, [FromBody] RoomDto newRoomDto)
         {
-            var result = await roomService.ChangeCompartmentInfo(floorId, newRoomDto);
+            var result = await roomService.ChangeCompartmentInfo(roomId, newRoomDto);
             var resultToDto = mapper.Map<RoomDto>(result);
             return Ok(resultToDto);
         }
 
         [HttpDelete("{roomId}")]
-        public async Task<IActionResult> RemoveFloorFromBuilding(int roomId)
+        [Authorize(Roles = new string[] { UserRole.ADMIN, UserRole.AUTHORIZED_USER })]
+        public async Task<IActionResult> RemoveRoomFromBuilding(int roomId)
         {
             await roomService.DeleteCompartment(roomId);
             return Ok(new ServerResponse()
             {
-                Message = "Floor is deleted"
+                Message = "Room is deleted"
             });
         }
 
         [HttpGet("{roomId}")]
-        public async Task<IActionResult> GetFloorInfo(int roomId)
+        public async Task<IActionResult> GetRoomInfo(int roomId)
         {
             var result = await roomService.GetCompartmentInfo(roomId);
             var resultToDto = mapper.Map<RoomDto>(result);

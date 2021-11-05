@@ -304,11 +304,23 @@ namespace FireSaverApi.Services
                 throw new Exception("Illegal action");
             }
         }
+        
+        public async Task<UserInfoDto> SetWorldPostion(int userId, PositionDto worldUserPostion)
+        {
+            var user = await GetUserById(userId);
+            var postion = mapper.Map<Position>(worldUserPostion);
+
+            user.LastSeenBuildingPosition = postion;
+            await context.SaveChangesAsync();
+
+            return mapper.Map<UserInfoDto>(user);
+        }
 
         bool compareInputAndUserPasswords(string inputPassword, string userPassword)
         {
             var hashedInputPassword = CalcHelper.ComputeSha256Hash(inputPassword);
             return hashedInputPassword == userPassword;
         }
+
     }
 }

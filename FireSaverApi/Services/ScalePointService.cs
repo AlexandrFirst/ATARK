@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -34,12 +35,47 @@ namespace FireSaverApi.Services
             var correspondentEvacuation = await evacuationServiceHelper.GetEvacPlanById(evacuationPlanId);
             var scaleModel = correspondentEvacuation.ScaleModel;
 
+            if (!IsScalePointValid(inputPoint, scaleModel))
+            {
+                throw new Exception("Point is invalid; try to select point further");
+            }
+
+
             pointToInsert.ScaleModel = scaleModel;
 
             await context.ScalePoints.AddAsync(pointToInsert);
             await context.SaveChangesAsync();
 
             return mapper.Map<ScalePointDto>(pointToInsert);
+        }
+
+        private bool IsScalePointValid(ScalePointDto scalePoint, ScaleModel scaleModel)
+        {
+            var allScalePoints = scaleModel.ScalePoints;
+
+            for (int i = 0; i < allScalePoints.Count(); i++)
+            {
+                double ratioX = getRatio(scalePoint.MapPosition.Latitude,
+                                           allScalePoints[i].MapPosition.Latitude,
+                                           scaleModel.ApplyingEvacPlans.Width);
+
+                double ratioY = getRatio(scalePoint.MapPosition.Longtitude,
+                                           allScalePoints[i].MapPosition.Longtitude,
+                                           scaleModel.ApplyingEvacPlans.Height);
+
+                if (ratioX < scaleModel.MinDistanceDifferenceLatitudeCoef ||
+                    ratioY < scaleModel.MinDistanceDifferenceLongtitudeCoef)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private double getRatio(double a, double b, double ratioBase)
+        {
+            double value = Math.Abs(a - b);
+            return value / ratioBase;
         }
 
         public async Task<PositionDto> ConvertImgToWorldPos(PositionDto inputPosition, int compartmentId)

@@ -59,7 +59,7 @@ namespace FireSaverApi.Services
             if (compartmentId != entity.Id)
                 throw new System.Exception("something went wrong");
 
-            entity = mapper.Map<Entity>(newCompartmentDto);
+            mapper.Map(newCompartmentDto, entity);
             databaseContext.Update(entity);
             await databaseContext.SaveChangesAsync();
 
