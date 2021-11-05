@@ -14,12 +14,19 @@ namespace FireSaverApi.Controllers
     public class BuildingController : ControllerBase
     {
         private readonly IBuildingService buildingService;
+        private readonly IUserContextService userContextService;
+        private readonly IUserHelper userHelper;
 
-        public BuildingController(IBuildingService buildingService)
+        public BuildingController(IBuildingService buildingService,
+                                  IUserContextService userContextService,
+                                  IUserHelper userHelper)
         {
+            this.userContextService = userContextService;
+            this.userHelper = userHelper;
             this.buildingService = buildingService;
         }
 
+        [Authorize(Roles = new string[] { UserRole.ADMIN })]
         [HttpPost("newbuilding")]
         public async Task<IActionResult> AddNewBuilding([FromBody] NewBuildingDto newBuildingDto)
         {
@@ -37,32 +44,97 @@ namespace FireSaverApi.Controllers
             return Ok(new ServerResponse() { Message = "Building is deleted successfully" });
         }
 
-        [HttpPost("adduser/{userId}/{buildingId}")]
+        [HttpGet("adduser/{userId}/{buildingId}")]
+        [Authorize(Roles = new string[] { UserRole.ADMIN, UserRole.AUTHORIZED_USER })]
         public async Task<IActionResult> AddResponsibleUser(int userId, int buildingId)
         {
-            var alteredBuilding = await buildingService.AddResponsibleUser(userId, buildingId);
-            return Ok(alteredBuilding);
+            var userContext = userContextService.GetUserContext();
+
+            if (await isUserResponsobleForBuildingOrAdmin(userContext, buildingId))
+            {
+                var alteredBuilding = await buildingService.AddResponsibleUser(userId, buildingId);
+                return Ok(alteredBuilding);
+            }
+
+            return BadRequest(new ServerResponse() { Message = "Only responsible users can add new responsible users" });
+
+
         }
 
-        [HttpPost("removeuser/{userId}")]
+        [HttpDelete("removeuser/{userId}")]
+        [Authorize(Roles = new string[] { UserRole.ADMIN, UserRole.AUTHORIZED_USER })]
         public async Task<IActionResult> RemoveResponsibleUser(int userId)
         {
-            var alteredBuilding = await buildingService.RemoveResponsibleUser(userId);
-            return Ok(alteredBuilding);
+            var userContext = userContextService.GetUserContext();
+            int currentUserId = userContext.Id;
+
+            var user = await userHelper.GetUserById(userId);
+            var currentUser = await userHelper.GetUserById(currentUserId);
+
+            if (user.ResponsibleForBuilding == null)
+            {
+                return BadRequest(new ServerResponse() { Message = "This user is not responsible" });
+            }
+
+            if (await isUserResponsobleForBuildingOrAdmin(userContext, user.ResponsibleForBuilding.Id))
+            {
+                if (currentUserId == userId)
+                {
+                    return BadRequest(new ServerResponse() { Message = "You can't remove yourself" });
+                }
+                var alteredBuilding = await buildingService.RemoveResponsibleUser(userId, currentUser.ResponsibleForBuilding.Id);
+                return Ok(alteredBuilding);
+            }
+
+            return BadRequest(new ServerResponse() { Message = "Only responsible users can remove responsible users" });
+
         }
 
-        [HttpPut("updateBuilding/{userId}")]
+        [HttpPut("updateBuilding/{buildingId}")]
+        [Authorize(Roles = new string[] { UserRole.ADMIN, UserRole.AUTHORIZED_USER })]
         public async Task<IActionResult> UpdateBuildingInfo(int buildingId, [FromBody] NewBuildingDto newBuildingInfo)
         {
-            var alteredBuilding = await buildingService.UpdateBuildingInfo(buildingId, newBuildingInfo);
-            return Ok(alteredBuilding);
+            var userContext = userContextService.GetUserContext();
+
+            if (await isUserResponsobleForBuildingOrAdmin(userContext, buildingId))
+            {
+                var alteredBuilding = await buildingService.UpdateBuildingInfo(buildingId, newBuildingInfo);
+                return Ok(alteredBuilding);
+            }
+
+            return BadRequest(new ServerResponse() { Message = "Only responsible users can update building info" });
         }
 
-        [HttpPost("setBuildingCenter/{buildingId}")]
+        [HttpPut("setBuildingCenter/{buildingId}")]
+        [Authorize(Roles = new string[] { UserRole.ADMIN, UserRole.AUTHORIZED_USER })]
         public async Task<IActionResult> SetBuildingCenter(int buildingId, [FromBody] BuildingCenterDto buildingCentre)
         {
-            BuildingInfoDto alteredBuilding = await buildingService.UpdateBuildingCenter(buildingId, buildingCentre);
-            return Ok(alteredBuilding);
+            var userContext = userContextService.GetUserContext();
+
+            if (await isUserResponsobleForBuildingOrAdmin(userContext, buildingId))
+            {
+                BuildingInfoDto alteredBuilding = await buildingService.UpdateBuildingCenter(buildingId, buildingCentre);
+                return Ok(alteredBuilding);
+            }
+            return BadRequest(new ServerResponse() { Message = "Only responsible users can set building center" });
+        }
+
+        private async Task<bool> isUserResponsobleForBuildingOrAdmin(MyHttpContext currentUserContext, int buildingId)
+        {
+            var userContext = currentUserContext;
+            var currentUserId = userContext.Id;
+            var user = await userHelper.GetUserById(currentUserId);
+
+            if (isUserResponsibleForBuilding(user, buildingId) || userContext.RolesList.Contains(UserRole.ADMIN))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private bool isUserResponsibleForBuilding(User user, int buildingId)
+        {
+            return user.ResponsibleForBuilding != null && user.ResponsibleForBuilding.Id == buildingId;
         }
     }
 }

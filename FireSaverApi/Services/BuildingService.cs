@@ -73,25 +73,30 @@ namespace FireSaverApi.Services
             await context.SaveChangesAsync();
         }
 
-
-
-
-
-        public async Task<BuildingInfoDto> RemoveResponsibleUser(int userId)
+        public async Task<BuildingInfoDto> RemoveResponsibleUser(int userId, int buildingId)
         {
+
             var user = await userHelper.GetUserById(userId);
+
+            if (user.ResponsibleForBuilding.Id != buildingId)
+            {
+                throw new System.Exception("Ypu can delete only resposible users from your building");
+            }
+
             user.ResponsibleForBuilding = null;
 
-            var building = await GetBuildingById(user.ResponsibleForBuilding.Id);
-
             await context.SaveChangesAsync();
+
+            var building = await GetBuildingById(buildingId);
             return mapper.Map<BuildingInfoDto>(building);
         }
 
         public async Task<BuildingInfoDto> UpdateBuildingCenter(int buildingId, BuildingCenterDto buildingCenter)
         {
             var updatedBuilding = await GetBuildingById(buildingId);
-            updatedBuilding = mapper.Map<Building>(buildingCenter);
+            
+            mapper.Map(buildingCenter, updatedBuilding);
+            
             context.Buildings.Update(updatedBuilding);
             await context.SaveChangesAsync();
 
@@ -103,28 +108,15 @@ namespace FireSaverApi.Services
 
             var updatedBuilding = await GetBuildingById(buildingId);
 
+            mapper.Map(newBuildingInfo, updatedBuilding);
 
-            if (CanUserUpdateBuildingInfo(updatedBuilding))
-            {
-                updatedBuilding = mapper.Map<Building>(newBuildingInfo);
-                context.Buildings.Update(updatedBuilding);
-                await context.SaveChangesAsync();
+            context.Buildings.Update(updatedBuilding);
+            await context.SaveChangesAsync();
 
-                return mapper.Map<BuildingInfoDto>(updatedBuilding);
-            }
-            else
-            {
-                throw new System.Exception("You have no rights to modify this building");
-            }
+            return mapper.Map<BuildingInfoDto>(updatedBuilding);
 
         }
 
-        private bool CanUserUpdateBuildingInfo(Building building)
-        {
-            MyHttpContext userContext = userContextService.GetUserContext();
-            return building.ResponsibleUsers.Any(u => u.Id == userContext.Id) ||
-                    userContext.RolesList.Contains(UserRole.ADMIN);
-        }
 
         public async Task<Building> GetBuildingById(int buildingId)
         {

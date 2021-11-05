@@ -53,7 +53,7 @@ namespace FireSaverApi.Controllers
         }
 
         [Authorize(Roles = new string[] { UserRole.GUEST })]
-        [HttpGet("guestAuth/{userId}")]
+        [HttpDelete("guestLogout/{userId}")]
         public async Task<IActionResult> LogoutGuestUser(int userId)
         {
             await authService.LogoutGuest(userId);
@@ -66,16 +66,21 @@ namespace FireSaverApi.Controllers
         }
 
 
-        [Authorize(Roles = new string[] { UserRole.ADMIN })]
+        [Authorize(Roles = new string[] { UserRole.ADMIN, UserRole.AUTHORIZED_USER })]
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetUserInfo(int userId)
         {
+            var currentUser = userContextService.GetUserContext();
+
+            if(currentUser.Id != userId && !currentUser.RolesList.Contains(UserRole.ADMIN))
+                return BadRequest("You are not the admin");
+
             var userInfo = await userService.GetUserInfoById(userId);
             return Ok(userInfo);
         }
 
-        [Authorize]
-        [HttpPut]
+        [Authorize(Roles = new string[] { UserRole.ADMIN, UserRole.AUTHORIZED_USER })]
+        [HttpPut("updateInfo")]
         public async Task<IActionResult> UpdateUserInfo([FromBody] UserInfoDto currentUserInfo)
         {
             var currentUserId = userContextService.GetUserContext().Id;
@@ -85,7 +90,7 @@ namespace FireSaverApi.Controllers
             return Ok(updatedUserInfo);
         }
 
-        [Authorize]
+        [Authorize(Roles = new string[] { UserRole.ADMIN, UserRole.AUTHORIZED_USER })]
         [HttpPost("changepassword")]
         public async Task<IActionResult> ChangeUserPassword([FromBody] NewUserPasswordDto newUserPassword)
         {
@@ -102,7 +107,7 @@ namespace FireSaverApi.Controllers
             var currentUserId = userContextService.GetUserContext().Id;
             var response = await userService.BuildEvacuationRootForCompartment(fromCompartmentId);
 
-            return Ok(new ServerResponse() { Message = "Password is updated" });
+            return Ok(response);
         }
 
         [Authorize]

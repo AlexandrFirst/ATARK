@@ -91,7 +91,10 @@ namespace FireSaverApi.Services
         public async Task<UserInfoDto> UpdateUserInfo(UserInfoDto newUserInfo)
         {
             var user = await GetUserById(newUserInfo.Id);
-            user = mapper.Map<User>(newUserInfo);
+
+            //var updateUserInfo = mapper.Map<User>(newUserInfo);
+            mapper.Map(newUserInfo, user);
+
             context.Users.Update(user);
             await context.SaveChangesAsync();
             return mapper.Map<UserInfoDto>(user);
@@ -148,16 +151,18 @@ namespace FireSaverApi.Services
 
         public async Task<IList<User>> GetAllGuests()
         {
-             var allGuests = await context.Users.Where(u => u.RolesList.Contains(UserRole.GUEST)).ToListAsync();
-             return allGuests;
+            var allGuests = await context.Users.Where(u => u.RolesList.Contains(UserRole.GUEST)).ToListAsync();
+            return allGuests;
         }
 
         public async Task LogoutGuest(int guestId)
         {
             var userToLogout = await context.Users.FirstOrDefaultAsync(u => u.Id == guestId);
-            if (userToLogout != null)
+            var currentUserRoles = userToLogout.RolesList.Split(',');
+            if (userToLogout != null && currentUserRoles.Contains(UserRole.GUEST))
             {
                 context.Remove(userToLogout);
+                await socketService.LogoutUser(guestId);
                 await context.SaveChangesAsync();
             }
             else
@@ -305,7 +310,5 @@ namespace FireSaverApi.Services
             var hashedInputPassword = CalcHelper.ComputeSha256Hash(inputPassword);
             return hashedInputPassword == userPassword;
         }
-
-
     }
 }

@@ -9,7 +9,7 @@ namespace FireSaverApi.Contracts
     {
         Task<BuildingInfoDto> AddNewBuilding(NewBuildingDto newBuilding);
         Task<BuildingInfoDto> AddResponsibleUser(int userId, int buildingId);
-        Task<BuildingInfoDto> RemoveResponsibleUser(int userId);
+        Task<BuildingInfoDto> RemoveResponsibleUser(int userId, int buildingId);
         Task<BuildingInfoDto> UpdateBuildingInfo(int buildingId, NewBuildingDto newBuildingInfo);
 
         Task<BuildingInfoDto> UpdateBuildingCenter(int buildingId, BuildingCenterDto buildingCenter);
