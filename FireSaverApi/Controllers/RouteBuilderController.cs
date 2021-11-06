@@ -68,7 +68,7 @@ namespace FireSaverApi.Controllers
             return Ok(mapper.Map<RoutePointDto>(initPoint));
         }
 
-        [HttpPost("updateMapPos")]
+        [HttpPut("updateMapPos")]
         public async Task<IActionResult> UpdateRoutePointPos([FromBody] RoutePointDto updatingRoutePoint)
         {
             var pointToUpdate = await routeBuilder.UpdateRoutePointPos(updatingRoutePoint);

@@ -124,13 +124,13 @@ namespace FireSaverApi.Services
         public async Task<RoutePoint> GetRootPointForRoutePoint(int routePointId)
         {
             var currentRoute = await context.RoutePoints.Include(r => r.ParentPoint).FirstOrDefaultAsync(r => r.Id == routePointId);
-        
+
             return await GetParentPointForCurrentpoint(currentRoute);
         }
 
         async Task<RoutePoint> GetParentPointForCurrentpoint(RoutePoint currentRoutePoint)
         {
-            if(currentRoutePoint.ParentPoint == null)
+            if (currentRoutePoint.ParentPoint == null)
                 return currentRoutePoint;
 
             return await GetParentPointForCurrentpoint(currentRoutePoint.ParentPoint);
@@ -193,8 +193,14 @@ namespace FireSaverApi.Services
                 throw new System.Exception("Can't find route point");
             }
 
-            pointToUpdate.MapPosition = mapper.Map<Position>(updatingRoutePoint.PointPostion);
+            mapper.Map(updatingRoutePoint.PointPostion, pointToUpdate.MapPosition);
 
+            // pointToUpdate.MapPosition = mapper.Map<Position>(updatingRoutePoint.PointPostion);
+            context.Update(pointToUpdate.MapPosition);
+
+            pointToUpdate.RoutePointType = updatingRoutePoint.RoutePointType;
+
+            context.Update(pointToUpdate);
             await context.SaveChangesAsync();
 
             return pointToUpdate;
@@ -248,7 +254,10 @@ namespace FireSaverApi.Services
                                                 .FirstOrDefaultAsync(p => p.Id == fromId);
 
             if (currentPoint.Id == toId)
+            {
+                currentPoint.ChildrenPoints = null;
                 return currentPoint;
+            }
             else if (currentPoint.ChildrenPoints.Count > (fromChildId == -1 ? 0 : 1))//have we come from child -> 1; not -> -1
             {
                 //TODO: make map tp hoave more than one route.

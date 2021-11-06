@@ -12,7 +12,7 @@ namespace FireSaverApi.Contracts
         Task<UserInfoDto> UpdateUserInfo(UserInfoDto newUserInfo);
         Task<UserInfoDto> GetUserInfoById(int userId);
         Task ChangeOldPassword(int userId, NewUserPasswordDto newUserPassword);
-        Task<List<RoutePoint>> BuildEvacuationRootForCompartment(int userId);
+        Task<List<RoutePointDto>> BuildEvacuationRootForCompartment(int userId);
         Task<TestOutputDto> EnterCompartmentById(int userId, int compartmentId, int? iotId);
         Task SetAlaramForBuilding(int userId);
         Task<UserInfoDto> SetWorldPostion(int userId, PositionDto worldUserPostion);

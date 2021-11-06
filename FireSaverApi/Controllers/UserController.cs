@@ -101,11 +101,11 @@ namespace FireSaverApi.Controllers
         }
 
         [Authorize]
-        [HttpGet("evacuate/{fromCompartmentId}")]
-        public async Task<IActionResult> GetEvacuationRouteForCompartment(int fromCompartmentId)
+        [HttpGet("evacuate")]
+        public async Task<IActionResult> GetEvacuationRouteForCompartment()
         {
             var currentUserId = userContextService.GetUserContext().Id;
-            var response = await userService.BuildEvacuationRootForCompartment(fromCompartmentId);
+            var response = await userService.BuildEvacuationRootForCompartment(currentUserId);
 
             return Ok(response);
         }

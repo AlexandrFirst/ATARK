@@ -186,7 +186,7 @@ namespace FireSaverApi.Services
                 throw new InorrectOldPasswordException();
             }
         }
-        public async Task<List<RoutePoint>> BuildEvacuationRootForCompartment(int userId)
+        public async Task<List<RoutePointDto>> BuildEvacuationRootForCompartment(int userId)
         {
             var user = await GetUserById(userId);
 
@@ -215,15 +215,15 @@ namespace FireSaverApi.Services
                                                           p.RoutePointType == RoutePointType.ADDITIONAL_EXIT).ToList();
             if (exitPoints.Count == 0)
             {
-                return new List<RoutePoint>() { await routebuilderService.GetAllRoute(rootPointFotCurrentRoutePoint.Id) };
+                return new List<RoutePointDto>() { mapper.Map<RoutePointDto>(await routebuilderService.GetAllRoute(rootPointFotCurrentRoutePoint.Id)) };
             }
             else
             {
-                var possibleEvacuationList = new List<RoutePoint>();
+                var possibleEvacuationList = new List<RoutePointDto>();
                 for (int i = 0; i < exitPoints.Count; i++)
                 {
                     var evacuationRoute = await routebuilderService.GetRouteBetweenPoints(closestPoint.Id, exitPoints[i].Id);
-                    possibleEvacuationList.Add(evacuationRoute);
+                    possibleEvacuationList.Add(mapper.Map<RoutePointDto>(evacuationRoute));
                 }
                 return possibleEvacuationList;
             }
