@@ -11,7 +11,7 @@ namespace FireSaverApi.DataContext
 
         public int Id { get; set; }
         public IList<ScalePoint> ScalePoints { get; set; }
-        
+
         public double FromPixelXToCoordXCoef { get; set; }
         public double FromCoordXToPixelXCoef { get; set; }
 
@@ -34,5 +34,6 @@ namespace FireSaverApi.DataContext
         }
 
         public EvacuationPlan ApplyingEvacPlans { get; set; }
+        public int? ApplyingEvacPlansId { get; set; }
     }
 }

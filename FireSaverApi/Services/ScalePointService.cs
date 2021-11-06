@@ -118,10 +118,13 @@ namespace FireSaverApi.Services
                 throw new System.Exception("Scale point is not found");
             }
 
+            var scaleModel = point.ScaleModel;
+            var compartmentId = point.ScaleModel.ApplyingEvacPlans.Compartment.Id;
+
             context.ScalePoints.Remove(point);
             await context.SaveChangesAsync();
 
-            await recalculateScaleModel(point.ScaleModel, point.ScaleModel.ApplyingEvacPlans.Compartment.Id);
+            await recalculateScaleModel(scaleModel, compartmentId);
         }
 
         private async Task recalculateScaleModel(ScaleModel scaleModel, int compartmentId)

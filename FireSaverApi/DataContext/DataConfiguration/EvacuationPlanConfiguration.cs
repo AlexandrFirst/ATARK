@@ -9,7 +9,7 @@ namespace FireSaverApi.DataContext.DataConfiguration
         {
             builder.HasOne(evacuationPlan => evacuationPlan.ScaleModel)
                 .WithOne(scaleModel => scaleModel.ApplyingEvacPlans)
-                .HasForeignKey<EvacuationPlan>(evacuationPlan => evacuationPlan.ScaleModelId)
+                .HasForeignKey<ScaleModel>(scaleModel => scaleModel.ApplyingEvacPlansId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }
