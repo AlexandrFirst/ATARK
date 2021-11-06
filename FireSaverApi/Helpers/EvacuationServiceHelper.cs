@@ -16,7 +16,10 @@ namespace FireSaverApi.Helpers
         }
         public async Task<EvacuationPlan> GetEvacPlanById(int evacPlanId)
         {
-            var evacPlan = await dataContext.EvacuationPlans.Include(s => s.ScaleModel).ThenInclude(p => p.ScalePoints).FirstOrDefaultAsync(e => e.Id == evacPlanId);
+            var evacPlan = await dataContext.EvacuationPlans.Include(s => s.ScaleModel)
+                                                            .ThenInclude(p => p.ScalePoints)
+                                                            .ThenInclude(p => p.MapPosition)
+                                                            .FirstOrDefaultAsync(e => e.Id == evacPlanId);
             if (evacPlan == null)
             {
                 throw new Exception("Evac plan is not found");

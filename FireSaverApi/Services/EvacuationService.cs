@@ -46,6 +46,8 @@ namespace FireSaverApi.Services
             {
                 PublicId = uploadPlanResponse.PublicId,
                 Url = uploadPlanResponse.Url,
+                Height = uploadPlanResponse.Height,
+                Width = uploadPlanResponse.Width,
                 UploadTime = DateTime.Now,
                 Compartment = compartment,
                 ScaleModel = new ScaleModel()
