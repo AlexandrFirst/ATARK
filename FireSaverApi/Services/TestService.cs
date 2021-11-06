@@ -128,10 +128,10 @@ namespace FireSaverApi.Services
             return true;
         }
 
-        public async Task<TestOutputDto> GetTestInfo(int testId)
+        public async Task<Test> GetTestInfo(int testId)
         {
             var testToReturn = await dataContext.Tests.Include(t => t.Questions).FirstOrDefaultAsync(t => t.Id == testId);
-            return mapper.Map<TestOutputDto>(testToReturn);
+            return testToReturn;
         }
 
         public async Task RemoveTestFromCompartment(int compartmentId)

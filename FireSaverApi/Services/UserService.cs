@@ -273,7 +273,8 @@ namespace FireSaverApi.Services
             if (compartment.CompartmentTest != null)
             {
                 var testToComplete = await testService.GetTestInfo(compartment.CompartmentTest.Id);
-                return mapper.Map<TestOutputDto>(testToComplete);
+                var testOutput = mapper.Map<TestOutputDto>(testToComplete);
+                return testOutput;
             }
             else
             {
@@ -304,7 +305,7 @@ namespace FireSaverApi.Services
                 throw new Exception("Illegal action");
             }
         }
-        
+
         public async Task<UserInfoDto> SetWorldPostion(int userId, PositionDto worldUserPostion)
         {
             var user = await GetUserById(userId);

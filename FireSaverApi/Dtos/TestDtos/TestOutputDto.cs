@@ -4,6 +4,7 @@ namespace FireSaverApi.Dtos.TestDtos
 {
     public class TestOutputDto
     {
-        public List<QuestionOutputDto> Questions { get; set; }
+        public int Id { get; set; }
+        public IList<QuestionOutputDto> Questions { get; set; }
     }
 }
