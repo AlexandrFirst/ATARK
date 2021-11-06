@@ -8,6 +8,6 @@ namespace FireSaverApi.Dtos.EvacuationPlanDtos
         public int Id { get; set; }
         public string Url { get; set; }
         public DateTime UploadTime { get; set; }
-        public ScaleModelDto EvacuationPlan { get; set; }
+        public ScaleModelDto ScaleModel { get; set; }
     }
 }

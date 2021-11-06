@@ -9,8 +9,8 @@ namespace FireSaverApi.Contracts
     {
          Task<EvacuationPlanDto> addEvacuationPlanToCompartment(int compartmentId, IFormFile planImage);
          Task<EvacuationPlanDto> changeEvacuationPlanOfCompartment(int compartmentId, IFormFile planImage);
-         Task removeEvacuationPlanOfCompartment(int compartmentId);
-         Task<EvacuationPlanDto> getEvacuationPlanofCompartment(int compartmentId);
+         Task RemoveEvacuationPlanOfCompartment(int compartmentId);
+         Task<EvacuationPlanDto> GetEvacuationPlanOfCompartment(int compartmentId);
          Task<List<EvacuationPlanDto>> GetEvacuationPlansFromCompartmentByUserId(int userId);
          Task<List<EvacuationPlanDto>> GetEvacuationPlansFromCompartmentByCompartmentId(int compartmentId);
     }

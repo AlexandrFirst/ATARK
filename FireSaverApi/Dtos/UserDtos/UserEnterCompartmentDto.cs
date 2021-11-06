@@ -2,7 +2,7 @@ namespace FireSaverApi.Dtos
 {
     public class UserEnterCompartmentDto
     {
-        public int compartmentId { get; set; }
-        public int? iotId { get; set; }
+        public int CompartmentId { get; set; }
+        public int? IotId { get; set; }
     }
 }

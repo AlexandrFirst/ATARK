@@ -35,6 +35,11 @@ namespace FireSaverApi.Services
         public async Task<EvacuationPlanDto> addEvacuationPlanToCompartment(int compartmentId, IFormFile planImage)
         {
             var compartment = await compartmentHelper.GetCompartmentById(compartmentId);
+            if (compartment.EvacuationPlan != null)
+            {
+                throw new Exception("Plan is already added");
+            }
+
             var uploadPlanResponse = await planImageUploadService.UploadPlanImage(planImage);
 
             var newEvacPlan = new EvacuationPlan()
@@ -70,14 +75,14 @@ namespace FireSaverApi.Services
             return mapper.Map<EvacuationPlanDto>(evacPlan);
         }
 
-        public async Task<EvacuationPlanDto> getEvacuationPlanofCompartment(int compartmentId)
+        public async Task<EvacuationPlanDto> GetEvacuationPlanOfCompartment(int compartmentId)
         {
             var compartment = await compartmentHelper.GetCompartmentById(compartmentId);
             var evacPlan = compartment.EvacuationPlan;
             return mapper.Map<EvacuationPlanDto>(evacPlan);
         }
 
-        public async Task removeEvacuationPlanOfCompartment(int compartmentId)
+        public async Task RemoveEvacuationPlanOfCompartment(int compartmentId)
         {
             var compartment = await compartmentHelper.GetCompartmentById(compartmentId);
             var evacPlan = compartment.EvacuationPlan;
@@ -120,20 +125,26 @@ namespace FireSaverApi.Services
 
                 result.Add(attached.EvacuationPlan);
 
-                var restFloorsEvacPlans = await dataContext.Floors.Where(f => f.Level < attached.Level)
-                                                .OrderByDescending(f => f.Level)
-                                                .Select(f => f.EvacuationPlan).ToListAsync();
+                var restFloorsEvacPlans = await GetFloorsBelowLevel(attached.Level);
+
                 result.AddRange(restFloorsEvacPlans);
             }
             else
             {
-                var restFloorsEvacPlans = await dataContext.Floors.Where(f => f.Level < (currentCompartment as Floor).Level)
-                                               .OrderByDescending(f => f.Level)
-                                               .Select(f => f.EvacuationPlan).ToListAsync();
+                var restFloorsEvacPlans = await GetFloorsBelowLevel((currentCompartment as Floor).Level);
+
                 result.AddRange(restFloorsEvacPlans);
             }
 
             return mapper.Map<List<EvacuationPlanDto>>(result);
+        }
+
+        private async Task<List<EvacuationPlan>> GetFloorsBelowLevel(int level)
+        {
+            var restFloorsEvacPlans = await dataContext.Floors.Where(f => f.Level < level)
+                                                .OrderByDescending(f => f.Level)
+                                                .Select(f => f.EvacuationPlan).ToListAsync();
+            return restFloorsEvacPlans;
         }
 
     }

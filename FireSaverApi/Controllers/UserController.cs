@@ -116,8 +116,8 @@ namespace FireSaverApi.Controllers
         {
             int userId = userContextService.GetUserContext().Id;
             var testOutput = await userService.EnterCompartmentById(userId,
-                                                                    enterCompartmentDto.compartmentId,
-                                                                    enterCompartmentDto.iotId);
+                                                                    enterCompartmentDto.CompartmentId,
+                                                                    enterCompartmentDto.IotId);
             if (testOutput == null)
             {
                 return Ok();
