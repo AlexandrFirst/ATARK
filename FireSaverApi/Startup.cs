@@ -10,6 +10,7 @@ using FireSaverApi.Dtos.CompartmentDtos;
 using FireSaverApi.Helpers;
 using FireSaverApi.Helpers.ExceptionHandler;
 using FireSaverApi.hub;
+using FireSaverApi.Models;
 using FireSaverApi.Profiles;
 using FireSaverApi.Services;
 using Microsoft.AspNetCore.Builder;
@@ -156,6 +157,7 @@ namespace FireSaverApi
 
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
+            services.Configure<BackupModel>(Configuration.GetSection("BackupSettings"));
 
             var mappingConfig = new MapperConfiguration(mc =>
             {
