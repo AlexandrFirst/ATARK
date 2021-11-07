@@ -94,7 +94,7 @@ namespace FireSaverApi.Services
         public async Task<IoT> UpdateIoTPostion(string IotIdentifier, PositionDto newPos)
         {
             var iot = await GetIoTById(IotIdentifier);
-            var pos = mapper.Map<Position>(newPos);
+            var pos = mapper.Map<string>(newPos);
             iot.MapPosition = pos;
             dataContext.Update(iot);
             await dataContext.SaveChangesAsync();

@@ -87,9 +87,15 @@ namespace FireSaverApi.Services
 
         double getPixelXToCoordXCoef(ScalePoint p1, ScalePoint p2)
         {
-            double deltaXPixel = getDelta(p1.MapPosition.Latitude, p2.MapPosition.Latitude);
+            var p1MapPositionDto = mapper.Map<PositionDto>(p1.MapPosition);
+            var p1WorldPositionDto = mapper.Map<PositionDto>(p1.WorldPosition);
 
-            double deltaXCoord = getDelta(p1.WorldPosition.Latitude, p2.WorldPosition.Latitude);
+            var p2MapPositionDto = mapper.Map<PositionDto>(p2.MapPosition);
+            var p2WorldPositionDto = mapper.Map<PositionDto>(p2.WorldPosition);
+
+            double deltaXPixel = getDelta(p1MapPositionDto.Latitude, p2MapPositionDto.Latitude);
+
+            double deltaXCoord = getDelta(p1WorldPositionDto.Latitude, p2WorldPositionDto.Latitude);
 
             double fromPixelXToCoordXCoef = deltaXCoord / deltaXPixel;
 
@@ -98,9 +104,16 @@ namespace FireSaverApi.Services
         }
         double getPixelYToCoordYCoef(ScalePoint p1, ScalePoint p2)
         {
-            double deltaYPixel = getDelta(p1.MapPosition.Longtitude, p2.MapPosition.Longtitude);
 
-            double deltaYCoord = getDelta(p1.WorldPosition.Longtitude, p2.WorldPosition.Longtitude);
+            var p1MapPositionDto = mapper.Map<PositionDto>(p1.MapPosition);
+            var p1WorldPositionDto = mapper.Map<PositionDto>(p1.WorldPosition);
+
+            var p2MapPositionDto = mapper.Map<PositionDto>(p2.MapPosition);
+            var p2WorldPositionDto = mapper.Map<PositionDto>(p2.WorldPosition);
+
+            double deltaYPixel = getDelta(p1MapPositionDto.Longtitude, p2MapPositionDto.Longtitude);
+
+            double deltaYCoord = getDelta(p1WorldPositionDto.Longtitude, p2WorldPositionDto.Longtitude);
 
             double fromPixelYToCoordYCoef = deltaYCoord / deltaYPixel;
 
@@ -115,11 +128,15 @@ namespace FireSaverApi.Services
             double x3PixelCoord = imgPostion.Latitude;
             double y3PixelCoord = imgPostion.Longtitude;
 
-            double x1PixelCoord = firstPoint.MapPosition.Latitude;
-            double y1PixelCoord = firstPoint.MapPosition.Longtitude;
+            var firstPointMapPositionDto = mapper.Map<PositionDto>(firstPoint.MapPosition);
+            var firstPointWorldPositionDto = mapper.Map<PositionDto>(firstPoint.WorldPosition);
 
-            double x1WorldCoord = firstPoint.WorldPosition.Latitude;
-            double y1WorldCoord = firstPoint.WorldPosition.Longtitude;
+
+            double x1PixelCoord = firstPointMapPositionDto.Latitude;
+            double y1PixelCoord = firstPointMapPositionDto.Longtitude;
+
+            double x1WorldCoord = firstPointWorldPositionDto.Latitude;
+            double y1WorldCoord = firstPointWorldPositionDto.Longtitude;
 
             double x3WorldCoord = x1WorldCoord + (x3PixelCoord - x1PixelCoord) * locationPointModel.FromPixelXToCoordXCoef;
             double y3WorldCoord = y1WorldCoord + (y3PixelCoord - y1PixelCoord) * locationPointModel.FromPixelYToCoordYCoef;
@@ -142,11 +159,14 @@ namespace FireSaverApi.Services
             double x3WorldCoord = worldPostion.Latitude;
             double y3WorldCoord = worldPostion.Longtitude;
 
-            double x1WorldCoord = firstPoint.WorldPosition.Latitude;
-            double y1WorldCoord = firstPoint.WorldPosition.Longtitude;
+            var firstPointMapPositionDto = mapper.Map<PositionDto>(firstPoint.MapPosition);
+            var firstPointWorldPositionDto = mapper.Map<PositionDto>(firstPoint.WorldPosition);
 
-            double x1PixelCoord = firstPoint.MapPosition.Latitude;
-            double y1PixelCoord = firstPoint.MapPosition.Longtitude;
+            double x1WorldCoord = firstPointWorldPositionDto.Latitude;
+            double y1WorldCoord = firstPointWorldPositionDto.Longtitude;
+
+            double x1PixelCoord = firstPointMapPositionDto.Latitude;
+            double y1PixelCoord = firstPointMapPositionDto.Longtitude;
 
             double x3PixelCoord = x1PixelCoord + (x3WorldCoord - x1WorldCoord) * locationPointModel.FromCoordXToPixelXCoef;
             double y3PixelCoord = y1PixelCoord + (y3WorldCoord - y1WorldCoord) * locationPointModel.FromCoordYToPixelYCoef;

@@ -21,7 +21,7 @@ namespace FireSaverApi.DataContext
         public string Mail { get; set; }
         public string TelephoneNumber { get; set; }
         public DateTime DOB { get; set; }
-        public Position LastSeenBuildingPosition { get; set; }
+        public string LastSeenBuildingPosition { get; set; }
         public Building ResponsibleForBuilding { get; set; }
         public Compartment CurrentCompartment { get; set; }
 

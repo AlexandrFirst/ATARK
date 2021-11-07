@@ -309,7 +309,7 @@ namespace FireSaverApi.Services
         public async Task<UserInfoDto> SetWorldPostion(int userId, PositionDto worldUserPostion)
         {
             var user = await GetUserById(userId);
-            var postion = mapper.Map<Position>(worldUserPostion);
+            var postion = mapper.Map<string>(worldUserPostion);
 
             user.LastSeenBuildingPosition = postion;
             await context.SaveChangesAsync();

@@ -37,7 +37,7 @@ namespace FireSaverApi.Services
 
             var newPoint = new RoutePoint()
             {
-                MapPosition = mapper.Map<Position>(routePoint.PointPostion),
+                MapPosition = mapper.Map<string>(routePoint.PointPostion),
                 RoutePointType = RoutePointType.MAIN_PATH,
                 Compartment = parentPoint.Compartment
             };
@@ -58,7 +58,7 @@ namespace FireSaverApi.Services
 
             var newPoint = new RoutePoint()
             {
-                MapPosition = mapper.Map<Position>(routePoint.PointPostion),
+                MapPosition = mapper.Map<string>(routePoint.PointPostion),
                 RoutePointType = RoutePointType.MAIN_PATH,
                 Compartment = compartmentForCurrentPoint
             };

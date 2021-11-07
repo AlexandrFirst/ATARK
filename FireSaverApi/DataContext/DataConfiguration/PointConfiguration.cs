@@ -8,10 +8,7 @@ namespace FireSaverApi.DataContext.DataConfiguration
     {
         public void Configure(EntityTypeBuilder<TEntity> builder)
         {
-            builder.HasOne(point => point.MapPosition)
-                .WithOne(position => (TEntity)position.PointPostion)
-                .HasForeignKey<TEntity>(point => point.MapPositionId)
-                .OnDelete(DeleteBehavior.Cascade);
+           
         }
     }
 }

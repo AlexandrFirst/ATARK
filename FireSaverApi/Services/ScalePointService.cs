@@ -55,12 +55,14 @@ namespace FireSaverApi.Services
 
             for (int i = 0; i < allScalePoints.Count(); i++)
             {
+                var currentMapPostion = mapper.Map<PositionDto>(allScalePoints[i].MapPosition);
+
                 double ratioX = getRatio(scalePoint.MapPosition.Latitude,
-                                           allScalePoints[i].MapPosition.Latitude,
+                                           currentMapPostion.Latitude,
                                            scaleModel.ApplyingEvacPlans.Width);
 
                 double ratioY = getRatio(scalePoint.MapPosition.Longtitude,
-                                           allScalePoints[i].MapPosition.Longtitude,
+                                           currentMapPostion.Longtitude,
                                            scaleModel.ApplyingEvacPlans.Height);
 
                 if (ratioX < scaleModel.MinDistanceDifferenceLatitudeCoef ||
