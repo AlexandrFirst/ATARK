@@ -29,7 +29,7 @@ namespace FireSaverApi.Controllers
         [HttpPost("newuser")]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterUserDto newUserInfo)
         {
-            var registeredUser = await userService.CreateNewUser(newUserInfo, UserRole.AUTHORIZED_USER);
+            var registeredUser = await userService.CreateNewUser(newUserInfo, UserRoleName.AUTHORIZED_USER);
 
             return Ok(registeredUser);
         }
@@ -52,7 +52,7 @@ namespace FireSaverApi.Controllers
 
         }
 
-        [Authorize(Roles = new string[] { UserRole.GUEST })]
+        [Authorize(Roles = new string[] { UserRoleName.GUEST })]
         [HttpDelete("guestLogout/{userId}")]
         public async Task<IActionResult> LogoutGuestUser(int userId)
         {
@@ -66,20 +66,20 @@ namespace FireSaverApi.Controllers
         }
 
 
-        [Authorize(Roles = new string[] { UserRole.ADMIN, UserRole.AUTHORIZED_USER })]
+        [Authorize(Roles = new string[] { UserRoleName.ADMIN, UserRoleName.AUTHORIZED_USER })]
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetUserInfo(int userId)
         {
             var currentUser = userContextService.GetUserContext();
 
-            if (currentUser.Id != userId && !currentUser.RolesList.Contains(UserRole.ADMIN))
+            if (currentUser.Id != userId && !currentUser.RolesList.Contains(UserRoleName.ADMIN))
                 return BadRequest("You are not the admin");
 
             var userInfo = await userService.GetUserInfoById(userId);
             return Ok(userInfo);
         }
 
-        [Authorize(Roles = new string[] { UserRole.ADMIN, UserRole.AUTHORIZED_USER })]
+        [Authorize(Roles = new string[] { UserRoleName.ADMIN, UserRoleName.AUTHORIZED_USER })]
         [HttpPut("updateInfo")]
         public async Task<IActionResult> UpdateUserInfo([FromBody] UserInfoDto currentUserInfo)
         {
@@ -90,7 +90,7 @@ namespace FireSaverApi.Controllers
             return Ok(updatedUserInfo);
         }
 
-        [Authorize(Roles = new string[] { UserRole.ADMIN, UserRole.AUTHORIZED_USER })]
+        [Authorize(Roles = new string[] { UserRoleName.ADMIN, UserRoleName.AUTHORIZED_USER })]
         [HttpPost("changepassword")]
         public async Task<IActionResult> ChangeUserPassword([FromBody] NewUserPasswordDto newUserPassword)
         {

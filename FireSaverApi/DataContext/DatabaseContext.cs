@@ -17,6 +17,7 @@ namespace FireSaverApi.DataContext
         public virtual DbSet<ScaleModel> ScaleModels { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Compartment> Compartment { get; set; }
+        public virtual DbSet<UserRole> UserRoles { get; set; }
 
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
         {
@@ -36,8 +37,7 @@ namespace FireSaverApi.DataContext
             modelBuilder.ApplyConfiguration(new PointConfiguration<RoutePoint>());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new ScalePointConfiguration());
-
-
+            modelBuilder.ApplyConfiguration(new RoleConfiguration());
         }
     }
 }

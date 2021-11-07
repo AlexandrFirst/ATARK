@@ -26,7 +26,7 @@ namespace FireSaverApi.Controllers
             this.buildingService = buildingService;
         }
 
-        [Authorize(Roles = new string[] { UserRole.ADMIN })]
+        [Authorize(Roles = new string[] { UserRoleName.ADMIN })]
         [HttpPost("newbuilding")]
         public async Task<IActionResult> AddNewBuilding([FromBody] NewBuildingDto newBuildingDto)
         {
@@ -36,7 +36,7 @@ namespace FireSaverApi.Controllers
         }
 
         [HttpDelete("{buildingId}")]
-        [Authorize(Roles = new string[] { UserRole.ADMIN })]
+        [Authorize(Roles = new string[] { UserRoleName.ADMIN })]
         public async Task<IActionResult> RemoveBuilding(int buildingId)
         {
             await buildingService.DeleteBuilding(buildingId);
@@ -45,7 +45,7 @@ namespace FireSaverApi.Controllers
         }
 
         [HttpGet("adduser/{userId}/{buildingId}")]
-        [Authorize(Roles = new string[] { UserRole.ADMIN, UserRole.AUTHORIZED_USER })]
+        [Authorize(Roles = new string[] { UserRoleName.ADMIN, UserRoleName.AUTHORIZED_USER })]
         public async Task<IActionResult> AddResponsibleUser(int userId, int buildingId)
         {
             var userContext = userContextService.GetUserContext();
@@ -62,7 +62,7 @@ namespace FireSaverApi.Controllers
         }
 
         [HttpDelete("removeuser/{userId}")]
-        [Authorize(Roles = new string[] { UserRole.ADMIN, UserRole.AUTHORIZED_USER })]
+        [Authorize(Roles = new string[] { UserRoleName.ADMIN, UserRoleName.AUTHORIZED_USER })]
         public async Task<IActionResult> RemoveResponsibleUser(int userId)
         {
             var userContext = userContextService.GetUserContext();
@@ -91,7 +91,7 @@ namespace FireSaverApi.Controllers
         }
 
         [HttpPut("updateBuilding/{buildingId}")]
-        [Authorize(Roles = new string[] { UserRole.ADMIN, UserRole.AUTHORIZED_USER })]
+        [Authorize(Roles = new string[] { UserRoleName.ADMIN, UserRoleName.AUTHORIZED_USER })]
         public async Task<IActionResult> UpdateBuildingInfo(int buildingId, [FromBody] NewBuildingDto newBuildingInfo)
         {
             var userContext = userContextService.GetUserContext();
@@ -106,7 +106,7 @@ namespace FireSaverApi.Controllers
         }
 
         [HttpPut("setBuildingCenter/{buildingId}")]
-        [Authorize(Roles = new string[] { UserRole.ADMIN, UserRole.AUTHORIZED_USER })]
+        [Authorize(Roles = new string[] { UserRoleName.ADMIN, UserRoleName.AUTHORIZED_USER })]
         public async Task<IActionResult> SetBuildingCenter(int buildingId, [FromBody] BuildingCenterDto buildingCentre)
         {
             var userContext = userContextService.GetUserContext();

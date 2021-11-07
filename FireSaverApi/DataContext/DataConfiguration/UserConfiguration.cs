@@ -9,6 +9,7 @@ namespace FireSaverApi.DataContext.DataConfiguration
         {
         
             builder.HasIndex(user => user.Mail).IsUnique();
+            builder.HasMany(user => user.RolesList).WithMany(role => role.Users);
         }
     }
 }

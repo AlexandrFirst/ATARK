@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace FireSaverApi.DataContext
 {
-    public class UserRole
+    public class UserRoleName
     {
         public const string ADMIN = "Admin";
         public const string AUTHORIZED_USER = "AuthorizedUser";
@@ -12,8 +12,12 @@ namespace FireSaverApi.DataContext
 
     public class User
     {
+        public User()
+        {
+            RolesList = new List<UserRole>();
+        }
         public int Id { get; set; }
-        public string RolesList { get; set; }
+        public IList<UserRole> RolesList { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
         public string Patronymic { get; set; }

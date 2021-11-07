@@ -12,7 +12,7 @@ namespace FireSaverApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize(Roles = new string[] { UserRole.ADMIN, UserRole.AUTHORIZED_USER })]
+    [Authorize(Roles = new string[] { UserRoleName.ADMIN, UserRoleName.AUTHORIZED_USER })]
     public class ScalePointsController : ControllerBase
     {
 
@@ -71,7 +71,7 @@ namespace FireSaverApi.Controllers
         async Task<bool> IsUserHaveRightsToChangeEvacPlan(MyHttpContext userContext)
         {
             var user = await userHelper.GetUserById(userContext.Id);
-            if (user.ResponsibleForBuilding != null || userContext.RolesList.Contains(UserRole.ADMIN))
+            if (user.ResponsibleForBuilding != null || userContext.RolesList.Contains(UserRoleName.ADMIN))
             {
                 return true;
             }

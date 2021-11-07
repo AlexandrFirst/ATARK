@@ -12,9 +12,7 @@ namespace FireSaverApi.Profiles
         {
             CreateMap<RegisterUserDto, User>();
 
-             CreateMap<User, UserInfoDto>()
-                    .ForMember(user => user.RolesList,
-                    memberOptions => memberOptions.MapFrom(userInfo => userInfo.RolesList.Split(',', System.StringSplitOptions.RemoveEmptyEntries).ToList<string>()));
+             CreateMap<User, UserInfoDto>();
 
 
             CreateMap<UserInfoDto, User>()

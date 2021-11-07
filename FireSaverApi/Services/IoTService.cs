@@ -109,7 +109,7 @@ namespace FireSaverApi.Services
                 throw new Exception("Can't login iot");
             }
 
-            var token = TokenGenerator.generateJwtToken(iot.Id, TokenGenerator.IoTJWTType, UserRole.AUTHORIZED_USER, appSettings.Secret);
+            var token = TokenGenerator.generateJwtToken(iot.Id, TokenGenerator.IoTJWTType, UserRoleName.AUTHORIZED_USER, appSettings.Secret);
             return new AuthResponseDto()
             {
                 Token = token,
