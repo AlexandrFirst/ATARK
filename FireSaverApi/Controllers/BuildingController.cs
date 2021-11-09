@@ -69,7 +69,7 @@ namespace FireSaverApi.Controllers
             int currentUserId = userContext.Id;
 
             var user = await userHelper.GetUserById(userId);
-            var currentUser = await userHelper.GetUserById(currentUserId);
+            var requestorUser = await userHelper.GetUserById(currentUserId);
 
             if (user.ResponsibleForBuilding == null)
             {
@@ -82,7 +82,7 @@ namespace FireSaverApi.Controllers
                 {
                     return BadRequest(new ServerResponse() { Message = "You can't remove yourself" });
                 }
-                var alteredBuilding = await buildingService.RemoveResponsibleUser(userId, currentUser.ResponsibleForBuilding.Id);
+                var alteredBuilding = await buildingService.RemoveResponsibleUser(userId, user.ResponsibleForBuilding.Id);
                 return Ok(alteredBuilding);
             }
 

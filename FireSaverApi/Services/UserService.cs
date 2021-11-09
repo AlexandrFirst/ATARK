@@ -201,9 +201,9 @@ namespace FireSaverApi.Services
                 throw new Exception("Current compartment for user is not set");
             }
 
-            var compartmentPoints = await context.RoutePoints.Include(p => p.MapPosition)
-                                                             .Where(p => p.Compartment.Id == user.CurrentCompartment.Id)
-                                                             .ToListAsync();
+            var compartmentPoints = await context.RoutePoints
+                                                 .Where(p => p.Compartment.Id == user.CurrentCompartment.Id)
+                                                 .ToListAsync();
 
             if (compartmentPoints.Count == 0)
             {
@@ -221,7 +221,10 @@ namespace FireSaverApi.Services
                                                           p.RoutePointType == RoutePointType.ADDITIONAL_EXIT).ToList();
             if (exitPoints.Count == 0)
             {
-                return new List<RoutePointDto>() { mapper.Map<RoutePointDto>(await routebuilderService.GetAllRoute(rootPointFotCurrentRoutePoint.Id)) };
+                return new List<RoutePointDto>() 
+                { 
+                    mapper.Map<RoutePointDto>(await routebuilderService.GetAllRoute(rootPointFotCurrentRoutePoint.Id)) 
+                };
             }
             else
             {
@@ -259,7 +262,6 @@ namespace FireSaverApi.Services
         {
             var foundUser = await context.Users.Include(b => b.ResponsibleForBuilding)
                                                .Include(c => c.CurrentCompartment)
-                                               .Include(p => p.LastSeenBuildingPosition)
                                                .Include(r => r.RolesList)
                                                .FirstOrDefaultAsync(u => u.Id == userId);
             if (foundUser == null)
@@ -286,7 +288,6 @@ namespace FireSaverApi.Services
             else
             {
                 var user = await GetUserById(userId);
-                //send to iot if there is such an open signal
                 if (iotId != null)
                 {
                     await socketService.OpenDoorWithIot(iotId.Value);

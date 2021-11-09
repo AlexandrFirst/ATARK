@@ -139,8 +139,6 @@ namespace FireSaverApi.Services
         public async Task<RoutePoint> GetRoutePoint(int routePointId)
         {
             var retrievingPoint = await context.RoutePoints.Include(c => c.ChildrenPoints)
-                                                                  .Include(p => p.ParentPoint)
-                                                                  .Include(p => p.MapPosition)
                                                                   .FirstOrDefaultAsync(i => i.Id == routePointId);
             if (retrievingPoint == null)
                 throw new System.Exception("Can't find deleting point");
@@ -172,7 +170,6 @@ namespace FireSaverApi.Services
         {
             var initPoint = await context.RoutePoints.Include(p => p.ParentPoint)
                                                    .Include(c => c.ChildrenPoints)
-                                                   .Include(c => c.MapPosition)
                                                    .FirstOrDefaultAsync(p => p.ParentPoint == null &&
                                                                              p.Id == rootRoutePointId);
             if (initPoint == null)
@@ -193,7 +190,7 @@ namespace FireSaverApi.Services
                 throw new System.Exception("Can't find route point");
             }
 
-            mapper.Map(updatingRoutePoint.PointPostion, pointToUpdate.MapPosition);
+            mapper.Map(updatingRoutePoint.MapPosition, pointToUpdate.MapPosition);
 
             // pointToUpdate.MapPosition = mapper.Map<Position>(updatingRoutePoint.PointPostion);
             context.Update(pointToUpdate.MapPosition);
@@ -234,7 +231,6 @@ namespace FireSaverApi.Services
             {
                 var children = await context.RoutePoints.Include(c => c.ChildrenPoints)
                                                         .Include(p => p.ParentPoint)
-                                                        .Include(c => c.MapPosition)
                                                         .FirstOrDefaultAsync(p => p.Id == point.Id);
                 point.ChildrenPoints = await GetAllChildrenPoints(children.ChildrenPoints, isDeleteMode);
 
@@ -250,7 +246,6 @@ namespace FireSaverApi.Services
         {
             RoutePoint currentPoint = await context.RoutePoints.Include(p => p.ChildrenPoints)
                                                 .Include(p => p.ParentPoint)
-                                                .Include(p => p.MapPosition)
                                                 .FirstOrDefaultAsync(p => p.Id == fromId);
 
             if (currentPoint.Id == toId)

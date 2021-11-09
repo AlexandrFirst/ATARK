@@ -13,6 +13,19 @@ namespace FireSaverApi.Services
 {
     public class LocationService : ILocationService
     {
+        private enum TransformationType { X, Y }
+
+        class TransformationPointModel
+        {
+            public PositionDto FromFirstPoint { get; set; }
+            public PositionDto FromSecondPoint { get; set; }
+            public PositionDto ToFirstPoint { get; set; }
+
+            public double fromToCoefX { get; set; }
+            public double fromToCoefY { get; set; }
+        }
+
+
         private readonly DatabaseContext dataContext;
         private readonly IMapper mapper;
         private LocationPointModel locationPointModel;
@@ -72,7 +85,7 @@ namespace FireSaverApi.Services
                 FromPixelYToCoordYCoef = avgFromPixelYToCoordYCoef
             };
 
-            compartment.EvacuationPlan.ScaleModel = mapper.Map<ScaleModel>(locationPointModel);
+            mapper.Map(locationPointModel, compartment.EvacuationPlan.ScaleModel);
             dataContext.Update(compartment.EvacuationPlan.ScaleModel);
             await dataContext.SaveChangesAsync();
 
@@ -80,108 +93,129 @@ namespace FireSaverApi.Services
             return locationPointModel;
         }
 
+        double getPixelXToCoordXCoef(ScalePoint p1, ScalePoint p2)
+        {
+            double fromPixelXToCoordXCoef = getFromCoordToPixelCoef(p1, p2, TransformationType.X);
+            return fromPixelXToCoordXCoef;
+        }
+
+        double getPixelYToCoordYCoef(ScalePoint p1, ScalePoint p2)
+        {
+            double fromPixelYToCoordYCoef = getFromCoordToPixelCoef(p1, p2, TransformationType.Y);
+            return fromPixelYToCoordYCoef;
+        }
+
+        double getFromCoordToPixelCoef(ScalePoint p1, ScalePoint p2, TransformationType transformationType)
+        {
+            var p1MapPositionDto = mapper.Map<PositionDto>(p1.MapPosition);
+            var p1WorldPositionDto = mapper.Map<PositionDto>(p1.WorldPosition);
+
+            var p2MapPositionDto = mapper.Map<PositionDto>(p2.MapPosition);
+            var p2WorldPositionDto = mapper.Map<PositionDto>(p2.WorldPosition);
+
+            double deltaPixel = 0;
+            double deltaCoord = 0;
+
+            switch (transformationType)
+            {
+                case TransformationType.X:
+                    {
+                        deltaPixel = getDelta(p1MapPositionDto.Latitude, p2MapPositionDto.Latitude);
+                        deltaCoord = getDelta(p1WorldPositionDto.Latitude, p2WorldPositionDto.Latitude);
+                        break;
+                    }
+                case TransformationType.Y:
+                    {
+                        deltaPixel = getDelta(p1MapPositionDto.Longtitude, p2MapPositionDto.Longtitude);
+                        deltaCoord = getDelta(p1WorldPositionDto.Longtitude, p2WorldPositionDto.Longtitude);
+                        break;
+                    }
+                default:
+                    {
+                        throw new Exception("Unknown tarnsformation type");
+                    }
+            }
+
+            double fromCoordToPixelCoef = deltaCoord / deltaPixel;
+            return fromCoordToPixelCoef;
+        }
+
         double getDelta(double a, double b)
         {
             return Math.Abs(a - b);
         }
 
-        double getPixelXToCoordXCoef(ScalePoint p1, ScalePoint p2)
-        {
-            var p1MapPositionDto = mapper.Map<PositionDto>(p1.MapPosition);
-            var p1WorldPositionDto = mapper.Map<PositionDto>(p1.WorldPosition);
-
-            var p2MapPositionDto = mapper.Map<PositionDto>(p2.MapPosition);
-            var p2WorldPositionDto = mapper.Map<PositionDto>(p2.WorldPosition);
-
-            double deltaXPixel = getDelta(p1MapPositionDto.Latitude, p2MapPositionDto.Latitude);
-
-            double deltaXCoord = getDelta(p1WorldPositionDto.Latitude, p2WorldPositionDto.Latitude);
-
-            double fromPixelXToCoordXCoef = deltaXCoord / deltaXPixel;
-
-            return fromPixelXToCoordXCoef;
-
-        }
-        double getPixelYToCoordYCoef(ScalePoint p1, ScalePoint p2)
-        {
-
-            var p1MapPositionDto = mapper.Map<PositionDto>(p1.MapPosition);
-            var p1WorldPositionDto = mapper.Map<PositionDto>(p1.WorldPosition);
-
-            var p2MapPositionDto = mapper.Map<PositionDto>(p2.MapPosition);
-            var p2WorldPositionDto = mapper.Map<PositionDto>(p2.WorldPosition);
-
-            double deltaYPixel = getDelta(p1MapPositionDto.Longtitude, p2MapPositionDto.Longtitude);
-
-            double deltaYCoord = getDelta(p1WorldPositionDto.Longtitude, p2WorldPositionDto.Longtitude);
-
-            double fromPixelYToCoordYCoef = deltaYCoord / deltaYPixel;
-
-            return fromPixelYToCoordYCoef;
-
-        }
-
         public async Task<PositionDto> ImgToWorldPostion(PositionDto imgPostion, int compartmentId)
         {
-            ScalePoint firstPoint = await GetFirstPointAndScaleModel(compartmentId);
+            ScalePoint firstPoint = await GetFirstPointAndInitScaleModel(compartmentId);
 
-            double x3PixelCoord = imgPostion.Latitude;
-            double y3PixelCoord = imgPostion.Longtitude;
+            var secondPixelPosition = imgPostion;
 
-            var firstPointMapPositionDto = mapper.Map<PositionDto>(firstPoint.MapPosition);
-            var firstPointWorldPositionDto = mapper.Map<PositionDto>(firstPoint.WorldPosition);
+            var initPixelPosition = mapper.Map<PositionDto>(firstPoint.MapPosition);
+            var initCoordPosition = mapper.Map<PositionDto>(firstPoint.WorldPosition);
 
-
-            double x1PixelCoord = firstPointMapPositionDto.Latitude;
-            double y1PixelCoord = firstPointMapPositionDto.Longtitude;
-
-            double x1WorldCoord = firstPointWorldPositionDto.Latitude;
-            double y1WorldCoord = firstPointWorldPositionDto.Longtitude;
-
-            double x3WorldCoord = x1WorldCoord + (x3PixelCoord - x1PixelCoord) * locationPointModel.FromPixelXToCoordXCoef;
-            double y3WorldCoord = y1WorldCoord + (y3PixelCoord - y1PixelCoord) * locationPointModel.FromPixelYToCoordYCoef;
-
-            System.Console.WriteLine("locationPointModel.FromPixelXToCoordXCoef: " + locationPointModel.FromPixelXToCoordXCoef);
-            System.Console.WriteLine("locationPointModel.FromPixelYToCoordYCoef: " + locationPointModel.FromPixelYToCoordYCoef);
-
-            return new PositionDto()
+            TransformationPointModel pointModel = new TransformationPointModel()
             {
-                Latitude = x3WorldCoord,
-                Longtitude = y3WorldCoord
+                FromFirstPoint = initPixelPosition,
+                FromSecondPoint = secondPixelPosition,
+                ToFirstPoint = initCoordPosition,
+                fromToCoefX = locationPointModel.FromPixelXToCoordXCoef,
+                fromToCoefY = locationPointModel.FromPixelYToCoordYCoef
             };
+
+            var transformedPos = ConvertFromToPostion(pointModel, compartmentId);
+
+            return transformedPos;
 
         }
 
         public async Task<PositionDto> WorldToImgPostion(PositionDto worldPostion, int compartmentId)
         {
-            ScalePoint firstPoint = await GetFirstPointAndScaleModel(compartmentId);
+            ScalePoint firstPoint = await GetFirstPointAndInitScaleModel(compartmentId);
 
-            double x3WorldCoord = worldPostion.Latitude;
-            double y3WorldCoord = worldPostion.Longtitude;
+            var secondCoordPosition = worldPostion;
 
-            var firstPointMapPositionDto = mapper.Map<PositionDto>(firstPoint.MapPosition);
-            var firstPointWorldPositionDto = mapper.Map<PositionDto>(firstPoint.WorldPosition);
+            var initPixelPosition = mapper.Map<PositionDto>(firstPoint.MapPosition);
+            var initCoordPosition = mapper.Map<PositionDto>(firstPoint.WorldPosition);
 
-            double x1WorldCoord = firstPointWorldPositionDto.Latitude;
-            double y1WorldCoord = firstPointWorldPositionDto.Longtitude;
+            TransformationPointModel pointModel = new TransformationPointModel()
+            {
+                FromFirstPoint = initCoordPosition,
+                FromSecondPoint = secondCoordPosition,
+                ToFirstPoint = initPixelPosition,
+                fromToCoefX = locationPointModel.FromCoordXToPixelXCoef,
+                fromToCoefY = locationPointModel.FromCoordYToPixelYCoef
+            };
 
-            double x1PixelCoord = firstPointMapPositionDto.Latitude;
-            double y1PixelCoord = firstPointMapPositionDto.Longtitude;
+            var transformedPos = ConvertFromToPostion(pointModel, compartmentId);
 
-            double x3PixelCoord = x1PixelCoord + (x3WorldCoord - x1WorldCoord) * locationPointModel.FromCoordXToPixelXCoef;
-            double y3PixelCoord = y1PixelCoord + (y3WorldCoord - y1WorldCoord) * locationPointModel.FromCoordYToPixelYCoef;
+            return transformedPos;
+        }
 
-            System.Console.WriteLine("locationPointModel.FromCoordXToPixelXCoef: " + locationPointModel.FromCoordXToPixelXCoef);
-            System.Console.WriteLine("locationPointModel.FromCoordYToPixelYCoef: " + locationPointModel.FromCoordYToPixelYCoef);
+
+        private PositionDto ConvertFromToPostion(TransformationPointModel transformationPointModel, int compartmentId)
+        {
+            double fromSecondPointLatitude = transformationPointModel.FromSecondPoint.Latitude;
+            double fromSecondPointLongtitude = transformationPointModel.FromSecondPoint.Longtitude;
+
+            double fromFirstPointLatitude = transformationPointModel.FromFirstPoint.Latitude;
+            double fromFirstPointLongtitude = transformationPointModel.FromFirstPoint.Longtitude;
+
+            double toFirstPointLatitude = transformationPointModel.ToFirstPoint.Latitude;
+            double toFirstPointLongtitude = transformationPointModel.ToFirstPoint.Longtitude;
+
+            double toSecondPointLatitude = toFirstPointLatitude + (fromSecondPointLatitude - fromFirstPointLatitude) * transformationPointModel.fromToCoefX;
+            double toSecondPointLogtitude = toFirstPointLongtitude + (fromSecondPointLongtitude - fromFirstPointLongtitude) * transformationPointModel.fromToCoefY;
+
 
             return new PositionDto()
             {
-                Latitude = x3PixelCoord,
-                Longtitude = y3PixelCoord
+                Latitude = toSecondPointLatitude,
+                Longtitude = toSecondPointLogtitude
             };
         }
 
-        async Task<ScalePoint> GetFirstPointAndScaleModel(int compartmentId)
+        async Task<ScalePoint> GetFirstPointAndInitScaleModel(int compartmentId)
         {
             var compartment = await GetCompartmentById(compartmentId);
 
@@ -212,11 +246,6 @@ namespace FireSaverApi.Services
             var compartment = await dataContext.Compartment.Include(ev => ev.EvacuationPlan)
                                                                             .ThenInclude(s => s.ScaleModel)
                                                                             .ThenInclude(p => p.ScalePoints)
-                                                                            .ThenInclude(mPos => mPos.MapPosition)
-                                                                        .Include(ev => ev.EvacuationPlan)
-                                                                            .ThenInclude(s => s.ScaleModel)
-                                                                            .ThenInclude(p => p.ScalePoints)
-                                                                            .ThenInclude(wPos => wPos.WorldPosition)
                                                                         .FirstOrDefaultAsync(c => c.Id == compartmentId);
 
             return compartment;

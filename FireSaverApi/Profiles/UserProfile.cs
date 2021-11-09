@@ -12,16 +12,16 @@ namespace FireSaverApi.Profiles
         {
             CreateMap<RegisterUserDto, User>();
 
-             CreateMap<User, UserInfoDto>();
+            CreateMap<User, UserInfoDto>()
+                   .ForMember(userInfo => userInfo.RolesList,
+                   memberOptions => memberOptions.MapFrom(user => user.RolesList.Select(r => r.Name)));
 
 
             CreateMap<UserInfoDto, User>()
-                    .ForMember(userInfo => userInfo.RolesList,
-                    memberOptions => memberOptions.MapFrom(user => string.Join(',', user.RolesList)))
                     .ForMember(userInfo => userInfo.Id, memberOptions => memberOptions.Ignore())
                     .ForMember(userInfo => userInfo.Mail, memberOptions => memberOptions.Ignore())
                     .ForMember(userInfo => userInfo.RolesList, memberOptions => memberOptions.Ignore());
-        
+
             CreateMap<UserInfoDto, MyHttpContext>();
         }
     }
