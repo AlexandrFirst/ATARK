@@ -27,7 +27,7 @@ namespace FireSaverApi.Controllers
         }
 
         [HttpPost("{compartmentId}/newEvacPlan")]
-        [Authorize(Roles = new string[] { UserRole.ADMIN, UserRole.AUTHORIZED_USER })]
+        [Authorize(Roles = new string[] { UserRoleName.ADMIN, UserRoleName.AUTHORIZED_USER })]
         public async Task<IActionResult> AddEvacuationPlanToCompartment(int compartmentId, [FromForm] IFormFile evacPlanImgae)
         {
             await CheckIsResponsible();
@@ -37,7 +37,7 @@ namespace FireSaverApi.Controllers
         }
 
         [HttpPut("{compartmentId}/updateEvacPlan")]
-        [Authorize(Roles = new string[] { UserRole.ADMIN, UserRole.AUTHORIZED_USER })]
+        [Authorize(Roles = new string[] { UserRoleName.ADMIN, UserRoleName.AUTHORIZED_USER })]
         public async Task<IActionResult> ChangeEvacuationPlanOfCompartment(int compartmentId, [FromForm] IFormFile newEvacPlanImgae)
         {
             await CheckIsResponsible();
@@ -62,7 +62,7 @@ namespace FireSaverApi.Controllers
         }
 
         [HttpDelete("{compartmentId}")]
-        [Authorize(Roles = new string[] { UserRole.ADMIN, UserRole.AUTHORIZED_USER })]
+        [Authorize(Roles = new string[] { UserRoleName.ADMIN, UserRoleName.AUTHORIZED_USER })]
         public async Task<IActionResult> DeleteEvacuationPlanOfCompartment(int compartmentId)
         {
             await CheckIsResponsible();
@@ -87,7 +87,7 @@ namespace FireSaverApi.Controllers
         async Task<bool> IsUserHaveRightsToChangeEvacPlan(MyHttpContext userContext)
         {
             var user = await userHelper.GetUserById(userContext.Id);
-            if (user.ResponsibleForBuilding != null || userContext.RolesList.Contains(UserRole.ADMIN))
+            if (user.ResponsibleForBuilding != null || userContext.RolesList.Contains(UserRoleName.ADMIN))
             {
                 return true;
             }

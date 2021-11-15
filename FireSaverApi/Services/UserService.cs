@@ -31,6 +31,7 @@ namespace FireSaverApi.Services
         private readonly IRoutebuilderService routebuilderService;
         private readonly ITestService testService;
         private readonly ISocketService socketService;
+        private readonly IUserRoleHelper roleHelper;
         private readonly AppSettings appSettings;
 
         public UserService(DatabaseContext context,
@@ -39,7 +40,8 @@ namespace FireSaverApi.Services
                             ILocationService locationService,
                             IRoutebuilderService routebuilderService,
                             ITestService testService,
-                            ISocketService socketService)
+                            ISocketService socketService,
+                            IUserRoleHelper roleHelper)
         {
             this.appSettings = appsettings.Value;
             this.context = context;
@@ -49,12 +51,15 @@ namespace FireSaverApi.Services
             this.routebuilderService = routebuilderService;
             this.testService = testService;
             this.socketService = socketService;
+            this.roleHelper = roleHelper;
         }
         public async Task<UserInfoDto> CreateNewUser(RegisterUserDto newUserInfo, string Role)
         {
             User newUser = mapper.Map<User>(newUserInfo);
 
-            newUser.RolesList = Role;
+
+            var userRole = await roleHelper.GetRoleByName(Role);
+            newUser.RolesList.Add(userRole);
             newUser.Password = CalcHelper.ComputeSha256Hash(newUser.Password);
 
             await context.Users.AddAsync(newUser);
@@ -111,7 +116,8 @@ namespace FireSaverApi.Services
 
             if (compareInputAndUserPasswords(userAuth.Password, user.Password))
             {
-                var authToken = TokenGenerator.generateJwtToken(user.Id, TokenGenerator.UserJWTType, user.RolesList, appSettings.Secret);
+                var userRoles = string.Join(',', user.RolesList.Select(r => r.Name).ToList());
+                var authToken = TokenGenerator.generateJwtToken(user.Id, TokenGenerator.UserJWTType, userRoles, appSettings.Secret);
 
                 return new AuthResponseDto()
                 {
@@ -134,14 +140,14 @@ namespace FireSaverApi.Services
                 Name = Guid.NewGuid().ToString(),
                 Password = Guid.NewGuid().ToString(),
                 Patronymic = "",
-                RolesList = new List<string>(),
+                RolesList = null,
                 Surname = "",
                 TelephoneNumber = "",
             };
 
-            var response = await CreateNewUser(guestUser, UserRole.GUEST);
+            var response = await CreateNewUser(guestUser, UserRoleName.GUEST);
 
-            var token = TokenGenerator.generateJwtToken(response.Id, TokenGenerator.UserJWTType, UserRole.GUEST, appSettings.Secret);
+            var token = TokenGenerator.generateJwtToken(response.Id, TokenGenerator.UserJWTType, UserRoleName.GUEST, appSettings.Secret);
             return new AuthResponseDto()
             {
                 Token = token,
@@ -151,15 +157,15 @@ namespace FireSaverApi.Services
 
         public async Task<IList<User>> GetAllGuests()
         {
-            var allGuests = await context.Users.Where(u => u.RolesList.Contains(UserRole.GUEST)).ToListAsync();
+            var allGuests = await context.Users.Include(u => u.RolesList).Where(u => u.RolesList.Any(r => r.Name == UserRoleName.GUEST)).ToListAsync();
             return allGuests;
         }
 
         public async Task LogoutGuest(int guestId)
         {
-            var userToLogout = await context.Users.FirstOrDefaultAsync(u => u.Id == guestId);
-            var currentUserRoles = userToLogout.RolesList.Split(',');
-            if (userToLogout != null && currentUserRoles.Contains(UserRole.GUEST))
+            var userToLogout = await context.Users.Include(r => r.RolesList).FirstOrDefaultAsync(u => u.Id == guestId);
+            var currentUserRoles = userToLogout.RolesList.Select(u => u.Name);
+            if (userToLogout != null && currentUserRoles.Contains(UserRoleName.GUEST))
             {
                 context.Remove(userToLogout);
                 await socketService.LogoutUser(guestId);
@@ -195,9 +201,9 @@ namespace FireSaverApi.Services
                 throw new Exception("Current compartment for user is not set");
             }
 
-            var compartmentPoints = await context.RoutePoints.Include(p => p.MapPosition)
-                                                             .Where(p => p.Compartment.Id == user.CurrentCompartment.Id)
-                                                             .ToListAsync();
+            var compartmentPoints = await context.RoutePoints
+                                                 .Where(p => p.Compartment.Id == user.CurrentCompartment.Id)
+                                                 .ToListAsync();
 
             if (compartmentPoints.Count == 0)
             {
@@ -215,7 +221,10 @@ namespace FireSaverApi.Services
                                                           p.RoutePointType == RoutePointType.ADDITIONAL_EXIT).ToList();
             if (exitPoints.Count == 0)
             {
-                return new List<RoutePointDto>() { mapper.Map<RoutePointDto>(await routebuilderService.GetAllRoute(rootPointFotCurrentRoutePoint.Id)) };
+                return new List<RoutePointDto>() 
+                { 
+                    mapper.Map<RoutePointDto>(await routebuilderService.GetAllRoute(rootPointFotCurrentRoutePoint.Id)) 
+                };
             }
             else
             {
@@ -253,7 +262,7 @@ namespace FireSaverApi.Services
         {
             var foundUser = await context.Users.Include(b => b.ResponsibleForBuilding)
                                                .Include(c => c.CurrentCompartment)
-                                               .Include(p => p.LastSeenBuildingPosition)
+                                               .Include(r => r.RolesList)
                                                .FirstOrDefaultAsync(u => u.Id == userId);
             if (foundUser == null)
             {
@@ -279,7 +288,6 @@ namespace FireSaverApi.Services
             else
             {
                 var user = await GetUserById(userId);
-                //send to iot if there is such an open signal
                 if (iotId != null)
                 {
                     await socketService.OpenDoorWithIot(iotId.Value);
@@ -309,7 +317,7 @@ namespace FireSaverApi.Services
         public async Task<UserInfoDto> SetWorldPostion(int userId, PositionDto worldUserPostion)
         {
             var user = await GetUserById(userId);
-            var postion = mapper.Map<Position>(worldUserPostion);
+            var postion = mapper.Map<string>(worldUserPostion);
 
             user.LastSeenBuildingPosition = postion;
             await context.SaveChangesAsync();

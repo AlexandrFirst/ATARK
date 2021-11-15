@@ -8,10 +8,14 @@ namespace FireSaverApi.Profiles
     {
         public PointProfile()
         {
-            CreateMap<Position, PositionDto>().ReverseMap();
             CreateMap<ScalePoint, ScalePointDto>().ReverseMap();
-            CreateMap<RoutePoint, RoutePointDto>().ReverseMap();
 
+            CreateMap<RoutePoint, RoutePointDto>();
+            CreateMap<RoutePointDto, RoutePoint>();
+            
+            
+            CreateMap<PositionDto, string>().ConstructUsing(pDto => new string(pDto.Longtitude + ";" + pDto.Latitude));
+            CreateMap<string, PositionDto>().ConstructUsing(pStr => new PositionDto(pStr));
         }
     }
 }

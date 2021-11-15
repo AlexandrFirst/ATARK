@@ -12,7 +12,7 @@ namespace FireSaverApi.Helpers
             var currentUserId = userContext.Id;
             var user = await userHelper.GetUserById(currentUserId);
 
-            if (isUserResponsibleForBuilding(user, buildingId) || userContext.RolesList.Contains(UserRole.ADMIN))
+            if (isUserResponsibleForBuilding(user, buildingId) || userContext.RolesList.Contains(UserRoleName.ADMIN))
             {
                 return true;
             }

@@ -24,7 +24,7 @@ namespace FireSaverApi.Controllers
         }
 
         [HttpPost("addRoomToFloor/{floorId}")]
-        [Authorize(Roles = new string[] { UserRole.ADMIN, UserRole.AUTHORIZED_USER })]
+        [Authorize(Roles = new string[] { UserRoleName.ADMIN, UserRoleName.AUTHORIZED_USER })]
         public async Task<IActionResult> AddRoomToFloor(int floorId, [FromBody] RoomDto newRoomDto)
         {
             var result = await roomService.AddCompartment(floorId, newRoomDto);
@@ -34,7 +34,7 @@ namespace FireSaverApi.Controllers
         }
 
         [HttpPut("changeRoomInfo/{roomId}")]
-        [Authorize(Roles = new string[] { UserRole.ADMIN, UserRole.AUTHORIZED_USER })]
+        [Authorize(Roles = new string[] { UserRoleName.ADMIN, UserRoleName.AUTHORIZED_USER })]
         public async Task<IActionResult> ChangeRoomInfo(int roomId, [FromBody] RoomDto newRoomDto)
         {
             var result = await roomService.ChangeCompartmentInfo(roomId, newRoomDto);
@@ -43,7 +43,7 @@ namespace FireSaverApi.Controllers
         }
 
         [HttpDelete("{roomId}")]
-        [Authorize(Roles = new string[] { UserRole.ADMIN, UserRole.AUTHORIZED_USER })]
+        [Authorize(Roles = new string[] { UserRoleName.ADMIN, UserRoleName.AUTHORIZED_USER })]
         public async Task<IActionResult> RemoveRoomFromBuilding(int roomId)
         {
             await roomService.DeleteCompartment(roomId);

@@ -15,11 +15,6 @@ namespace FireSaverApi.DataContext.DataConfiguration
                 .WithOne(floor => floor.BuildingWithThisFloor)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasOne(building => building.BuildingCenterPosition)
-                .WithOne(postition => postition.Building)
-                .HasForeignKey<Position>(pos => pos.BuildingId)
-                .OnDelete(DeleteBehavior.Cascade);
-
         }
     }
 }

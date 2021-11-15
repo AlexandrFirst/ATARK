@@ -3,35 +3,41 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FireSaverApi.Migrations
 {
-    public partial class Changedonetoonelink : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Position",
+                name: "Buildings",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Longtitude = table.Column<double>(type: "float", nullable: false),
-                    Latitude = table.Column<double>(type: "float", nullable: false)
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Info = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BuildingCenterPosition = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SafetyDistance = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Position", x => x.Id);
+                    table.PrimaryKey("PK_Buildings", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ScaleModels",
+                name: "EvacuationPlans",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CoordToPixelCoef = table.Column<double>(type: "float", nullable: false)
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PublicId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Width = table.Column<int>(type: "int", nullable: false),
+                    Height = table.Column<int>(type: "int", nullable: false),
+                    UploadTime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ScaleModels", x => x.Id);
+                    table.PrimaryKey("PK_EvacuationPlans", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -48,66 +54,26 @@ namespace FireSaverApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Buildings",
+                name: "ScaleModels",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    BuildingCenterPositionId = table.Column<int>(type: "int", nullable: true),
-                    SafetyDistance = table.Column<double>(type: "float", nullable: false)
+                    FromPixelXToCoordXCoef = table.Column<double>(type: "float", nullable: false),
+                    FromCoordXToPixelXCoef = table.Column<double>(type: "float", nullable: false),
+                    FromPixelYToCoordYCoef = table.Column<double>(type: "float", nullable: false),
+                    FromCoordYToPixelYCoef = table.Column<double>(type: "float", nullable: false),
+                    ApplyingEvacPlansId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Buildings", x => x.Id);
+                    table.PrimaryKey("PK_ScaleModels", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Buildings_Position_BuildingCenterPositionId",
-                        column: x => x.BuildingCenterPositionId,
-                        principalTable: "Position",
+                        name: "FK_ScaleModels_EvacuationPlans_ApplyingEvacPlansId",
+                        column: x => x.ApplyingEvacPlansId,
+                        principalTable: "EvacuationPlans",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "EvacuationPlans",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PublicId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UploadTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ScaleModelId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EvacuationPlans", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_EvacuationPlans_ScaleModels_ScaleModelId",
-                        column: x => x.ScaleModelId,
-                        principalTable: "ScaleModels",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Questions",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Content = table.Column<int>(type: "int", nullable: false),
-                    AnswearsList = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TestId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Questions", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Questions_Tests_TestId",
-                        column: x => x.TestId,
-                        principalTable: "Tests",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -123,7 +89,6 @@ namespace FireSaverApi.Migrations
                     CompartmentTestId = table.Column<int>(type: "int", nullable: true),
                     Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Level = table.Column<int>(type: "int", nullable: true),
-                    CurrentFloorId = table.Column<int>(type: "int", nullable: true),
                     BuildingWithThisFloorId = table.Column<int>(type: "int", nullable: true),
                     RoomFloorId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -135,13 +100,7 @@ namespace FireSaverApi.Migrations
                         column: x => x.BuildingWithThisFloorId,
                         principalTable: "Buildings",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Compartment_Compartment_CurrentFloorId",
-                        column: x => x.CurrentFloorId,
-                        principalTable: "Compartment",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Compartment_Compartment_RoomFloorId",
                         column: x => x.RoomFloorId,
@@ -153,11 +112,54 @@ namespace FireSaverApi.Migrations
                         column: x => x.EvacuationPlanId,
                         principalTable: "EvacuationPlans",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Compartment_Tests_CompartmentTestId",
                         column: x => x.CompartmentTestId,
                         principalTable: "Tests",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Questions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AnswearsList = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PossibleAnswears = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TestId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Questions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Questions_Tests_TestId",
+                        column: x => x.TestId,
+                        principalTable: "Tests",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ScalePoints",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    WorldPosition = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ScaleModelId = table.Column<int>(type: "int", nullable: true),
+                    MapPosition = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ScalePoints", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ScalePoints_ScaleModels_ScaleModelId",
+                        column: x => x.ScaleModelId,
+                        principalTable: "ScaleModels",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -168,7 +170,8 @@ namespace FireSaverApi.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    MapPositionId = table.Column<int>(type: "int", nullable: true),
+                    MapPosition = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IotIdentifier = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsAuthNeeded = table.Column<bool>(type: "bit", nullable: false),
                     LastRecordedTemperature = table.Column<double>(type: "float", nullable: false),
                     LastRecordedCO2Level = table.Column<double>(type: "float", nullable: false),
@@ -186,60 +189,33 @@ namespace FireSaverApi.Migrations
                         column: x => x.CompartmentId,
                         principalTable: "Compartment",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_IoTs_Position_MapPositionId",
-                        column: x => x.MapPositionId,
-                        principalTable: "Position",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Point",
+                name: "RoutePoints",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    MapPositionId = table.Column<int>(type: "int", nullable: true),
-                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ParentPointId = table.Column<int>(type: "int", nullable: true),
-                    RoutePointType = table.Column<int>(type: "int", nullable: true),
+                    RoutePointType = table.Column<int>(type: "int", nullable: false),
                     CompartmentId = table.Column<int>(type: "int", nullable: true),
-                    WorldPositionId = table.Column<int>(type: "int", nullable: true),
-                    ScaleModelId = table.Column<int>(type: "int", nullable: true)
+                    MapPosition = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Point", x => x.Id);
+                    table.PrimaryKey("PK_RoutePoints", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Point_Compartment_CompartmentId",
+                        name: "FK_RoutePoints_Compartment_CompartmentId",
                         column: x => x.CompartmentId,
                         principalTable: "Compartment",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Point_Point_ParentPointId",
+                        name: "FK_RoutePoints_RoutePoints_ParentPointId",
                         column: x => x.ParentPointId,
-                        principalTable: "Point",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Point_Position_MapPositionId",
-                        column: x => x.MapPositionId,
-                        principalTable: "Position",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Point_Position_WorldPositionId",
-                        column: x => x.WorldPositionId,
-                        principalTable: "Position",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Point_ScaleModels_ScaleModelId",
-                        column: x => x.ScaleModelId,
-                        principalTable: "ScaleModels",
+                        principalTable: "RoutePoints",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -254,10 +230,11 @@ namespace FireSaverApi.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Surname = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Patronymic = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Mail = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Mail = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     TelephoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DOB = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LastSeenBuildingPositionId = table.Column<int>(type: "int", nullable: true),
+                    LastSeenBuildingPosition = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ResponsibleForBuildingId = table.Column<int>(type: "int", nullable: true),
                     CurrentCompartmentId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -269,27 +246,14 @@ namespace FireSaverApi.Migrations
                         column: x => x.ResponsibleForBuildingId,
                         principalTable: "Buildings",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Users_Compartment_CurrentCompartmentId",
                         column: x => x.CurrentCompartmentId,
                         principalTable: "Compartment",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Users_Position_LastSeenBuildingPositionId",
-                        column: x => x.LastSeenBuildingPositionId,
-                        principalTable: "Position",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Buildings_BuildingCenterPositionId",
-                table: "Buildings",
-                column: "BuildingCenterPositionId",
-                unique: true,
-                filter: "[BuildingCenterPositionId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Compartment_BuildingWithThisFloorId",
@@ -304,11 +268,6 @@ namespace FireSaverApi.Migrations
                 filter: "[CompartmentTestId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Compartment_CurrentFloorId",
-                table: "Compartment",
-                column: "CurrentFloorId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Compartment_EvacuationPlanId",
                 table: "Compartment",
                 column: "EvacuationPlanId",
@@ -321,52 +280,9 @@ namespace FireSaverApi.Migrations
                 column: "RoomFloorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EvacuationPlans_ScaleModelId",
-                table: "EvacuationPlans",
-                column: "ScaleModelId",
-                unique: true,
-                filter: "[ScaleModelId] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_IoTs_CompartmentId",
                 table: "IoTs",
                 column: "CompartmentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_IoTs_MapPositionId",
-                table: "IoTs",
-                column: "MapPositionId",
-                unique: true,
-                filter: "[MapPositionId] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Point_CompartmentId",
-                table: "Point",
-                column: "CompartmentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Point_MapPositionId",
-                table: "Point",
-                column: "MapPositionId",
-                unique: true,
-                filter: "[MapPositionId] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Point_ParentPointId",
-                table: "Point",
-                column: "ParentPointId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Point_ScaleModelId",
-                table: "Point",
-                column: "ScaleModelId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Point_WorldPositionId",
-                table: "Point",
-                column: "WorldPositionId",
-                unique: true,
-                filter: "[WorldPositionId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Questions_TestId",
@@ -374,16 +290,38 @@ namespace FireSaverApi.Migrations
                 column: "TestId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_RoutePoints_CompartmentId",
+                table: "RoutePoints",
+                column: "CompartmentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RoutePoints_ParentPointId",
+                table: "RoutePoints",
+                column: "ParentPointId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ScaleModels_ApplyingEvacPlansId",
+                table: "ScaleModels",
+                column: "ApplyingEvacPlansId",
+                unique: true,
+                filter: "[ApplyingEvacPlansId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ScalePoints_ScaleModelId",
+                table: "ScalePoints",
+                column: "ScaleModelId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_CurrentCompartmentId",
                 table: "Users",
                 column: "CurrentCompartmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_LastSeenBuildingPositionId",
+                name: "IX_Users_Mail",
                 table: "Users",
-                column: "LastSeenBuildingPositionId",
+                column: "Mail",
                 unique: true,
-                filter: "[LastSeenBuildingPositionId] IS NOT NULL");
+                filter: "[Mail] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_ResponsibleForBuildingId",
@@ -397,13 +335,19 @@ namespace FireSaverApi.Migrations
                 name: "IoTs");
 
             migrationBuilder.DropTable(
-                name: "Point");
-
-            migrationBuilder.DropTable(
                 name: "Questions");
 
             migrationBuilder.DropTable(
+                name: "RoutePoints");
+
+            migrationBuilder.DropTable(
+                name: "ScalePoints");
+
+            migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "ScaleModels");
 
             migrationBuilder.DropTable(
                 name: "Compartment");
@@ -416,12 +360,6 @@ namespace FireSaverApi.Migrations
 
             migrationBuilder.DropTable(
                 name: "Tests");
-
-            migrationBuilder.DropTable(
-                name: "Position");
-
-            migrationBuilder.DropTable(
-                name: "ScaleModels");
         }
     }
 }

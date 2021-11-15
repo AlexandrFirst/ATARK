@@ -10,6 +10,7 @@ using FireSaverApi.Dtos.CompartmentDtos;
 using FireSaverApi.Helpers;
 using FireSaverApi.Helpers.ExceptionHandler;
 using FireSaverApi.hub;
+using FireSaverApi.Models;
 using FireSaverApi.Profiles;
 using FireSaverApi.Services;
 using Microsoft.AspNetCore.Builder;
@@ -33,11 +34,11 @@ namespace FireSaverApi
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-
-            AddAdminIfItNotExists();
+            Task.Run(AddRolesIfEmpty).Wait();
+            Task.Run(AddAdminIfItNotExists).Wait();
         }
 
-        void AddAdminIfItNotExists()
+        async Task AddAdminIfItNotExists()
         {
             var optionsBuilder = new DbContextOptionsBuilder<DatabaseContext>();
             optionsBuilder.UseSqlServer(Configuration.GetConnectionString("FireSaverDbConnectionString"));
@@ -45,7 +46,15 @@ namespace FireSaverApi
             using (DatabaseContext dbContext
                         = new DatabaseContext(optionsBuilder.Options))
             {
-                var userWithAdminRights = dbContext.Users.FirstOrDefault(u => u.RolesList.Contains(UserRole.ADMIN));
+                var roleHelper = new UserRoleHelper(dbContext);
+
+                var userWithAdminRights = dbContext.Users.Include(r => r.RolesList)
+                                                        .FirstOrDefault(u => u.RolesList.Any(r => r.Name == UserRoleName.ADMIN));
+
+                var adminRole = await roleHelper.GetRoleByName(UserRoleName.ADMIN);
+
+
+
                 if (userWithAdminRights == null)
                 {
                     var userAdmin = new User()
@@ -53,18 +62,36 @@ namespace FireSaverApi
                         Mail = "root@gmail.com",
                         Name = "Admin",
                         Password = CalcHelper.ComputeSha256Hash("admin"),
-                        RolesList = UserRole.ADMIN,
                         TelephoneNumber = "000000000",
                         Surname = "Admin",
                         Patronymic = "Admin",
                         DOB = DateTime.MinValue
                     };
+
+                    userAdmin.RolesList.Add(adminRole);
+
                     dbContext.Users.Add(userAdmin);
                     dbContext.SaveChanges();
                 }
             }
         }
 
+        async Task AddRolesIfEmpty()
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<DatabaseContext>();
+            optionsBuilder.UseSqlServer(Configuration.GetConnectionString("FireSaverDbConnectionString"));
+
+            using (DatabaseContext dbContext
+                        = new DatabaseContext(optionsBuilder.Options))
+            {
+                var allRoles = await dbContext.UserRoles.ToListAsync();
+                if (allRoles.Count() > 0)
+                    return;
+
+                var roleHelper = new UserRoleHelper(dbContext);
+                await roleHelper.AddUserRoles(UserRoleName.ADMIN, UserRoleName.AUTHORIZED_USER, UserRoleName.GUEST);
+            }
+        }
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -122,12 +149,15 @@ namespace FireSaverApi
 
             services.AddScoped<ISocketService, SocketService>();
 
+            services.AddScoped<IUserRoleHelper, UserRoleHelper>();
+
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.TryAddSingleton<ITimerService, TimerService>();
 
 
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
+            services.Configure<BackupModel>(Configuration.GetSection("BackupSettings"));
 
             var mappingConfig = new MapperConfiguration(mc =>
             {

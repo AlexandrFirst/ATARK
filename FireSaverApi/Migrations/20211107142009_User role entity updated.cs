@@ -2,7 +2,7 @@
 
 namespace FireSaverApi.Migrations
 {
-    public partial class AddedconstraintstoEvacplanentity : Migration
+    public partial class Userroleentityupdated : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

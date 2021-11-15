@@ -78,7 +78,7 @@ namespace FireSaverApi.Services
             var test = await dataContext.Tests.Include(t => t.Questions).FirstOrDefaultAsync(t => t.Id == answears.TestId);
             if (test == null)
             {
-                return true;
+                throw new System.Exception("Test is not found");
             }
 
             if (answears.Answears.Count != test.Questions.Count)

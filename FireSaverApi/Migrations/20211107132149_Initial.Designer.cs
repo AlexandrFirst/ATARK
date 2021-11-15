@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FireSaverApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20211103144237_test answers to choose added")]
-    partial class testanswerstochooseadded
+    [Migration("20211107132149_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -31,8 +31,8 @@ namespace FireSaverApi.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("BuildingCenterPositionId")
-                        .HasColumnType("int");
+                    b.Property<string>("BuildingCenterPosition")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Info")
                         .HasColumnType("nvarchar(max)");
@@ -41,10 +41,6 @@ namespace FireSaverApi.Migrations
                         .HasColumnType("float");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BuildingCenterPositionId")
-                        .IsUnique()
-                        .HasFilter("[BuildingCenterPositionId] IS NOT NULL");
 
                     b.ToTable("Buildings");
                 });
@@ -97,11 +93,11 @@ namespace FireSaverApi.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("Height")
+                        .HasColumnType("int");
+
                     b.Property<string>("PublicId")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("ScaleModelId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("UploadTime")
                         .HasColumnType("datetime2");
@@ -109,11 +105,10 @@ namespace FireSaverApi.Migrations
                     b.Property<string>("Url")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.Property<int>("Width")
+                        .HasColumnType("int");
 
-                    b.HasIndex("ScaleModelId")
-                        .IsUnique()
-                        .HasFilter("[ScaleModelId] IS NOT NULL");
+                    b.HasKey("Id");
 
                     b.ToTable("EvacuationPlans");
                 });
@@ -152,61 +147,14 @@ namespace FireSaverApi.Migrations
                     b.Property<double>("LastRecordedTemperature")
                         .HasColumnType("float");
 
-                    b.Property<int?>("MapPositionId")
-                        .HasColumnType("int");
+                    b.Property<string>("MapPosition")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CompartmentId");
 
-                    b.HasIndex("MapPositionId")
-                        .IsUnique()
-                        .HasFilter("[MapPositionId] IS NOT NULL");
-
                     b.ToTable("IoTs");
-                });
-
-            modelBuilder.Entity("FireSaverApi.DataContext.Point", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("MapPositionId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MapPositionId")
-                        .IsUnique()
-                        .HasFilter("[MapPositionId] IS NOT NULL");
-
-                    b.ToTable("Point");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Point");
-                });
-
-            modelBuilder.Entity("FireSaverApi.DataContext.Position", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<double>("Latitude")
-                        .HasColumnType("float");
-
-                    b.Property<double>("Longtitude")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Position");
                 });
 
             modelBuilder.Entity("FireSaverApi.DataContext.Question", b =>
@@ -219,8 +167,8 @@ namespace FireSaverApi.Migrations
                     b.Property<string>("AnswearsList")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Content")
-                        .HasColumnType("int");
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PossibleAnswears")
                         .HasColumnType("nvarchar(max)");
@@ -235,12 +183,43 @@ namespace FireSaverApi.Migrations
                     b.ToTable("Questions");
                 });
 
+            modelBuilder.Entity("FireSaverApi.DataContext.RoutePoint", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("CompartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("MapPosition")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ParentPointId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoutePointType")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompartmentId");
+
+                    b.HasIndex("ParentPointId");
+
+                    b.ToTable("RoutePoints");
+                });
+
             modelBuilder.Entity("FireSaverApi.DataContext.ScaleModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("ApplyingEvacPlansId")
+                        .HasColumnType("int");
 
                     b.Property<double>("FromCoordXToPixelXCoef")
                         .HasColumnType("float");
@@ -256,7 +235,34 @@ namespace FireSaverApi.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ApplyingEvacPlansId")
+                        .IsUnique()
+                        .HasFilter("[ApplyingEvacPlansId] IS NOT NULL");
+
                     b.ToTable("ScaleModels");
+                });
+
+            modelBuilder.Entity("FireSaverApi.DataContext.ScalePoint", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("MapPosition")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ScaleModelId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("WorldPosition")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ScaleModelId");
+
+                    b.ToTable("ScalePoints");
                 });
 
             modelBuilder.Entity("FireSaverApi.DataContext.Test", b =>
@@ -287,8 +293,8 @@ namespace FireSaverApi.Migrations
                     b.Property<DateTime>("DOB")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("LastSeenBuildingPositionId")
-                        .HasColumnType("int");
+                    b.Property<string>("LastSeenBuildingPosition")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Mail")
                         .HasColumnType("nvarchar(450)");
@@ -317,10 +323,6 @@ namespace FireSaverApi.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CurrentCompartmentId");
-
-                    b.HasIndex("LastSeenBuildingPositionId")
-                        .IsUnique()
-                        .HasFilter("[LastSeenBuildingPositionId] IS NOT NULL");
 
                     b.HasIndex("Mail")
                         .IsUnique()
@@ -358,55 +360,6 @@ namespace FireSaverApi.Migrations
                     b.HasDiscriminator().HasValue("Room");
                 });
 
-            modelBuilder.Entity("FireSaverApi.DataContext.RoutePoint", b =>
-                {
-                    b.HasBaseType("FireSaverApi.DataContext.Point");
-
-                    b.Property<int?>("CompartmentId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ParentPointId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RoutePointType")
-                        .HasColumnType("int");
-
-                    b.HasIndex("CompartmentId");
-
-                    b.HasIndex("ParentPointId");
-
-                    b.HasDiscriminator().HasValue("RoutePoint");
-                });
-
-            modelBuilder.Entity("FireSaverApi.DataContext.ScalePoint", b =>
-                {
-                    b.HasBaseType("FireSaverApi.DataContext.Point");
-
-                    b.Property<int?>("ScaleModelId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("WorldPositionId")
-                        .HasColumnType("int");
-
-                    b.HasIndex("ScaleModelId");
-
-                    b.HasIndex("WorldPositionId")
-                        .IsUnique()
-                        .HasFilter("[WorldPositionId] IS NOT NULL");
-
-                    b.HasDiscriminator().HasValue("ScalePoint");
-                });
-
-            modelBuilder.Entity("FireSaverApi.DataContext.Building", b =>
-                {
-                    b.HasOne("FireSaverApi.DataContext.Position", "BuildingCenterPosition")
-                        .WithOne("Building")
-                        .HasForeignKey("FireSaverApi.DataContext.Building", "BuildingCenterPositionId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("BuildingCenterPosition");
-                });
-
             modelBuilder.Entity("FireSaverApi.DataContext.Compartment", b =>
                 {
                     b.HasOne("FireSaverApi.DataContext.Test", "CompartmentTest")
@@ -424,16 +377,6 @@ namespace FireSaverApi.Migrations
                     b.Navigation("EvacuationPlan");
                 });
 
-            modelBuilder.Entity("FireSaverApi.DataContext.EvacuationPlan", b =>
-                {
-                    b.HasOne("FireSaverApi.DataContext.ScaleModel", "ScaleModel")
-                        .WithOne("ApplyingEvacPlans")
-                        .HasForeignKey("FireSaverApi.DataContext.EvacuationPlan", "ScaleModelId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("ScaleModel");
-                });
-
             modelBuilder.Entity("FireSaverApi.DataContext.IoT", b =>
                 {
                     b.HasOne("FireSaverApi.DataContext.Compartment", "Compartment")
@@ -441,24 +384,7 @@ namespace FireSaverApi.Migrations
                         .HasForeignKey("CompartmentId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("FireSaverApi.DataContext.Position", "MapPosition")
-                        .WithOne("IotPostion")
-                        .HasForeignKey("FireSaverApi.DataContext.IoT", "MapPositionId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.Navigation("Compartment");
-
-                    b.Navigation("MapPosition");
-                });
-
-            modelBuilder.Entity("FireSaverApi.DataContext.Point", b =>
-                {
-                    b.HasOne("FireSaverApi.DataContext.Position", "MapPosition")
-                        .WithOne("PointPostion")
-                        .HasForeignKey("FireSaverApi.DataContext.Point", "MapPositionId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("MapPosition");
                 });
 
             modelBuilder.Entity("FireSaverApi.DataContext.Question", b =>
@@ -470,15 +396,46 @@ namespace FireSaverApi.Migrations
                     b.Navigation("Test");
                 });
 
+            modelBuilder.Entity("FireSaverApi.DataContext.RoutePoint", b =>
+                {
+                    b.HasOne("FireSaverApi.DataContext.Compartment", "Compartment")
+                        .WithMany("RoutePoints")
+                        .HasForeignKey("CompartmentId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("FireSaverApi.DataContext.RoutePoint", "ParentPoint")
+                        .WithMany("ChildrenPoints")
+                        .HasForeignKey("ParentPointId");
+
+                    b.Navigation("Compartment");
+
+                    b.Navigation("ParentPoint");
+                });
+
+            modelBuilder.Entity("FireSaverApi.DataContext.ScaleModel", b =>
+                {
+                    b.HasOne("FireSaverApi.DataContext.EvacuationPlan", "ApplyingEvacPlans")
+                        .WithOne("ScaleModel")
+                        .HasForeignKey("FireSaverApi.DataContext.ScaleModel", "ApplyingEvacPlansId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("ApplyingEvacPlans");
+                });
+
+            modelBuilder.Entity("FireSaverApi.DataContext.ScalePoint", b =>
+                {
+                    b.HasOne("FireSaverApi.DataContext.ScaleModel", "ScaleModel")
+                        .WithMany("ScalePoints")
+                        .HasForeignKey("ScaleModelId");
+
+                    b.Navigation("ScaleModel");
+                });
+
             modelBuilder.Entity("FireSaverApi.DataContext.User", b =>
                 {
                     b.HasOne("FireSaverApi.DataContext.Compartment", "CurrentCompartment")
                         .WithMany("InboundUsers")
                         .HasForeignKey("CurrentCompartmentId");
-
-                    b.HasOne("FireSaverApi.DataContext.Position", "LastSeenBuildingPosition")
-                        .WithOne("User")
-                        .HasForeignKey("FireSaverApi.DataContext.User", "LastSeenBuildingPositionId");
 
                     b.HasOne("FireSaverApi.DataContext.Building", "ResponsibleForBuilding")
                         .WithMany("ResponsibleUsers")
@@ -486,8 +443,6 @@ namespace FireSaverApi.Migrations
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("CurrentCompartment");
-
-                    b.Navigation("LastSeenBuildingPosition");
 
                     b.Navigation("ResponsibleForBuilding");
                 });
@@ -511,37 +466,6 @@ namespace FireSaverApi.Migrations
                     b.Navigation("RoomFloor");
                 });
 
-            modelBuilder.Entity("FireSaverApi.DataContext.RoutePoint", b =>
-                {
-                    b.HasOne("FireSaverApi.DataContext.Compartment", "Compartment")
-                        .WithMany("RoutePoints")
-                        .HasForeignKey("CompartmentId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("FireSaverApi.DataContext.RoutePoint", "ParentPoint")
-                        .WithMany("ChildrenPoints")
-                        .HasForeignKey("ParentPointId");
-
-                    b.Navigation("Compartment");
-
-                    b.Navigation("ParentPoint");
-                });
-
-            modelBuilder.Entity("FireSaverApi.DataContext.ScalePoint", b =>
-                {
-                    b.HasOne("FireSaverApi.DataContext.ScaleModel", "ScaleModel")
-                        .WithMany("ScalePoints")
-                        .HasForeignKey("ScaleModelId");
-
-                    b.HasOne("FireSaverApi.DataContext.Position", "WorldPosition")
-                        .WithOne("ScalePoint")
-                        .HasForeignKey("FireSaverApi.DataContext.ScalePoint", "WorldPositionId");
-
-                    b.Navigation("ScaleModel");
-
-                    b.Navigation("WorldPosition");
-                });
-
             modelBuilder.Entity("FireSaverApi.DataContext.Building", b =>
                 {
                     b.Navigation("Floors");
@@ -561,25 +485,17 @@ namespace FireSaverApi.Migrations
             modelBuilder.Entity("FireSaverApi.DataContext.EvacuationPlan", b =>
                 {
                     b.Navigation("Compartment");
+
+                    b.Navigation("ScaleModel");
                 });
 
-            modelBuilder.Entity("FireSaverApi.DataContext.Position", b =>
+            modelBuilder.Entity("FireSaverApi.DataContext.RoutePoint", b =>
                 {
-                    b.Navigation("Building");
-
-                    b.Navigation("IotPostion");
-
-                    b.Navigation("PointPostion");
-
-                    b.Navigation("ScalePoint");
-
-                    b.Navigation("User");
+                    b.Navigation("ChildrenPoints");
                 });
 
             modelBuilder.Entity("FireSaverApi.DataContext.ScaleModel", b =>
                 {
-                    b.Navigation("ApplyingEvacPlans");
-
                     b.Navigation("ScalePoints");
                 });
 
@@ -593,11 +509,6 @@ namespace FireSaverApi.Migrations
             modelBuilder.Entity("FireSaverApi.DataContext.Floor", b =>
                 {
                     b.Navigation("Rooms");
-                });
-
-            modelBuilder.Entity("FireSaverApi.DataContext.RoutePoint", b =>
-                {
-                    b.Navigation("ChildrenPoints");
                 });
 #pragma warning restore 612, 618
         }
