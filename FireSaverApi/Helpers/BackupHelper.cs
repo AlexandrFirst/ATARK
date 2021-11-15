@@ -14,7 +14,7 @@ namespace FireSaverApi.Helpers
 
         public static void RestoreDB(DatabaseContext dbContext, BackupModel backupModel)
         {
-            var query = @$"RESTORE DATABASE {backupModel.DbName} Adventureworks FROM DISK = '{backupModel.BackupDir}\{backupModel.DbName}.bak'";
+            var query = @$"RESTORE DATABASE {backupModel.DbName} FROM DISK = '{backupModel.BackupDir}\{backupModel.DbName}.bak'";
             dbContext.Database.ExecuteSqlRaw(query);
         }
     }
