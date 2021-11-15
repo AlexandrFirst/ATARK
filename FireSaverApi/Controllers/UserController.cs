@@ -145,5 +145,11 @@ namespace FireSaverApi.Controllers
             await userService.SetAlaramForBuilding(userId);
             return Ok(new ServerResponse() { Message = "Alarm is set" });
         }
+
+        [HttpGet("isMailUnique/{mail}")]
+        public async Task<IActionResult> CheckIfMailIsUnique(string mail)
+        {
+            return Ok(await authService.CheckUserMailOnUniqueness(mail));
+        }
     }
 }

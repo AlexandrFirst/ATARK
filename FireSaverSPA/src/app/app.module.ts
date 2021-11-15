@@ -7,18 +7,22 @@ import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { WorldMapComponent } from './Components/worldMap/worldMap.component';
 import { MyMapComponent } from './Components/myMap/myMap.component';
+import { LoginComponent } from './Components/Login/Login.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [		
     AppComponent,
       MyMapComponent,
-      WorldMapComponent
+      WorldMapComponent,
+      LoginComponent
    ],
   imports: [
     BrowserModule,
     LeafletModule,
     NgbModule,
-    HttpClientModule
+    HttpClientModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

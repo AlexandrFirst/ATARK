@@ -12,6 +12,7 @@ using FireSaverApi.DataContext;
 using FireSaverApi.Dtos;
 using FireSaverApi.Dtos.IoTDtos;
 using FireSaverApi.Dtos.TestDtos;
+using FireSaverApi.Dtos.UserDtos;
 using FireSaverApi.Helpers;
 using FireSaverApi.Helpers.ExceptionHandler.CustomExceptions;
 using FireSaverApi.hub;
@@ -221,9 +222,9 @@ namespace FireSaverApi.Services
                                                           p.RoutePointType == RoutePointType.ADDITIONAL_EXIT).ToList();
             if (exitPoints.Count == 0)
             {
-                return new List<RoutePointDto>() 
-                { 
-                    mapper.Map<RoutePointDto>(await routebuilderService.GetAllRoute(rootPointFotCurrentRoutePoint.Id)) 
+                return new List<RoutePointDto>()
+                {
+                    mapper.Map<RoutePointDto>(await routebuilderService.GetAllRoute(rootPointFotCurrentRoutePoint.Id))
                 };
             }
             else
@@ -331,5 +332,28 @@ namespace FireSaverApi.Services
             return hashedInputPassword == userPassword;
         }
 
+        public async Task<UserUniqueMailResponse> CheckUserMailOnUniqueness(string mail)
+        {
+            Task<UserUniqueMailResponse> completedTask = Task<UserUniqueMailResponse>.Factory.StartNew(() => checkOnUniqueness(mail));
+            return await completedTask;
+        }
+
+        private UserUniqueMailResponse checkOnUniqueness(string mail)
+        {
+            if (context.Users.Any(u => u.Mail.Equals(mail)))
+            {
+                return new UserUniqueMailResponse()
+                {
+                    IsUnique = false
+                };
+            }
+            else
+            {
+                return new UserUniqueMailResponse()
+                {
+                    IsUnique = true
+                };
+            }
+        }
     }
 }
