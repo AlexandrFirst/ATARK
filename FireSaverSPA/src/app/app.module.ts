@@ -15,25 +15,38 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { LoaderComponent } from './Components/Loader/Loader.component';
 import { FooterComponent } from './Components/footer/footer.component';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
-  declarations: [		
+  declarations: [
     AppComponent,
-      MyMapComponent,
-      WorldMapComponent,
-      LoginComponent,
-      LoaderComponent,
-      FooterComponent
-   ],
+    MyMapComponent,
+    WorldMapComponent,
+    LoginComponent,
+    LoaderComponent,
+    FooterComponent
+  ],
   imports: [
     CommonModule,
-    BrowserAnimationsModule, 
+    BrowserAnimationsModule,
     ToastrModule.forRoot(),
     BrowserModule,
     LeafletModule,
     NgbModule,
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RouterModule.forRoot([
+      {
+        path: 'entrance',
+        component: LoginComponent
+      },
+      {
+        path: 'main',
+        loadChildren: () => import('./Modules/mainContent/mainContent.module').then(m => m.MainContentModule)
+      },
+      { path: '', redirectTo: '/entrance', pathMatch: 'full' },
+      { path: '**', redirectTo: '/entrance', pathMatch: 'full' },
+    ])
   ],
   providers: [],
   bootstrap: [AppComponent]
