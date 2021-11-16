@@ -13,13 +13,17 @@ import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ToastrModule } from 'ngx-toastr';
+import { LoaderComponent } from './Components/Loader/Loader.component';
+import { FooterComponent } from './Components/footer/footer.component';
 
 @NgModule({
   declarations: [		
     AppComponent,
       MyMapComponent,
       WorldMapComponent,
-      LoginComponent
+      LoginComponent,
+      LoaderComponent,
+      FooterComponent
    ],
   imports: [
     CommonModule,

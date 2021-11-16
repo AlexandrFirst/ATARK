@@ -282,6 +282,11 @@
     background: #57ff81;
     transform: translateX(-30%);
     cursor: pointer;
+
+    &.disabled-btn {
+        background: #adb4af;
+        cursor: default;
+    }
 }
 
 .btn-signup {
@@ -290,4 +295,10 @@
     box-shadow: inset 0 0 0 2px #57ff81;
     transform: translateX(30%);
     cursor: pointer;
+
+    &.disabled-btn {
+        color: #adb4af;
+        box-shadow: inset 0 0 0 2px #adb4af;
+        cursor: default;
+    }
 }

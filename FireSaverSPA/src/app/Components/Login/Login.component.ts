@@ -1,7 +1,10 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { LoginUserDto } from 'src/app/Models/UserService/loginUserDto';
+import { RegistrationUserData } from 'src/app/Models/UserService/registrationUserData';
 import { HttpUserService } from 'src/app/Services/httpUser.service';
+import { LoaderSignServiceService } from 'src/app/Services/LoaderSignService.service';
 import { PasswordConfirmValidator } from 'src/app/Validators/passwordConfirmValidator';
 import { AsyncUniqMailValidator } from 'src/app/Validators/UniqEmailValidator';
 
@@ -19,53 +22,56 @@ export class LoginComponent implements OnInit {
 
   registerForm: FormGroup;
 
-  get registrationName(){
+  get registrationName() {
     return this.registerForm.get('name');
   }
 
-  get registrationSurname(){
+  get registrationSurname() {
     return this.registerForm.get('surname');
   }
 
-  get registrationPatronymic(){
+  get registrationPatronymic() {
     return this.registerForm.get('patronymic');
   }
 
-  get registrationMail(){
+  get registrationMail() {
     return this.registerForm.get('mail');
   }
 
-  get registrationTelNumber(){
+  get registrationTelNumber() {
     return this.registerForm.get('telNumber');
   }
 
-  get registrationDob(){
+  get registrationDob() {
     return this.registerForm.get('dob');
   }
 
-  get registrationPassword(){
+  get registrationPassword() {
     return this.registerForm.get('password');
   }
 
-  get registrationConfirmPassword(){
+  get registrationConfirmPassword() {
     return this.registerForm.get('confirmPassword');
   }
 
-  get loginMail(){
+  get loginMail() {
     return this.loginForm.get('mail');
   }
 
-  get loginPass(){
+  get loginPass() {
     return this.loginForm.get('password');
   }
 
-  constructor(private userService: HttpUserService, private toastr: ToastrService) {
+  constructor(private userService: HttpUserService, 
+              private toastr: ToastrService,
+              private loaderSignService: LoaderSignServiceService) {
+
     this.loginForm = new FormGroup({
       mail: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required])
     });
 
-    this.registerForm  = new FormGroup({
+    this.registerForm = new FormGroup({
       name: new FormControl('', [
         Validators.required,
         Validators.minLength(3),
@@ -73,7 +79,6 @@ export class LoginComponent implements OnInit {
       ]),
       surname: new FormControl('', [
         Validators.required,
-        Validators.email,
         Validators.minLength(3),
         Validators.maxLength(20)
       ]),
@@ -103,7 +108,7 @@ export class LoginComponent implements OnInit {
     }, PasswordConfirmValidator);
 
 
-   }
+  }
 
   ngOnInit() {
     const switchers = document.querySelectorAll('.switcher')
@@ -115,7 +120,6 @@ export class LoginComponent implements OnInit {
     })
   }
 
-  
 
   showHidePasswordBtnClick() {
     this.showPassword = !this.showPassword;
@@ -124,15 +128,60 @@ export class LoginComponent implements OnInit {
 
   sendLoginData() {
     console.log(this.loginForm);
-    if(this.loginForm.invalid){
+    if (this.loginForm.invalid) {
       this.toastr.error("Login form data is invalid")
+    }
+    else {
+      this.loaderSignService.activate();
+
+      this.userService.LoginUser({
+        mail: this.loginMail.value,
+        password: this.loginPass.value
+      } as LoginUserDto).subscribe(response => {
+        this.userService.WriteToken(response.token);
+        this.toastr.success("Welcome");
+        //TODO: create redirection to main page
+        
+      }, error => {
+        console.log(error);
+        this.toastr.error("Error while signing up. Try again");        
+        this.loaderSignService.deactivate();
+      }, () =>{
+        this.loaderSignService.deactivate();
+      })
     }
   }
 
   sendRegisterData() {
     console.log(this.registerForm);
-    if(this.registerForm.invalid){
+    if (this.registerForm.invalid) {
       this.toastr.error("Registration form data is invalid")
+    }
+    else {
+      this.loaderSignService.activate();
+
+      this.userService.SendUserRegistrationData({
+        dob: this.registrationDob.value,
+        mail: this.registrationMail.value,
+        name: this.registrationName.value,
+        password: this.registrationPassword.value,
+        patronymic: this.registrationPatronymic.value,
+        surname: this.registrationName.value,
+        telephoneNumber: this.registrationTelNumber.value
+      } as RegistrationUserData).subscribe(response => {
+        console.log(response)
+        this.toastr.success("You are sucessfully registered")
+        this.registerForm.reset();
+        const switchers = document.querySelectorAll('.switcher');
+        (switchers[0] as HTMLElement).click();
+
+      }, error => {
+        console.log(error.message)
+        this.toastr.error("Error while creating user. Try again")
+        this.loaderSignService.deactivate();
+      }, () => {
+        this.loaderSignService.deactivate();
+      });
     }
   }
 }

@@ -37,7 +37,7 @@
               </div>
             </div>
           </fieldset>
-          <button type="button" class="btn-login" (click)="sendLoginData()">Login</button>
+          <button type="button" class="btn-login" (click)="sendLoginData()" [disabled]="loginForm.invalid" [class.disabled-btn] = "loginForm.invalid">Login</button>
         </form>
       </div>
       <div class="form-wrapper">
@@ -101,7 +101,7 @@
             </div>
             <div class="input-block">
               <label for="signup-telephone">Telephone number</label>
-              <input id="signup-telephone" type="tel" required formControlName="telNumber">
+              <input id="signup-telephone" type="tel" required formControlName="telNumber" placeholder="+380 XX XXX XX XX or +380-XX-XXX-XX-XX">
               <div *ngIf="registrationTelNumber.invalid  && registrationTelNumber.touched">
                 <div *ngIf="registrationTelNumber.errors?.required">
                   Telephone can't be empty
@@ -161,7 +161,7 @@
               </div>
             </div>
           </fieldset>
-          <button class="btn-signup" type="button" (click)="sendRegisterData()">Continue</button>
+          <button class="btn-signup" type="button" (click)="sendRegisterData()" [disabled]="registerForm.invalid" [class.disabled-btn] = "registerForm.invalid">Continue</button>
         </form>
       </div>
     </div>
