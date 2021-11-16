@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 import { HttpUserService } from 'src/app/Services/httpUser.service';
 import { PasswordConfirmValidator } from 'src/app/Validators/passwordConfirmValidator';
 import { AsyncUniqMailValidator } from 'src/app/Validators/UniqEmailValidator';
@@ -58,7 +59,7 @@ export class LoginComponent implements OnInit {
     return this.loginForm.get('password');
   }
 
-  constructor(private userService: HttpUserService) {
+  constructor(private userService: HttpUserService, private toastr: ToastrService) {
     this.loginForm = new FormGroup({
       mail: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required])
@@ -123,9 +124,15 @@ export class LoginComponent implements OnInit {
 
   sendLoginData() {
     console.log(this.loginForm);
+    if(this.loginForm.invalid){
+      this.toastr.error("Login form data is invalid")
+    }
   }
 
   sendRegisterData() {
     console.log(this.registerForm);
+    if(this.registerForm.invalid){
+      this.toastr.error("Registration form data is invalid")
+    }
   }
 }

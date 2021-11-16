@@ -9,6 +9,10 @@ import { WorldMapComponent } from './Components/worldMap/worldMap.component';
 import { MyMapComponent } from './Components/myMap/myMap.component';
 import { LoginComponent } from './Components/Login/Login.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [		
@@ -18,6 +22,9 @@ import { ReactiveFormsModule } from '@angular/forms';
       LoginComponent
    ],
   imports: [
+    CommonModule,
+    BrowserAnimationsModule, 
+    ToastrModule.forRoot(),
     BrowserModule,
     LeafletModule,
     NgbModule,
