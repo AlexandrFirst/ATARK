@@ -109,7 +109,7 @@ namespace FireSaverApi.Services
 
         public async Task<AuthResponseDto> AuthUser(AuthUserDto userAuth)
         {
-            var user = await context.Users.FirstOrDefaultAsync(u => u.Mail == userAuth.Mail);
+            var user = await context.Users.Include(b => b.ResponsibleForBuilding).FirstOrDefaultAsync(u => u.Mail == userAuth.Mail);
             if (user == null)
             {
                 throw new UserNotFoundException();
@@ -117,14 +117,22 @@ namespace FireSaverApi.Services
 
             if (compareInputAndUserPasswords(userAuth.Password, user.Password))
             {
-                var userRoles = string.Join(',', user.RolesList.Select(r => r.Name).ToList());
+                var userRoleList = user.RolesList.Select(r => r.Name).ToList();
+
+                var userRoles = string.Join(',', userRoleList);
                 var authToken = TokenGenerator.generateJwtToken(user.Id, TokenGenerator.UserJWTType, userRoles, appSettings.Secret);
 
-                return new AuthResponseDto()
+                var userAuthResponse = new AuthResponseDto()
                 {
                     Token = authToken,
-                    UserId = user.Id
+                    UserId = user.Id,
+                    Roles = userRoleList
                 };
+
+                if(user.ResponsibleForBuilding != null)
+                    userAuthResponse.ResponsibleBuildingId = user.ResponsibleForBuilding.Id;
+
+                return userAuthResponse;
             }
             else
             {

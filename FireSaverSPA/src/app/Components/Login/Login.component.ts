@@ -138,10 +138,10 @@ export class LoginComponent implements OnInit {
         mail: this.loginMail.value,
         password: this.loginPass.value
       } as LoginUserDto).subscribe(response => {
-        this.userService.WriteToken(response.token);
+        this.userService.writeAuthResponse(response);
         this.toastr.success("Welcome");
         //TODO: create redirection to main page
-        
+
       }, error => {
         console.log(error);
         this.toastr.error("Error while signing up. Try again");        

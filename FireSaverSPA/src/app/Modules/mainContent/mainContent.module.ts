@@ -2,16 +2,35 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MainContentComponent } from './mainContent.component';
 import { RouterModule } from '@angular/router';
-import { StartMainPageComponent } from 'src/app/Components/startMainPage/startMainPage.component';
+import { BuildingComponent } from 'src/app/Components/Building/Building.component';
+import { BuildingsComponent } from 'src/app/Components/Buildings/Buildings.component';
+import { AccountComponent } from 'src/app/Components/Account/Account.component';
+import { RoomComponent } from 'src/app/Components/Room/Room.component';
+import { FloorComponent } from 'src/app/Components/Floor/Floor.component';
+import { TestComponent } from 'src/app/Components/Test/Test.component';
 
 @NgModule({
   imports: [
     CommonModule,
     RouterModule.forChild([
-      { path: '', component: StartMainPageComponent },
-      { path: '**', component: StartMainPageComponent },
+      { path: '/compartment/:compartmentId/test', component: TestComponent },
+      { path: '/room/:roomId', component: RoomComponent },
+      { path: '/floor/:floorId', component: FloorComponent },
+      { path: '/account', component: AccountComponent },
+      { path: '/buildings', component: BuildingsComponent },
+      { path: '/buildings/:buildingId', component: BuildingComponent },
+      { path: '', component: MainContentComponent },
+      { path: '**', component: MainContentComponent },
     ])
   ],
-  declarations: [MainContentComponent]
+  declarations: [
+    MainContentComponent,
+    BuildingComponent,
+    BuildingsComponent,
+    AccountComponent,
+    RoomComponent,
+    FloorComponent,
+    TestComponent
+  ]
 })
 export class MainContentModule { }

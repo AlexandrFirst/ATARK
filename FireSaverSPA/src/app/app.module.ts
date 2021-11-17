@@ -4,7 +4,7 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppComponent } from './app.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { WorldMapComponent } from './Components/worldMap/worldMap.component';
 import { MyMapComponent } from './Components/myMap/myMap.component';
 import { LoginComponent } from './Components/Login/Login.component';
@@ -16,6 +16,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { LoaderComponent } from './Components/Loader/Loader.component';
 import { FooterComponent } from './Components/footer/footer.component';
 import { RouterModule } from '@angular/router';
+import { AddHeaderInterceptor } from './Interceptors/addHeadersInterceptor';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,9 @@ import { RouterModule } from '@angular/router';
       { path: '**', redirectTo: '/entrance', pathMatch: 'full' },
     ])
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AddHeaderInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
