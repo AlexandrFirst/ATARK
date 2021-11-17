@@ -4,14 +4,14 @@ import { Observable } from "rxjs";
 export class AddHeaderInterceptor implements HttpInterceptor {
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         const bearerToken = localStorage.getItem('token');
-
+        console.log(req);
         if (bearerToken) {
             const clonedRequest = req.clone({ headers: req.headers.append('Authorization', 'Bearer ' + bearerToken) });
 
             return next.handle(clonedRequest);
         }
         else {
-            next.handle(req);
+            return next.handle(req);
         }
     }
 }

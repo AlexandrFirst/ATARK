@@ -17,6 +17,8 @@ import { LoaderComponent } from './Components/Loader/Loader.component';
 import { FooterComponent } from './Components/footer/footer.component';
 import { RouterModule } from '@angular/router';
 import { AddHeaderInterceptor } from './Interceptors/addHeadersInterceptor';
+import { LoginGuard } from './route-guards/login.guard';
+import { MainContentGuard } from './route-guards/mainContent.guard';
 
 @NgModule({
   declarations: [
@@ -39,11 +41,13 @@ import { AddHeaderInterceptor } from './Interceptors/addHeadersInterceptor';
     RouterModule.forRoot([
       {
         path: 'entrance',
-        component: LoginComponent
+        component: LoginComponent,
+        canActivate: [MainContentGuard]
       },
       {
         path: 'main',
-        loadChildren: () => import('./Modules/mainContent/mainContent.module').then(m => m.MainContentModule)
+        loadChildren: () => import('./Modules/mainContent/mainContent.module').then(m => m.MainContentModule),
+        canActivateChild: [LoginGuard]
       },
       { path: '', redirectTo: '/entrance', pathMatch: 'full' },
       { path: '**', redirectTo: '/entrance', pathMatch: 'full' },

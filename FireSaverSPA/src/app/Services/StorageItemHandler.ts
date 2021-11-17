@@ -13,10 +13,10 @@ export class StorageItemHandler implements ItemStorageHandler {
             localStorage.setItem(this.itemName, item)
     }
     Read(): string {
-        const retVal = localStorage.getItem(this.itemName).toString();
+        const retVal = localStorage.getItem(this.itemName);
         if (!retVal)
             return "-1";
-        return retVal;
+        return retVal.toString();
     }
     Delete() {
         localStorage.removeItem(this.itemName);

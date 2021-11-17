@@ -176,7 +176,7 @@ export class LoginComponent implements OnInit {
         (switchers[0] as HTMLElement).click();
 
       }, error => {
-        console.log(error.message)
+        console.log(error)
         this.toastr.error("Error while creating user. Try again")
         this.loaderSignService.deactivate();
       }, () => {

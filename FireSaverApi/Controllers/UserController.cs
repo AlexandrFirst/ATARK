@@ -151,5 +151,15 @@ namespace FireSaverApi.Controllers
         {
             return Ok(await authService.CheckUserMailOnUniqueness(mail));
         }
+
+        [Authorize]
+        [HttpGet("tokenValid")]
+        public async Task<IActionResult> CheckTokenValidity()
+        {
+            return Ok(new ServerResponse()
+            {
+                Message = "Token is valid"
+            });
+        }
     }
 }

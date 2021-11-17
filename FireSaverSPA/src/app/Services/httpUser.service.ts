@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { InputRoutePoint, Point, Postion, RoutePoint } from '../Models/Dtos';
+import { ServerResponseMessage } from '../Models/Shared/serverResponseMessage';
 import { LoginUserDto, ResponseLoginDto } from '../Models/UserService/loginUserDto';
 import { RegistrationUserData } from '../Models/UserService/registrationUserData';
 import { UserInfoDto } from '../Models/UserService/userInfoDto';
@@ -18,9 +19,10 @@ export class HttpUserService extends BaseHttpService {
 
     constructor(client: HttpClient) {
         super(client);
-     }
+    }
 
     IsMailUniq(mail: string): Observable<UserUniqueMailResponse> {
+        console.log('validating mail ', mail, ' is user service')
         return this.client.get(this.baseUrl + "user/isMailUnique/" + mail).pipe(map(data => data as UserUniqueMailResponse));
     }
 
@@ -28,7 +30,11 @@ export class HttpUserService extends BaseHttpService {
         return this.client.post(this.baseUrl + "user/newuser", registrationData).pipe(map(data => data as UserInfoDto));
     }
 
-    LoginUser(loginData: LoginUserDto): Observable<ResponseLoginDto> { 
+    LoginUser(loginData: LoginUserDto): Observable<ResponseLoginDto> {
         return this.client.post(this.baseUrl + "user/auth", loginData).pipe(map(data => data as ResponseLoginDto));
+    }
+
+    CheckTokenValidity(token: string): Observable<ServerResponseMessage> {
+        return this.client.get(this.baseUrl + 'user/tokenValid').pipe(map(data => data as ServerResponseMessage));
     }
 }

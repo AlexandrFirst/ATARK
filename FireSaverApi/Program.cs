@@ -22,26 +22,26 @@ namespace FireSaverApi
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.ConfigureKestrel(opt =>
-                    {
-                        opt.ListenAnyIP(5001, listenOpt =>
-                        {
-                            listenOpt.UseHttps(
-                            HostConfig.CertificateFileLocation,
-                            HostConfig.CertificatePassword);
-                        });
-                        opt.ListenAnyIP(5000);
-                    });
+                    // webBuilder.ConfigureKestrel(opt =>
+                    // {
+                    //     opt.ListenAnyIP(5001, listenOpt =>
+                    //     {
+                    //         listenOpt.UseHttps(
+                    //         HostConfig.CertificateFileLocation,
+                    //         HostConfig.CertificatePassword);
+                    //     });
+                    //     opt.ListenAnyIP(5000);
+                    // });
                     
                     webBuilder.UseStartup<Startup>();
                 })
-                 .ConfigureServices((context, services) =>
-                {
-                    HostConfig.CertificateFileLocation =
-                        context.Configuration["CertificateFileLocation"];
-                    HostConfig.CertificatePassword =
-                        context.Configuration["CertPassword"];
-                })
+                //  .ConfigureServices((context, services) =>
+                // {
+                //     HostConfig.CertificateFileLocation =
+                //         context.Configuration["CertificateFileLocation"];
+                //     HostConfig.CertificatePassword =
+                //         context.Configuration["CertPassword"];
+                // })
                 .ConfigureServices(services => services.AddHostedService<GuestsCleaner>());
     }
 
