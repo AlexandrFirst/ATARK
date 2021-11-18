@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MainContentComponent } from './mainContent.component';
+import { MainSubContentComponent } from './mainSubContent.component';
 import { RouterModule } from '@angular/router';
 import { BuildingComponent } from 'src/app/Components/Building/Building.component';
 import { BuildingsComponent } from 'src/app/Components/Buildings/Buildings.component';
@@ -18,14 +18,16 @@ import { TestComponent } from 'src/app/Components/Test/Test.component';
       { path: 'floor/:floorId', component: FloorComponent },
       { path: 'account', component: AccountComponent },
       { path: 'buildings', component: BuildingsComponent },
-      { path: 'buildings/:buildingId', component: BuildingComponent },
-      {path: '',  redirectTo: 'account', pathMatch: 'full'},
-      {path: '**',  redirectTo: 'account', pathMatch: 'full'}
+      { path: 'buildings/:buildingId', component: BuildingComponent }
     ])
   ],
   declarations: [
-    MainContentComponent,
-    
-  ]
+    MainSubContentComponent,
+    BuildingComponent,
+    BuildingsComponent,
+    AccountComponent,
+    RoomComponent,
+    FloorComponent,
+    TestComponent]
 })
-export class MainContentModule { }
+export class MainSubContentModule { }

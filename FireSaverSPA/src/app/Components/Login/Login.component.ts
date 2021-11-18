@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { LoginUserDto } from 'src/app/Models/UserService/loginUserDto';
 import { RegistrationUserData } from 'src/app/Models/UserService/registrationUserData';
@@ -64,7 +65,8 @@ export class LoginComponent implements OnInit {
 
   constructor(private userService: HttpUserService, 
               private toastr: ToastrService,
-              private loaderSignService: LoaderSignServiceService) {
+              private loaderSignService: LoaderSignServiceService,
+              private router: Router) {
 
     this.loginForm = new FormGroup({
       mail: new FormControl('', [Validators.required, Validators.email]),
@@ -140,7 +142,8 @@ export class LoginComponent implements OnInit {
       } as LoginUserDto).subscribe(response => {
         this.userService.writeAuthResponse(response);
         this.toastr.success("Welcome");
-        //TODO: create redirection to main page
+        console.log(response);
+        this.router.navigate(['main']);
 
       }, error => {
         console.log(error);

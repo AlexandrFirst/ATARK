@@ -109,7 +109,9 @@ namespace FireSaverApi.Services
 
         public async Task<AuthResponseDto> AuthUser(AuthUserDto userAuth)
         {
-            var user = await context.Users.Include(b => b.ResponsibleForBuilding).FirstOrDefaultAsync(u => u.Mail == userAuth.Mail);
+            var user = await context.Users.Include(b => b.ResponsibleForBuilding)
+                                            .Include(r => r.RolesList)
+                                            .FirstOrDefaultAsync(u => u.Mail == userAuth.Mail);
             if (user == null)
             {
                 throw new UserNotFoundException();

@@ -19,6 +19,7 @@ import { RouterModule } from '@angular/router';
 import { AddHeaderInterceptor } from './Interceptors/addHeadersInterceptor';
 import { LoginGuard } from './route-guards/login.guard';
 import { MainContentGuard } from './route-guards/mainContent.guard';
+import { MainContentComponent } from './Modules/mainContent/mainContent.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,7 @@ import { MainContentGuard } from './route-guards/mainContent.guard';
         canActivate: [MainContentGuard]
       },
       {
-        path: 'main',
+        path: 'main', component: MainContentComponent,
         loadChildren: () => import('./Modules/mainContent/mainContent.module').then(m => m.MainContentModule),
         canActivateChild: [LoginGuard]
       },
