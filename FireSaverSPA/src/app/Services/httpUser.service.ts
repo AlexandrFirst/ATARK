@@ -15,7 +15,6 @@ import { BaseHttpService } from './baseHttp.service';
     providedIn: 'root'
 })
 export class HttpUserService extends BaseHttpService {
-    readonly baseUrl = environment.apiUrl;
 
     constructor(client: HttpClient) {
         super(client);
@@ -36,5 +35,13 @@ export class HttpUserService extends BaseHttpService {
 
     CheckTokenValidity(token: string): Observable<ServerResponseMessage> {
         return this.client.get(this.baseUrl + 'user/tokenValid').pipe(map(data => data as ServerResponseMessage));
+    }
+
+    GetUserInfoById(userId: number): Observable<UserInfoDto> {
+        return this.client.get(this.baseUrl + 'user/' + userId).pipe(map(data => data as UserInfoDto));
+    }
+
+    UpdateUserInfo(updatingInfo: UserInfoDto): Observable<UserInfoDto> {
+        return this.client.put(this.baseUrl + 'user/updateInfo', updatingInfo).pipe(map(data => data as UserInfoDto));
     }
 }

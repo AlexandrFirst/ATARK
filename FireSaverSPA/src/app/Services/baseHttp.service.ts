@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { environment } from 'src/environments/environment';
 import { ResponseLoginDto } from '../Models/UserService/loginUserDto';
 import { ItemStorageHandler } from './IItemStorageHandler';
 import { StorageItemHandler } from './StorageItemHandler';
@@ -9,6 +10,7 @@ import { StorageItemHandler } from './StorageItemHandler';
 })
 export class BaseHttpService {
 
+  protected readonly baseUrl = environment.apiUrl;
   private readonly tokenStorage: ItemStorageHandler;
   private readonly userStorage: ItemStorageHandler;
   private readonly roleStorage: ItemStorageHandler;

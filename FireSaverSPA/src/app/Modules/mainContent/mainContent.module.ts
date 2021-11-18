@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { MainContentComponent } from './mainContent.component';
 import { RouterModule } from '@angular/router';
 import { BuildingComponent } from 'src/app/Components/Building/Building.component';
@@ -8,10 +8,16 @@ import { AccountComponent } from 'src/app/Components/Account/Account.component';
 import { RoomComponent } from 'src/app/Components/Room/Room.component';
 import { FloorComponent } from 'src/app/Components/Floor/Floor.component';
 import { TestComponent } from 'src/app/Components/Test/Test.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {MatDialogModule} from '@angular/material/dialog';
+
 
 @NgModule({
   imports: [
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatDialogModule,
     RouterModule.forChild([
       { path: 'compartment/:compartmentId/test', component: TestComponent },
       { path: 'room/:roomId', component: RoomComponent },
@@ -25,7 +31,15 @@ import { TestComponent } from 'src/app/Components/Test/Test.component';
   ],
   declarations: [
     MainContentComponent,
-    
+    TestComponent,
+    RoomComponent,
+    FloorComponent,
+    AccountComponent,
+    BuildingsComponent,
+    BuildingComponent
+  ],
+  providers:[
+    DatePipe
   ]
 })
 export class MainContentModule { }
