@@ -17,7 +17,7 @@ export class BaseHttpService {
   private readonly responsobleBuildingId: ItemStorageHandler;
 
 
-  constructor(public client: HttpClient) {
+  constructor(protected client: HttpClient) {
     if (!this.tokenStorage)
       this.tokenStorage = new StorageItemHandler('token');
     if (!this.userStorage)

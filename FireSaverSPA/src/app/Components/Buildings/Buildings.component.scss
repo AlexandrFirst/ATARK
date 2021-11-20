@@ -1,0 +1,46 @@
+.building-info-wrapper {
+    margin-top: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.building-info {
+    border: 1px solid rgb(132, 132, 138);
+    border-radius: 10px;
+    width: 600px;
+    display: flex;
+    justify-content: space-between;
+    padding: 5px;
+}
+
+.btn-section {
+    align-self: center;
+}
+
+.btn-section button {
+    display: block;
+    width: 100px;
+    margin-top: 10px;
+}
+
+.centered-div {
+    padding-top: 20px;
+    margin: 0 auto;
+    width: fit-content;
+}
+
+.add-building-btn {
+    position: absolute;
+}
+
+.add-btn {
+    position: absolute;
+    display: block;
+    top: 50%;
+    left: 100%;
+    transform: translateX(-300%);
+    width: 100px;
+    height: 50px;
+}
+

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -20,6 +20,8 @@ import { AddHeaderInterceptor } from './Interceptors/addHeadersInterceptor';
 import { LoginGuard } from './route-guards/login.guard';
 import { MainContentGuard } from './route-guards/mainContent.guard';
 import { MainContentComponent } from './Modules/mainContent/mainContent.component';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { BuildingDialogComponent } from './Components/building-dialog/building-dialog.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,8 @@ import { MainContentComponent } from './Modules/mainContent/mainContent.componen
     WorldMapComponent,
     LoginComponent,
     LoaderComponent,
-    FooterComponent
+    FooterComponent,
+    BuildingDialogComponent
   ],
   imports: [
     CommonModule,
@@ -39,6 +42,7 @@ import { MainContentComponent } from './Modules/mainContent/mainContent.componen
     NgbModule,
     HttpClientModule,
     ReactiveFormsModule,
+    NgxPaginationModule,
     RouterModule.forRoot([
       {
         path: 'entrance',
@@ -57,6 +61,7 @@ import { MainContentComponent } from './Modules/mainContent/mainContent.componen
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AddHeaderInterceptor, multi: true }
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule { }

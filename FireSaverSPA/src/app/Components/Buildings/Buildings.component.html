@@ -1,3 +1,30 @@
-<p>
-  Buildings works!
-</p>
+<div style="width: 100%; height: 600px; overflow-y: scroll;">
+  <div class="centered-div">
+    <input type="text" #dat (input)="onSearchInput(dat.value)">
+    <button>Search</button>
+  </div>
+  <mat-paginator style="width: 600px; margin: 0 auto; padding-top: 10px; color: black; background-color: white; "
+    [length]="totalItems" [pageIndex]="currentPage - 1" [pageSize]="10" (page)="pageChanged($event)">
+  </mat-paginator>
+  <div class="building-info-wrapper" *ngFor="let item of allBuildingInfo">
+    <div class="building-info">
+      <div style="width: 50%; align-self: center;">
+        <div>
+          Id: {{item.id}}
+        </div>
+        <div>Address:
+          <div>{{item.address}}</div>
+        </div>
+        <div>Info:
+          <div>{{item.info}}</div>
+        </div>
+      </div>
+      <div class="btn-section">
+        <button (click)="editBuilding(item)">Edit</button>
+        <button (click)="deleteBuilding(item.id)">Delete</button>
+        <button (click)="goToBuildingPage(item.id)">View</button>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="add-btn" (click)="addNewBuilding()">Add</button>

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { MainContentComponent } from './mainContent.component';
 import { RouterModule } from '@angular/router';
@@ -10,7 +10,8 @@ import { FloorComponent } from 'src/app/Components/Floor/Floor.component';
 import { TestComponent } from 'src/app/Components/Test/Test.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {MatDialogModule} from '@angular/material/dialog';
-
+import {NgxPaginationModule} from 'ngx-pagination';
+import {MatPaginatorModule} from '@angular/material/paginator'; 
 
 @NgModule({
   imports: [
@@ -18,6 +19,8 @@ import {MatDialogModule} from '@angular/material/dialog';
     FormsModule,
     ReactiveFormsModule,
     MatDialogModule,
+    NgxPaginationModule,
+    MatPaginatorModule,
     RouterModule.forChild([
       { path: 'compartment/:compartmentId/test', component: TestComponent },
       { path: 'room/:roomId', component: RoomComponent },
@@ -40,6 +43,7 @@ import {MatDialogModule} from '@angular/material/dialog';
   ],
   providers:[
     DatePipe
-  ]
+  ],
+  schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class MainContentModule { }

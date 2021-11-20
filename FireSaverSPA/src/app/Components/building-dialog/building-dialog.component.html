@@ -1,0 +1,21 @@
+<form [formGroup]="buildingForm">
+  <div *ngIf="id">Building with id: {{id}}</div>
+  <div>
+    <div>Address</div>
+    <textarea [value]="data?.address" style="resize: none; width: 200px; height: 100px;"
+      formControlName="address"></textarea>
+    <div *ngIf="formAddress.invalid && (formAddress.touched || formAddress.dirty)">
+      Fill in this field
+    </div>
+  </div>
+  <div>
+    <div>Info</div>
+    <textarea type="text" [value]="data?.info" style="resize: none; width: 200px; height: 100px;"
+      formControlName="info"></textarea>
+    <div *ngIf="formInfo.invalid && (formInfo.touched || formInfo.dirty)">
+      Fill in this field
+    </div>
+  </div>
+  <button style="float: right;" (click)="CloseAndChange()" [disabled]="getForm.invalid">Add</button>
+  <button style="float: right; margin-right: 10px;" (click)="Close()">Cancel</button>
+</form>
