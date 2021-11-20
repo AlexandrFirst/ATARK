@@ -7,5 +7,7 @@
     <div *ngIf="!isGuest" routerLink='/main/account' routerLinkActive="active"
       style="float: right; margin-right: 100px;">Account</div>
   </div>
-  <router-outlet></router-outlet>
+  <div style="position: relative;">
+    <router-outlet></router-outlet>
+  </div>
 </div>
