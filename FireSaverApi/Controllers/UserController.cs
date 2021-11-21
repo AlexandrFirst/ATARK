@@ -153,6 +153,17 @@ namespace FireSaverApi.Controllers
         }
 
         [Authorize]
+        [HttpGet("canUserBeResponsible/{userMail}")]
+        public async Task<IActionResult> CheckIfUserCanBeResponsible(string userMail)
+        {
+            var result = await userService.CheckIfUserCanBeResponsible(userMail);
+            return Ok(new
+            {
+                CanBeResponsible = result
+            });
+        }
+
+        [Authorize]
         [HttpGet("tokenValid")]
         public async Task<IActionResult> CheckTokenValidity()
         {

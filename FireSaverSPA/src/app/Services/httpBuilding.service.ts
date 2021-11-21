@@ -47,4 +47,16 @@ export class HttpBuildingService extends BaseHttpService {
     return this.client.delete(this.baseUrl + "Building/" + buildingId);
   }
 
+  getBuildingById(buildingId: number): Observable<BuildingInfoDto> {
+    return this.client.get<BuildingInfoDto>(this.baseUrl + "Building/info/" + buildingId);
+  }
+
+  setResponsibleUserForBuilding(buildingId: number, userMail: string): Observable<BuildingInfoDto> {
+    return this.client.get<BuildingInfoDto>(this.baseUrl + `Building/adduser/${userMail}/${buildingId}`);
+  }
+
+  removeResponsibleUser(userId: number): Observable<BuildingInfoDto>{
+    return this.client.delete<BuildingInfoDto>(this.baseUrl + `Building/removeuser/${userId}`);
+  }
+
 }

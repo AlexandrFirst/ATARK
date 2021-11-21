@@ -131,7 +131,7 @@ namespace FireSaverApi.Services
                     Roles = userRoleList
                 };
 
-                if(user.ResponsibleForBuilding != null)
+                if (user.ResponsibleForBuilding != null)
                     userAuthResponse.ResponsibleBuildingId = user.ResponsibleForBuilding.Id;
 
                 return userAuthResponse;
@@ -363,6 +363,35 @@ namespace FireSaverApi.Services
                 {
                     IsUnique = true
                 };
+            }
+        }
+
+        public async Task<User> GetUserByMail(string mail)
+        {
+            var foundUser = await context.Users.Include(b => b.ResponsibleForBuilding)
+                                               .Include(c => c.CurrentCompartment)
+                                               .Include(r => r.RolesList)
+                                               .FirstOrDefaultAsync(u => u.Mail == mail);
+            if (foundUser == null)
+            {
+                throw new UserNotFoundException();
+            }
+
+            return foundUser;
+        }
+
+        public async Task<bool> CheckIfUserCanBeResponsible(string userMail)
+        {
+            try
+            {
+                var user = await GetUserByMail(userMail);
+                if (user.ResponsibleForBuilding != null)
+                    return false;
+                return true;
+            }
+            catch
+            {
+                return false;
             }
         }
     }

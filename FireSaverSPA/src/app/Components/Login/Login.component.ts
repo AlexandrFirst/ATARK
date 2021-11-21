@@ -7,7 +7,7 @@ import { RegistrationUserData } from 'src/app/Models/UserService/registrationUse
 import { HttpUserService } from 'src/app/Services/httpUser.service';
 import { LoaderSignServiceService } from 'src/app/Services/LoaderSignService.service';
 import { PasswordConfirmValidator } from 'src/app/Validators/passwordConfirmValidator';
-import { AsyncUniqMailValidator } from 'src/app/Validators/UniqEmailValidator';
+import { AsyncUserValidator } from 'src/app/Validators/asyncUserValidator';
 
 @Component({
   selector: 'app-Login',
@@ -92,7 +92,7 @@ export class LoginComponent implements OnInit {
       mail: new FormControl('', [
         Validators.required,
         Validators.email
-      ], [AsyncUniqMailValidator.createValidator(this.userService)]),
+      ], [AsyncUserValidator.createUniqueUserValidator(this.userService)]),
       telNumber: new FormControl('', [
         Validators.required,
         Validators.pattern('^\\+?3?8?(0[\\s\\.-]\\d{2}[\\s\\.-]\\d{3}[\\s\\.-]\\d{2}[\\s\\.-]\\d{2})$')

@@ -1,7 +1,9 @@
 <div style="width: 100%; height: 600px; overflow-y: scroll;">
-  <div class="centered-div">
-    <input type="text" #dat (input)="onSearchInput(dat.value)">
-    <button>Search</button>
+  <div class="input-group mb-3 centered-div" style="width: 400px;">
+    <input type="text" class="form-control" #dat (input)="onSearchInput(dat.value)" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="button-addon2">
+    <div class="input-group-append">
+      <button class="btn btn-primary" type="button" id="button-addon2">Search</button>
+    </div>
   </div>
   <mat-paginator style="width: 600px; margin: 0 auto; padding-top: 10px; color: black; background-color: white; "
     [length]="totalItems" [pageIndex]="currentPage - 1" [pageSize]="10" (page)="pageChanged($event)">
@@ -20,11 +22,11 @@
         </div>
       </div>
       <div class="btn-section">
-        <button (click)="editBuilding(item)">Edit</button>
-        <button (click)="deleteBuilding(item.id)">Delete</button>
-        <button (click)="goToBuildingPage(item.id)">View</button>
+        <button (click)="editBuilding(item)" class="btn btn-warning">Edit</button>
+        <button (click)="deleteBuilding(item.id)" class="btn btn-danger">Delete</button>
+        <button (click)="goToBuildingPage(item.id)" class="btn btn-info">View</button>
       </div>
     </div>
   </div>
 </div>
-<button class="add-btn" (click)="addNewBuilding()">Add</button>
+<button class="add-btn btn btn-success" (click)="addNewBuilding()">Add</button>

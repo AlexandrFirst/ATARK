@@ -1,0 +1,9 @@
+.addr-section::before {
+    content: 'Address: ';
+    padding-right: 10px;
+}
+
+.info-section::before {
+    content: 'Info: ';
+    padding-right: 10px;
+}

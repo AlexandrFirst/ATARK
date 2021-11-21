@@ -16,5 +16,6 @@ namespace FireSaverApi.Contracts
         Task<TestOutputDto> EnterCompartmentById(int userId, int compartmentId, int? iotId);
         Task SetAlaramForBuilding(int userId);
         Task<UserInfoDto> SetWorldPostion(int userId, PositionDto worldUserPostion);
+        Task<bool> CheckIfUserCanBeResponsible(string userMail);
     }
 }

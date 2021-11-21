@@ -22,6 +22,8 @@ import { MainContentGuard } from './route-guards/mainContent.guard';
 import { MainContentComponent } from './Modules/mainContent/mainContent.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { BuildingDialogComponent } from './Components/building-dialog/building-dialog.component';
+import { CompartmentAddDialogComponent } from './Components/compartment-add-dialog/compartment-add-dialog.component';
+import { ResponsibleUserAddDialogComponent } from './Components/responsible-user-add-dialog/responsible-user-add-dialog.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +33,9 @@ import { BuildingDialogComponent } from './Components/building-dialog/building-d
     LoginComponent,
     LoaderComponent,
     FooterComponent,
-    BuildingDialogComponent
+    BuildingDialogComponent,
+    CompartmentAddDialogComponent,
+    ResponsibleUserAddDialogComponent
   ],
   imports: [
     CommonModule,

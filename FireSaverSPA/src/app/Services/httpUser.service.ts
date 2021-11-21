@@ -44,4 +44,8 @@ export class HttpUserService extends BaseHttpService {
     UpdateUserInfo(updatingInfo: UserInfoDto): Observable<UserInfoDto> {
         return this.client.put(this.baseUrl + 'user/updateInfo', updatingInfo).pipe(map(data => data as UserInfoDto));
     }
+
+    CheckIfUserCanBeResponsible(mail: string): Observable<any> {
+        return this.client.get(this.baseUrl + 'user/canUserBeResponsible/' + mail);
+    }
 }
