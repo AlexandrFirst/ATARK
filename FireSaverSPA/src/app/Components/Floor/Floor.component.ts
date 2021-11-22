@@ -120,7 +120,7 @@ export class FloorComponent implements OnInit, AfterViewInit {
 
   private initExpandableList() {
     console.log("Floor component expandabel count: ", $('.collapse').length)
-    $('.card').each((index, value) => {
+    $('.f').each((index, value) => {
       value.addEventListener('click', (e) => {
         $('.collapse').each((index1, value1) => {
 
@@ -236,8 +236,26 @@ export class FloorComponent implements OnInit, AfterViewInit {
 
           this.map.removeLayer(marker);
           this.toastrService.success("Scale point with id: " + pointId + " deleted");
+          this.scalePointMarkers.delete(pointId);
+
         }, error => {
-          this.toastrService.error("Something went wrong! Try again")
+
+          if (error.error?.message) {
+            this.toastrService.warning(error.error?.message);
+
+            const marker = this.scalePointMarkers.get(pointId);
+
+            if (marker == this.selectedPointOnMap) {
+              this.selectedPointOnMap = null;
+            }
+
+            this.map.removeLayer(marker);
+            this.scalePointMarkers.delete(pointId);
+
+          } else {
+            this.toastrService.error("Something went wrong. Try again");
+          }
+
         })
       }
     })

@@ -24,7 +24,6 @@ export class BuildingComponent implements OnInit {
   private buildingId;
   buildingInfo: BuildingInfoDto;
 
-  
 
   constructor(private activatedRoute: ActivatedRoute,
     private router: Router,
