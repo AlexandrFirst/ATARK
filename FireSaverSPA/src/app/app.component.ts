@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import * as L from 'leaflet';
 import { Observable, Subject, Subscriber } from 'rxjs';
-import { Point, Postion } from './Models/Dtos';
+import { ScalePointDto, Postion } from './Models/PointService/pointDtos';
 import { HttpServiceService } from './Services/httpService.service';
 
 @Component({
@@ -40,7 +40,8 @@ export class AppComponent implements OnInit {
       return;
     }
 
-    const pointToSend: Point = {
+    const pointToSend: ScalePointDto = {
+      id: 0,
       mapPosition: this.imgPosition,
       worldPosition: this.worldPosition
     };

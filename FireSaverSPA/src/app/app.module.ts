@@ -24,6 +24,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { BuildingDialogComponent } from './Components/building-dialog/building-dialog.component';
 import { CompartmentAddDialogComponent } from './Components/compartment-add-dialog/compartment-add-dialog.component';
 import { ResponsibleUserAddDialogComponent } from './Components/responsible-user-add-dialog/responsible-user-add-dialog.component';
+import { PositionInputDialogComponent } from './Components/position-input-dialog/position-input-dialog.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { ResponsibleUserAddDialogComponent } from './Components/responsible-user
     FooterComponent,
     BuildingDialogComponent,
     CompartmentAddDialogComponent,
-    ResponsibleUserAddDialogComponent
+    ResponsibleUserAddDialogComponent,
+    PositionInputDialogComponent
   ],
   imports: [
     CommonModule,

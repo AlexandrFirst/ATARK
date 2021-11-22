@@ -11,3 +11,145 @@
             cursor: pointer;" (click)="backBtnClick()">
   Back
 </div>
+<div style="height: 600px; overflow-y: scroll;">
+  <div style="display: flex; justify-content: center;">
+    <div style="font-size: large; width: 800px; text-align: justify;">
+      <section style="margin-top: 10px; display: flex;">
+        <div style="width: 100px;">
+          Name:
+        </div>
+        <div style="width: 700px;">
+          {{floorInfo?.name}}
+        </div>
+      </section>
+      <section style="margin-top: 10px; display: flex;">
+        <div style="width: 100px;">
+          Describtion:
+        </div>
+        <div style="width: 700px;">
+          {{floorInfo?.description}}
+        </div>
+      </section>
+      <section style="margin-top: 10px; display: flex;">
+        <div style="width: 100px;">
+          Safety Rules:
+        </div>
+        <div style="width: 700px;">
+          {{floorInfo?.safetyRules}}
+        </div>
+      </section>
+      <section style="margin-top: 10px; display: flex;">
+        <div style="width: 100px;">
+          Level:
+        </div>
+        <div style="width: 700px;">
+          {{floorInfo?.level}}
+        </div>
+      </section>
+      <button class="btn btn-warning" style="display: block; margin-top: 10px; font-size: large; float: right;">
+        Chnage Info
+      </button>
+      <button class="btn btn-primary"
+        style="display: block; margin-top: 10px; margin-right: 10px; font-size: large; float: right;"
+        (click)="centerMap()">
+        Center map
+      </button>
+      <button class="btn btn-primary"
+        style="display: block; margin-top: 10px; margin-right: 10px; font-size: large; float: right;">
+        Generate QR-code
+      </button>
+    </div>
+  </div>
+  <div id="myMap" [style.display]="evacPlanInfo == null ? 'none':'block'"></div>
+  <div *ngIf="evacPlanInfo == null">
+    <div style="width: 100%; display: flex; justify-content: center; height: 200px; align-items: center;">
+      <div>
+        <button class="btn btn-success" (click)="file.click()">Load map
+          <span *ngIf="uploadingValue > 0">{{uploadingValue}}</span>
+        </button>
+        <input type="file" #file placeholder="Choose file" (change)="uploadFile(file.files)" style="display:none;">
+      </div>
+    </div>
+  </div>
+  <div style="display: flex; justify-content: center; margin-top: 20px;">
+    <div class="accordion" id="accordionExample" style="width: 800px;" #floor_exp_list>
+      <div class="card f">
+        <div class="card-header" id="headingOne">
+          <h5 class="mb-0">
+            <button class="btn" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
+              aria-controls="collapseOne">
+              Scale points
+            </button>
+          </h5>
+        </div>
+        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+          <div class="card-body">
+            <div *ngIf="evacPlanInfo != null; else no_map_template_scale">
+              <div *ngIf="scalePointMarkers.size == 0; else scale_points">No points</div>
+              <ng-template #scale_points>
+                <div *ngFor="let item of scalePointMarkers | keyvalue" style="display: flex; justify-content: center;">
+                  <div>{{item.key}}</div>
+                  <div><button class="btn btn-info" (click)="selectPoint(item.key)">Select</button></div>
+                  <div><button class="btn btn-danger" (click)="removeScalePointMarker(item.key)">Delete</button></div>
+                </div>
+              </ng-template>
+              <button class="btn btn-primary" (click)="addScalePoint()"
+                [disabled]="this.selectedMapPosition == null">Add scale point</button>
+            </div>
+            <ng-template #no_map_template_scale>
+              <div style="width: 100%; display: flex; justify-content: center; height: 50px; align-items: center;">
+                <button class="btn btn-success" (click)="file.click()">Load map
+                  <span *ngIf="uploadingValue > 0">{{uploadingValue}}</span>
+                </button>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+      <div class="card f">
+        <div class="card-header" id="headingOne">
+          <h5 class="mb-0">
+            <button class="btn" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
+              aria-controls="collapseOne">
+              Route points
+            </button>
+          </h5>
+        </div>
+        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+          <div class="card-body">
+            <div *ngIf="evacPlanInfo != null; else no_map_template_route">No points added</div>
+            <ng-template #no_map_template_route>
+              <div style="width: 100%; display: flex; justify-content: center; height: 50px; align-items: center;">
+                <button class="btn btn-success" (click)="file.click()">Load map
+                  <span *ngIf="uploadingValue > 0">{{uploadingValue}}</span>
+                </button>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+      <div class="card f">
+        <div class="card-header" id="headingTwo">
+          <h5 class="mb-0">
+            <button class="btn" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false"
+              aria-controls="collapseTwo">
+              Rooms
+            </button>
+          </h5>
+        </div>
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+          <div class="card-body">
+            <button class="btn btn-primary">Add new room</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="width: 800px; margin: 10px auto; text-align: end;">
+    <button class="btn btn-info" *ngIf="false; else test_exists">Add test</button>
+    <ng-template #test_exists>
+      <button class="btn btn-info">View test</button>
+    </ng-template>
+    <button class="btn btn-danger" style="margin-left: 20px;">Delete test</button>
+  </div>
+</div>

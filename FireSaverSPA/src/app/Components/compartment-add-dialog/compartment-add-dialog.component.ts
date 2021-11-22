@@ -19,7 +19,7 @@ export class CompartmentAddDialogComponent {
     name: new FormControl('', [Validators.required]),
     description: new FormControl('', [Validators.required]),
     safetyRules: new FormControl('', [Validators.required]),
-    level: new FormControl('', [Validators.required, FloorLevelValidator(this.takenFloors)])
+    level: new FormControl('', [Validators.required])
 
   });
 
@@ -48,6 +48,7 @@ export class CompartmentAddDialogComponent {
   constructor(public dialogRef: MatDialogRef<CompartmentAddDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any, private userService: HttpUserService) {
     if (data.takenFloors) {
+      console.log(data.takenFloors)
       this.takenFloors = data.takenFloors
     }
 
@@ -64,6 +65,8 @@ export class CompartmentAddDialogComponent {
       const floorIndex = this.takenFloors.indexOf(data.floorInfo.level);
       this.takenFloors.splice(floorIndex, 1);
     }
+
+    this.addFloorToBuildingForm.get('level').setValidators([Validators.required, FloorLevelValidator(this.takenFloors)])
   }
 
   submitForm() {

@@ -16,6 +16,8 @@ namespace FireSaverApi.Helpers
         public async Task<Compartment> GetCompartmentById(int compartmentId)
         {
             Compartment compartment = await databaseContext.Compartment.Include(c => c.EvacuationPlan)
+                                                                       .ThenInclude(m => m.ScaleModel)
+                                                                       .ThenInclude(p => p.ScalePoints) 
                                                                        .Include(t => t.CompartmentTest)
                                                                        .ThenInclude(q => q.Questions)
                                                                        .FirstOrDefaultAsync(c => c.Id == compartmentId);

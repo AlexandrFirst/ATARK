@@ -3,7 +3,8 @@ export class Postion {
     latitude: number;
 }
 
-export class Point {
+export class ScalePointDto {
+    id: number;
     mapPosition: Postion;
     worldPosition: Postion;
 }

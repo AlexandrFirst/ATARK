@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { InputRoutePoint, Point, Postion, RoutePoint } from '../Models/Dtos';
+import { InputRoutePoint, ScalePointDto, Postion, RoutePoint } from '../Models/PointService/pointDtos';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +12,7 @@ export class HttpServiceService {
 
   constructor(private client: HttpClient) { }
 
-  sendPointData(newPoint: Point): Observable<any> {
+  sendPointData(newPoint: ScalePointDto): Observable<any> {
     return this.client.post(this.baseUrl + "Points/newpos", newPoint);
   }
 

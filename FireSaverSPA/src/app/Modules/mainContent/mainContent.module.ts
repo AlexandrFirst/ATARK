@@ -11,7 +11,8 @@ import { TestComponent } from 'src/app/Components/Test/Test.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {MatDialogModule} from '@angular/material/dialog';
 import {NgxPaginationModule} from 'ngx-pagination';
-import {MatPaginatorModule} from '@angular/material/paginator'; 
+import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatProgressBarModule} from '@angular/material/progress-bar'; 
 
 @NgModule({
   imports: [
@@ -21,6 +22,7 @@ import {MatPaginatorModule} from '@angular/material/paginator';
     MatDialogModule,
     NgxPaginationModule,
     MatPaginatorModule,
+    MatProgressBarModule,
     RouterModule.forChild([
       { path: 'compartment/:compartmentId/test', component: TestComponent },
       { path: 'room/:roomId', component: RoomComponent },

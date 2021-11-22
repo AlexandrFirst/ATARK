@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { InputRoutePoint, Point, Postion, RoutePoint } from '../Models/Dtos';
+import { InputRoutePoint, ScalePointDto, Postion, RoutePoint } from '../Models/PointService/pointDtos';
 import { ServerResponseMessage } from '../Models/Shared/serverResponseMessage';
 import { LoginUserDto, ResponseLoginDto } from '../Models/UserService/loginUserDto';
 import { RegistrationUserData } from '../Models/UserService/registrationUserData';

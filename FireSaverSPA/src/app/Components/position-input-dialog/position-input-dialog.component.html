@@ -1,0 +1,18 @@
+<form [formGroup]="positionForm">
+  <div class="form-group" style="margin-bottom: 20px;">
+    <label>Latitude</label>
+    <input type="text" class="form-control" aria-describedby="latitude" placeholder="Enter latitude"
+      formControlName="latitude">
+    <div style="color: red;" *ngIf="formLatitude.invalid && (formLatitude.touched || formLatitude.dirty)">
+      <small *ngIf="formLatitude.errors?.required">This field is required</small>
+    </div>
+    <label>Longtitude</label>
+    <input type="text" class="form-control" aria-describedby="longtitude" placeholder="Enter longtitude"
+      formControlName="longtitude">
+    <div style="color: red;" *ngIf="formLongtitude.invalid && (formLongtitude.touched || formLongtitude.dirty)">
+      <small *ngIf="formLongtitude.errors?.required">This field is required</small>
+    </div>
+  </div>
+  <button type="button" class="btn btn-primary" [disabled]="formPosition.invalid" (click)="submitData()">Add</button>
+  <button type="button" class="btn btn-danger" (click)="closeForm()">Cancel</button>
+</form>

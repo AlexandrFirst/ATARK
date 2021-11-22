@@ -2,7 +2,7 @@ import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@
 import * as L from 'leaflet'
 import { LatLngBoundsLiteral } from 'leaflet';
 import { Subject } from 'rxjs';
-import { DeletePointOutput, InputRoutePoint, Postion, RoutePoint } from 'src/app/Models/Dtos';
+import { DeletePointOutput, InputRoutePoint, Postion, RoutePoint } from 'src/app/Models/PointService/pointDtos';
 import { HttpServiceService } from 'src/app/Services/httpService.service';
 
 @Component({

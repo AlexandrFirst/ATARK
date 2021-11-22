@@ -24,13 +24,17 @@ export class BuildingComponent implements OnInit {
   private buildingId;
   buildingInfo: BuildingInfoDto;
 
+  
+
   constructor(private activatedRoute: ActivatedRoute,
     private router: Router,
     private location: Location,
     private buildingService: HttpBuildingService,
     private toastrService: ToastrService,
     private matDialog: MatDialog,
-    private floorService: HttpFloorService) { }
+    private floorService: HttpFloorService) {
+   
+  }
 
   ngOnInit() {
     this.activatedRoute.params.subscribe((params: Params) => {
@@ -42,7 +46,7 @@ export class BuildingComponent implements OnInit {
         this.toastrService.error("Unknown building id")
       }
     })
-
+    console.log("Expandable list click event added")
     this.initExpandableList();
   }
 
@@ -56,10 +60,14 @@ export class BuildingComponent implements OnInit {
   }
 
   private initExpandableList() {
-    $('.card').each((index, value) => {
-      value.addEventListener('click', (e) => {
-        $('.collapse').each((index1, value1) => {
+    console.log("Building component expandabel count: ", $('.collapse').length)
 
+    $('.b').each((index, value) => {
+     
+      value.addEventListener('click', (e) => {
+        console.log("clicked on list elem")
+        $('.collapse').each((index1, value1) => {
+          
           if (index == index1) {
             if (value1.classList.contains('show')) {
               return;
