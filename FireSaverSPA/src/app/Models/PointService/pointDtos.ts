@@ -11,7 +11,7 @@ export class ScalePointDto {
 
 export class RoutePoint {
     id: number;
-    pointPostion: Postion;
+    mapPosition: Postion;
     childrenPoints: RoutePoint[];
     parentPoint: RoutePoint;
 }

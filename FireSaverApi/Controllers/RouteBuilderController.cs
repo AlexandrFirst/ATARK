@@ -17,7 +17,7 @@ namespace FireSaverApi.Controllers
         private readonly IMapper mapper;
         private readonly IRoutebuilderService routeBuilder;
 
-        public RouteBuilderController( IMapper mapper,
+        public RouteBuilderController(IMapper mapper,
                                         IRoutebuilderService routeBuilder)
         {
             this.mapper = mapper;
@@ -66,6 +66,13 @@ namespace FireSaverApi.Controllers
         {
             var initPoint = await routeBuilder.GetAllRoute(routePointId);
             return Ok(mapper.Map<RoutePointDto>(initPoint));
+        }
+
+        [HttpGet("compartment/{compartmentId}")]
+        public async Task<IActionResult> GetAllRouteForCompartment(int compartmentId)
+        {
+            var route = await routeBuilder.GetAllRoutForCompartment(compartmentId);
+            return Ok(mapper.Map<RoutePointDto>(route));
         }
 
         [HttpPut("updateMapPos")]

@@ -98,7 +98,7 @@ export class MyMapComponent implements AfterViewInit {
 
     const pointHandler = (res: RoutePoint, isStartPoint: boolean = false) => {
 
-      var newPlaceMarker = this.placeRoutePoint(res.pointPostion.latitude, res.pointPostion.longtitude);
+      var newPlaceMarker = this.placeRoutePoint(res.mapPosition.latitude, res.mapPosition.longtitude);
       var isPointUnderTrack = false;
 
       if (this.selectedRouteMarker) {
@@ -147,7 +147,7 @@ export class MyMapComponent implements AfterViewInit {
             longtitude: this.selectedRouteMarker.getLatLng().lng
           }
 
-          res.pointPostion = newPos;
+          res.mapPosition = newPos;
           this.http.updateRoutePos(res).subscribe(success => {
             console.log("position is updated: ", success)
           })
@@ -344,7 +344,7 @@ export class MyMapComponent implements AfterViewInit {
 
   printRoute(currentPoint: RoutePoint) {
 
-    var currentMarker = this.placeRoutePoint(currentPoint.pointPostion.latitude, currentPoint.pointPostion.longtitude);
+    var currentMarker = this.placeRoutePoint(currentPoint.mapPosition.latitude, currentPoint.mapPosition.longtitude);
 
     this.allRoutesPoints.push(currentPoint);
     this.routePoints[currentPoint.id.toString()] = currentMarker;

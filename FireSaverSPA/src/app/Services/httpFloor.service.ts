@@ -30,5 +30,4 @@ export class HttpFloorService extends BaseHttpService {
   }
 
 
-
 }

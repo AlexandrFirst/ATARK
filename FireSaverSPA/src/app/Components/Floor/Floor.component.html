@@ -74,7 +74,7 @@
   <div style="display: flex; justify-content: center; margin-top: 20px;">
     <div class="accordion" id="accordionExample" style="width: 800px;" #floor_exp_list>
       <div class="card f">
-        <div class="card-header" id="headingOne">
+        <div class="card-header" id="headingOne" (click)="displayScalePoints()">
           <h5 class="mb-0">
             <button class="btn" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
               aria-controls="collapseOne">
@@ -89,7 +89,7 @@
               <ng-template #scale_points>
                 <div *ngFor="let item of scalePointMarkers | keyvalue" style="display: flex; justify-content: center;">
                   <div>{{item.key}}</div>
-                  <div><button class="btn btn-info" (click)="selectPoint(item.key)">Select</button></div>
+                  <div><button class="btn btn-info" (click)="selectScalePoint(item.key)">Select</button></div>
                   <div><button class="btn btn-danger" (click)="removeScalePointMarker(item.key)">Delete</button></div>
                 </div>
               </ng-template>
@@ -103,11 +103,12 @@
                 </button>
               </div>
             </ng-template>
+
           </div>
         </div>
       </div>
       <div class="card f">
-        <div class="card-header" id="headingOne">
+        <div class="card-header" id="headingOne" (click)="displayRoutePoints();">
           <h5 class="mb-0">
             <button class="btn" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
               aria-controls="collapseOne">
@@ -117,8 +118,19 @@
         </div>
         <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
           <div class="card-body">
-            <div *ngIf="evacPlanInfo != null; else no_map_template_route">No points added</div>
-            <ng-template #no_map_template_route>
+            <div *ngIf="evacPlanInfo != null; else no_map_template_scale">
+              <div *ngIf="routePoints.length == 0; else route_points">No route points</div>
+              <ng-template #route_points>
+                <div *ngFor="let item of routePoints" style="display: flex; justify-content: center;">
+                  <div>{{item.id}}</div>
+                  <div><button class="btn btn-info" (click)="selectRoutePoint(item.id)">Select</button></div>
+                  <div><button class="btn btn-danger" (click)="removeRoutePoint(item.id)">Delete</button></div>
+                </div>
+              </ng-template>
+              <button class="btn btn-primary" (click)="addRoutePoint()" [disabled]="this.selectedMapPosition == null">
+                Add route point</button>
+            </div>
+            <ng-template #no_map_template_scale>
               <div style="width: 100%; display: flex; justify-content: center; height: 50px; align-items: center;">
                 <button class="btn btn-success" (click)="file.click()">Load map
                   <span *ngIf="uploadingValue > 0">{{uploadingValue}}</span>
@@ -127,19 +139,19 @@
             </ng-template>
           </div>
         </div>
-      </div>
-      <div class="card f">
-        <div class="card-header" id="headingTwo">
-          <h5 class="mb-0">
-            <button class="btn" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false"
-              aria-controls="collapseTwo">
-              Rooms
-            </button>
-          </h5>
-        </div>
-        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
-          <div class="card-body">
-            <button class="btn btn-primary">Add new room</button>
+        <div class="card f">
+          <div class="card-header" id="headingTwo">
+            <h5 class="mb-0">
+              <button class="btn" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false"
+                aria-controls="collapseTwo">
+                Rooms
+              </button>
+            </h5>
+          </div>
+          <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+            <div class="card-body">
+              <button class="btn btn-primary">Add new room</button>
+            </div>
           </div>
         </div>
       </div>
@@ -152,4 +164,3 @@
     </ng-template>
     <button class="btn btn-danger" style="margin-left: 20px;">Delete test</button>
   </div>
-</div>
