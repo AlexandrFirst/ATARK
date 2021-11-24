@@ -17,6 +17,8 @@ import { HttpPointService } from 'src/app/Services/httpPoint.service';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { CompartmentDto } from 'src/app/Models/Compartment/compartmentDto';
 import { QrCodeDialogComponent } from '../qr-code-dialog/qr-code-dialog.component';
+import { TestInput } from 'src/app/Models/TestModels/testInput';
+import { TestDialogComponent } from '../test-dialog/test-dialog.component';
 
 enum MapType {
   ScalePoints,
@@ -35,6 +37,7 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
 
   compartmentInfo: T;
   evacPlanInfo: EvacuationPlanDto;
+  testInfo: TestInput = null
 
   uploadingValue: number = 0;
 
@@ -46,9 +49,9 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
   private pointBaseColor: string = "#ff7800";
   private pointeSelectedColor: string = "#ff0000";
 
-  private scalePointMarkers = new Map();
+  scalePointMarkers = new Map();
 
-  private routePoints: RoutePoint[] = [];
+  routePoints: RoutePoint[] = [];
   private routePointMarkers = new Map();
   private routePolylines = new Map();
   private selectedRoutePoint: RoutePoint;
@@ -73,7 +76,6 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
   abstract isCompartmentFloor();
 
   ngOnInit() {
-
     this.initExpandableList();
 
     this.activatedRoute.params.subscribe((params: Params) => {
@@ -82,6 +84,10 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
       if (this.compartmentId) {
         this.initCompartmentInfo();
         this.initEvacuationPlanInfo();
+
+        if (this.compartmentInfo?.compartmentTest) {
+          this.testInfo = this.compartmentInfo?.compartmentTest;
+        }
       } else {
         this.toastrService.error("Unknown compartment id")
       }
@@ -428,7 +434,7 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
     })
   }
 
-  private selectRoutePoint(routePointId: number): L.CircleMarker {
+  selectRoutePoint(routePointId: number): L.CircleMarker {
     console.log(this.routePointMarkers)
     const newlySelectedPoint = this.routePointMarkers.get(routePointId);
     this.selectedRoutePoint = this.routePoints.find(elem => elem.id == routePointId);
@@ -516,5 +522,10 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
 
     return selectedRouteMarker;
   }
+
+  addTest() {
+    const dialogRef = this.matDialog.open(TestDialogComponent)
+  }
+
 
 }

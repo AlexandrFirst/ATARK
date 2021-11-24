@@ -34,7 +34,7 @@ export class FloorComponent extends BaseCompartmentComponent<FloorDto> {
   constructor(private floorService: HttpFloorService,
     private router: Router,
     private roomService: HttpRoomService,
-    location: Location,
+    location: Location, 
     activatedRoute: ActivatedRoute,
     toastrService: ToastrService,
     evacuationService: HttpEvacuationPlanService,
@@ -46,6 +46,7 @@ export class FloorComponent extends BaseCompartmentComponent<FloorDto> {
   protected initCompartmentInfo(): void {
     this.floorService.getFloorInfo(this.compartmentId).subscribe(data => {
       this.compartmentInfo = data;
+      console.log(data)
     }, error => {
       this.toastrService.error("Something went wrong! Reload the page")
     })

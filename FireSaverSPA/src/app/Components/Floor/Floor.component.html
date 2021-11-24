@@ -11,7 +11,7 @@
             cursor: pointer;" (click)="backBtnClick()">
   Back
 </div>
-<div style="height: 600px; overflow-y: scroll;">
+<div style="height: 700px; overflow-y: scroll;">
   <div style="display: flex; justify-content: center;">
     <div style="font-size: large; width: 800px; text-align: justify;">
       <section style="margin-top: 10px; display: flex;">
@@ -173,9 +173,9 @@
     </div>
   </div>
   <div style="width: 800px; margin: 10px auto; text-align: end;">
-    <button class="btn btn-info" *ngIf="false; else test_exists">Add test</button>
+    <button class="btn btn-info" *ngIf="testInfo==null; else test_exists" (click)="addTest()">Add test</button>
     <ng-template #test_exists>
       <button class="btn btn-info">View test</button>
+      <button class="btn btn-danger" style="margin-left: 20px;">Delete test</button>
     </ng-template>
-    <button class="btn btn-danger" style="margin-left: 20px;">Delete test</button>
   </div>

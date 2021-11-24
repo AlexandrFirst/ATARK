@@ -29,6 +29,7 @@ import { FloorAddDialogComponent } from './Components/floor-add-dialog/floor-add
 import { NgxQRCodeModule } from '@techiediaries/ngx-qrcode';
 import { QrCodeDialogComponent } from './Components/qr-code-dialog/qr-code-dialog.component';
 import {NgxPrintModule} from 'ngx-print';
+import { TestDialogComponent } from './Components/test-dialog/test-dialog.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import {NgxPrintModule} from 'ngx-print';
     ResponsibleUserAddDialogComponent,
     PositionInputDialogComponent,
     FloorAddDialogComponent,
-    QrCodeDialogComponent
+    QrCodeDialogComponent,
+    TestDialogComponent
   ],
   imports: [
     CommonModule,
