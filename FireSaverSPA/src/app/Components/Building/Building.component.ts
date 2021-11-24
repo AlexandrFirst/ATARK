@@ -13,6 +13,7 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
 import { HttpFloorService } from 'src/app/Services/httpFloor.service';
 import { FloorDto } from 'src/app/Models/Compartment/floorDto';
 import { UpdateBuildingDto } from 'src/app/Models/BuildingService/updateBuildingDto';
+import { FloorAddDialogComponent } from '../floor-add-dialog/floor-add-dialog.component';
 
 @Component({
   selector: 'app-Building',
@@ -130,7 +131,7 @@ export class BuildingComponent implements OnInit {
 
   addFloor() {
     const takenFloors = this.buildingInfo.floors.map(floor => floor.level);
-    let dialogRef = this.matDialog.open(CompartmentAddDialogComponent, {
+    let dialogRef = this.matDialog.open(FloorAddDialogComponent, {
       data: { takenFloors: takenFloors }
     })
 

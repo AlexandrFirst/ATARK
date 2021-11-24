@@ -25,8 +25,8 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
     MatProgressBarModule,
     RouterModule.forChild([
       { path: 'compartment/:compartmentId/test', component: TestComponent },
-      { path: 'room/:roomId', component: RoomComponent },
-      { path: 'floor/:floorId', component: FloorComponent },
+      { path: 'room/:Id', component: RoomComponent },
+      { path: 'floor/:Id', component: FloorComponent },
       { path: 'account', component: AccountComponent },
       { path: 'buildings', component: BuildingsComponent },
       { path: 'buildings/:buildingId', component: BuildingComponent },

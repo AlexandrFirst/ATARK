@@ -30,6 +30,7 @@ namespace FireSaverApi.Services
             var compartment = await databaseContext.Floors.Include(u => u.InboundUsers)
                                                           .Include(i => i.Iots)
                                                           .Include(t => t.CompartmentTest)
+                                                          .Include(r => r.Rooms)
                                                           .FirstOrDefaultAsync(b => b.Id == CompartmentId);
             if (compartment == null)
             {

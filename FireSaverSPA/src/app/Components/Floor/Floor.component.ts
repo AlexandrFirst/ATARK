@@ -15,509 +15,65 @@ import { MatDialog } from '@angular/material/dialog';
 import { PositionInputDialogComponent } from '../position-input-dialog/position-input-dialog.component';
 import { HttpPointService } from 'src/app/Services/httpPoint.service';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { BaseCompartmentComponent } from '../BaseCompartment/BaseCompartment.component';
+import { HttpRoomService } from 'src/app/Services/httpRoom.service';
+import { CompartmentAddDialogComponent } from '../compartment-add-dialog/compartment-add-dialog.component';
+import { CompartmentDto } from 'src/app/Models/Compartment/compartmentDto';
 
 
-enum MapType {
-  ScalePoints,
-  RoutePoints
-}
+
 
 @Component({
   selector: 'app-Floor',
   templateUrl: './Floor.component.html',
   styleUrls: ['./Floor.component.scss']
 })
-export class FloorComponent implements OnInit, AfterViewInit {
-
-  private mapType: MapType = MapType.ScalePoints;
-
-  private map: any;
-  private bounds: LatLngBoundsLiteral = [[0, 0], [1000, 1000]];
-
-  private floorId: number;
-
-  floorInfo: FloorDto;
-  evacPlanInfo: EvacuationPlanDto;
-
-  uploadingValue: number = 0;
-
-  selectedMapPosition: Position;
-  private currentMarker: L.Marker;
-
-  private selectedPointOnMap: L.CircleMarker;
-
-  private pointBaseColor: string = "#ff7800";
-  private pointeSelectedColor: string = "#ff0000";
-
-  private scalePointMarkers = new Map();
-
-  private routePoints: RoutePoint[] = [];
-  private routePointMarkers = new Map();
-  private routePolylines = new Map();
-  private selectedRoutePoint: RoutePoint;
+export class FloorComponent extends BaseCompartmentComponent<FloorDto> {
 
 
-  constructor(private location: Location,
+  constructor(private floorService: HttpFloorService,
     private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private toastrService: ToastrService,
-    private floorService: HttpFloorService,
-    private evacuationService: HttpEvacuationPlanService,
-    private matDialog: MatDialog,
-    private pointService: HttpPointService) { }
-
-  ngAfterViewInit(): void {
+    private roomService: HttpRoomService,
+    location: Location,
+    activatedRoute: ActivatedRoute,
+    toastrService: ToastrService,
+    evacuationService: HttpEvacuationPlanService,
+    matDialog: MatDialog,
+    pointService: HttpPointService) {
+    super(location, activatedRoute, toastrService, evacuationService, matDialog, pointService)
   }
 
-  centerMap() {
-    if (this.map) {
-      this.map.fitBounds(this.bounds);
-    }
-  }
-
-  ngOnInit() {
-
-    this.initExpandableList();
-
-    this.activatedRoute.params.subscribe((params: Params) => {
-      this.floorId = params.floorId
-
-      if (this.floorId) {
-        this.initFloorInfo();
-        this.initEvacuationPlanInfo();
-      } else {
-        this.toastrService.error("Unknown building id")
-      }
-    })
-  }
-
-  backBtnClick() {
-    this.location.back();
-  }
-
-  uploadFile = (files) => {
-    if (files.length === 0) {
-      return;
-    }
-    let fileToUpload = <File>files[0];
-    const formData = new FormData();
-    formData.append('evacPlanImgae', fileToUpload, fileToUpload.name);
-
-    this.evacuationService.uploadEvacuationPlan(formData, this.floorId).subscribe(
-      event => {
-        if (event.type === HttpEventType.UploadProgress) {
-          this.uploadingValue = Math.round(100 * event.loaded / event.total);
-        }
-        else if (event.type === HttpEventType.Response) {
-          this.toastrService.success("Plan is uploaded")
-          this.evacPlanInfo = event.body;
-          this.uploadingValue = 0;
-          this.initMap();
-        }
-      },
-      error => {
-        this.uploadingValue = 0;
-        this.toastrService.error("Something went wrong! Try again")
-      }
-    )
-  }
-
-  displayRoutePoints() {
-    this.mapType = MapType.RoutePoints;
-    this.initMapPoints();
-  }
-
-  displayScalePoints() {
-    this.mapType = MapType.ScalePoints;
-    this.initMapPoints();
-  }
-
-
-  private initFloorInfo() {
-    this.floorService.getFloorInfo(this.floorId).subscribe(data => {
-      this.floorInfo = data;
+  protected initCompartmentInfo(): void {
+    this.floorService.getFloorInfo(this.compartmentId).subscribe(data => {
+      this.compartmentInfo = data;
     }, error => {
       this.toastrService.error("Something went wrong! Reload the page")
     })
   }
 
-  private initExpandableList() {
-    console.log("Floor component expandabel count: ", $('.collapse').length)
-    $('.f').each((index, value) => {
-      value.addEventListener('click', (e) => {
-        $('.collapse').each((index1, value1) => {
+  get FloorRooms() {
+    return this.compartmentInfo?.rooms;
+  }
 
-          if (index == index1) {
-            if (value1.classList.contains('show')) {
-              return;
-            } else {
-              value1.classList.add('show')
-            }
-          }
-          else {
-            value1.classList.remove('show')
-          }
-        });
-      })
+  isCompartmentFloor() {
+    return true;
+  }
+
+  addRoomInfo() {
+    var dialogRef = this.matDialog.open(CompartmentAddDialogComponent, {
+      data: {}
     })
-  }
-
-  private initEvacuationPlanInfo() {
-    if (this.floorId) {
-      this.evacuationService.getEvacuationPlanOfCompartment(this.floorId).subscribe(response => {
-        this.evacPlanInfo = response;
-        this.initMap();
-        this.initMapPoints();
-      }, error => {
-        this.toastrService.error("Can't get evacuation plan info")
-      })
-    }
-  }
-
-
-
-  private initMap() {
-    if (this.evacPlanInfo) {
-      this.map = L.map('myMap', {
-        crs: L.CRS.Simple,
-        maxZoom: 5,
-        minZoom: -2,
-      });
-
-      var image = L.imageOverlay(this.evacPlanInfo.url, this.bounds).addTo(this.map);
-
-      setTimeout(() => {
-        this.centerMap()
-      }, 1000)
-
-      var icon = L.icon({
-        iconUrl: 'assets/images/marker-icon.png',
-        shadowUrl: 'assets/images/marker-shadow.png',
-        iconAnchor: [10, 40],
-      });
-
-      this.map.on('click', (e) => {
-        const pos = e.latlng;
-
-        this.selectedMapPosition = {
-          latitude: pos.lat,
-          longtitude: pos.lng
-        }
-
-        if (this.currentMarker) {
-          this.currentMarker.setLatLng(e.latlng);
-        } else {
-          this.currentMarker = L.marker(e.latlng, { icon }).addTo(this.map);
-        }
-      })
-    }
-  }
-
-  private initMapPoints() {
-    if (this.mapType == MapType.ScalePoints) {
-      this.clearRoute()
-      this.initScalePointMarkers();
-    } else if (this.mapType == MapType.RoutePoints) {
-      this.clearScalePoints();
-      this.initRoutePointMarkers();
-    }
-  }
-
-  initScalePointMarkers() {
-    const currentScalePoints = this.evacPlanInfo?.scaleModel?.scalePoints;
-    this.clearScalePoints()
-    if (currentScalePoints) {
-      currentScalePoints.forEach(scalePoint => {
-        this.scalePointMarkers.set(scalePoint.id, this.placeMarker(scalePoint.mapPosition.latitude,
-          scalePoint.mapPosition.longtitude,
-          this.pointBaseColor));
-      });
-    }
-  }
-
-  clearScalePoints() {
-    if (this.scalePointMarkers) {
-      this.scalePointMarkers.forEach((value, key, map) => {
-        var pointMarker = value;
-        this.map.removeLayer(pointMarker);
-      });
-    }
-  }
-
-  addScalePoint() {
-    let dialogRef = this.matDialog.open(PositionInputDialogComponent);
     dialogRef.afterClosed().subscribe(data => {
-      const sendData: ScalePointDto = {
-        id: 0,
-        mapPosition: this.selectedMapPosition,
-        worldPosition: data
-      };
-
-      this.pointService.addScalePoint(sendData, this.evacPlanInfo.id).subscribe(response => {
-
-        const newScalePointMarker = this.placeMarker(this.selectedMapPosition.latitude,
-          this.selectedMapPosition.longtitude,
-          this.pointBaseColor)
-        this.scalePointMarkers.set(response.id, newScalePointMarker)
-      })
-    })
-  }
-
-
-  removeScalePointMarker(pointId: number) {
-
-    var dilaogRef = this.matDialog.open(ConfirmDialogComponent, {
-      data: { message: `Are you sure you want to delete scale point with id: ${pointId}` }
-    })
-
-    dilaogRef.afterClosed().subscribe(data => {
-      if (data == true) {
-        this.pointService.removeScalePoint(pointId).subscribe(success => {
-          const marker = this.scalePointMarkers.get(pointId);
-
-          if (marker == this.selectedPointOnMap) {
-            this.selectedPointOnMap = null;
-          }
-
-          this.map.removeLayer(marker);
-          this.toastrService.success("Scale point with id: " + pointId + " deleted");
-          this.scalePointMarkers.delete(pointId);
-
-        }, error => {
-
-          if (error.error?.message) {
-            this.toastrService.warning(error.error?.message);
-
-            const marker = this.scalePointMarkers.get(pointId);
-
-            if (marker == this.selectedPointOnMap) {
-              this.selectedPointOnMap = null;
-            }
-
-            this.map.removeLayer(marker);
-            this.scalePointMarkers.delete(pointId);
-
-          } else {
-            this.toastrService.error("Something went wrong. Try again");
-          }
-
+      if (data) {
+        const dataToSend: CompartmentDto = data;
+        this.roomService.addRoomInfo(this.compartmentId, dataToSend).subscribe(response => {
+          this.initCompartmentInfo();
         })
       }
     })
   }
 
-  selectScalePoint(scalePointId: number) {
-    const newlySelectedPoint = this.scalePointMarkers.get(scalePointId);
-    this.selectPoint(newlySelectedPoint);
-  }
-
-  selectPoint(marker: L.CircleMarker) {
-
-    if (this.selectedPointOnMap) {
-      this.selectedPointOnMap.setStyle({ fillColor: this.pointBaseColor })
-      this.selectedPointOnMap = marker;
-      this.selectedPointOnMap.setStyle({ fillColor: this.pointeSelectedColor })
-    } else {
-      this.selectedPointOnMap = marker;
-      this.selectedPointOnMap.setStyle({ fillColor: this.pointeSelectedColor })
-    }
-  }
-
-  placeMarker(lat, lng, color): L.CircleMarker {
-
-    const newRoutePoint: L.CircleMarker = L.circleMarker([lat, lng], {
-      radius: 8,
-      fillColor: color,
-      color: color,
-      weight: 1,
-      opacity: 1,
-      fillOpacity: 0.8
-    }).addTo(this.map);
-    return newRoutePoint;
-  }
-
-  initRoutePointMarkers() {
-    this.pointService.getEvacRoutePointsForCompartment(this.floorId).subscribe(response => {
-      console.log(response)
-      this.printRouteFromPoint(response);
-    }, error => {
-      console.log(error)
-      if (error.error?.Message) {
-        this.toastrService.warning(error.error?.Message);
-      }
-      else {
-        this.toastrService.error("Something went wrong")
-      }
-    })
-  }
-
-  addRoutePoint() {
-    if (this.selectedMapPosition) {
-      if (this.routePoints.length > 0) {
-        if (this.selectedRoutePoint) {
-          this.pointService.addPointToRouteEvacuationPlan({
-            parentRoutePointId: this.selectedRoutePoint.id,
-            pointPostion: this.selectedMapPosition
-          } as InputRoutePoint).subscribe(response => {
-            this.initRoutePointMarkers();
-          })
-        }
-        else {
-          this.toastrService.warning("Select route point to add a new one")
-        }
-      } else {
-        this.pointService.addRouteToEvacuationPlan({
-          parentRoutePointId: null,
-          pointPostion: this.selectedMapPosition
-        } as InputRoutePoint, this.floorId).subscribe(response => {
-          this.initEvacuationPlanInfo();
-        })
-      }
-    }
-  }
-
-
-  printRouteFromPoint(point: RoutePoint) {
-    this.clearRoute();
-    this.printRoute(point);
-    console.log(this.routePoints)
-  }
-
-  private printRoute(currentPoint: RoutePoint) {
-    var currentMarker = this.placeMarker(currentPoint.mapPosition.latitude, currentPoint.mapPosition.longtitude, this.pointBaseColor);
-
-    this.routePoints.push(currentPoint);
-    this.routePointMarkers.set(currentPoint.id, currentMarker);
-
-    this.addPointHandler(currentPoint)
-
-    if (currentPoint.childrenPoints.length == 0) {
-      return;
-    }
-
-    currentPoint.childrenPoints.forEach(elem => {
-      elem.parentPoint = {
-        id: currentPoint.id
-      } as RoutePoint;
-
-      this.printRoute(elem);
-
-      var newPolyline = L.polyline([this.routePointMarkers.get(currentPoint.id).getLatLng(), this.routePointMarkers.get(elem.id).getLatLng()]).addTo(this.map);
-      this.routePolylines.set(elem.id, newPolyline);
-    });
-  }
-
-  removeRoutePoint(routePointId: number) {
-    this.pointService.deleteRoutePoint(routePointId).subscribe(response => {
-      this.initRoutePointMarkers();
-    })
-  }
-
-  clearRoute() {
-    this.routePoints.forEach(routePoint => {
-
-      const marker = this.routePointMarkers.get(routePoint.id);
-      const polyline = this.routePolylines.get(routePoint.id);
-
-      if (marker)
-        this.map.removeLayer(marker);
-
-      if (polyline)
-        this.map.removeLayer(polyline);
-    });
-
-    this.routePointMarkers.clear();
-    this.routePolylines.clear();
-    this.routePoints = [];
-
-  }
-
-  private selectRoutePoint(routePointId: number): L.CircleMarker {
-    console.log(this.routePointMarkers)
-    const newlySelectedPoint = this.routePointMarkers.get(routePointId);
-    this.selectedRoutePoint = this.routePoints.find(elem => elem.id == routePointId);
-    this.selectPoint(newlySelectedPoint);
-    return newlySelectedPoint
-  }
-
-  private addPointHandler(point: RoutePoint, isStartPoint: boolean = false) {
-
-    var isPointUnderTrack = false;
-
-    const selectedRouteMarker = this.selectRoutePoint(point.id)
-
-    selectedRouteMarker.on("mousedown", () => {
-
-      this.pointService.getRoutePointById(point.id).subscribe(data => {
-        //this.selectedRoutePoint = data
-        this.selectRoutePoint(data.id)
-      })
-
-      if (!isPointUnderTrack) {
-        this.map.dragging.disable()
-        this.map.on("mousemove", trackCursor)
-        isPointUnderTrack = true;
-      }
-    })
-
-    this.map.on("click", () => {
-      if (isPointUnderTrack) {
-        this.map.dragging.enable()
-        this.map.off("mousemove", trackCursor)
-        isPointUnderTrack = false;
-
-        const newPos: Postion = {
-          latitude: selectedRouteMarker.getLatLng().lat,
-          longtitude: selectedRouteMarker.getLatLng().lng
-        }
-
-        point.mapPosition = newPos;
-        this.pointService.updateRoutePointPostion(point).subscribe(success => {
-          console.log("position is updated: ", success)
-        })
-      }
-    })
-
-
-    const trackCursor = (evt) => {
-
-      console.log("Selected route point: ", this.selectedRoutePoint)
-
-      selectedRouteMarker.setLatLng(evt.latlng)
-      console.log(this.selectedRoutePoint)
-
-      var oldPolyline = this.routePolylines.get(this.selectedRoutePoint.id);
-
-      if (this.selectedRoutePoint.parentPoint) {
-        console.log("Updating id there is parent root")
-        oldPolyline.setLatLngs([this.routePointMarkers.get(this.selectedRoutePoint.parentPoint.id).getLatLng(),
-        selectedRouteMarker.getLatLng()]);
-      }
-
-      var childArray: any = this.selectedRoutePoint.childrenPoints;
-
-      if (childArray && childArray.length > 0) {
-        childArray.forEach(point => {
-          console.log(this.routePolylines);
-          var polyline = this.routePolylines.get(point.id);
-          polyline.setLatLngs([this.routePointMarkers.get(this.selectedRoutePoint.id).getLatLng(),
-          this.routePointMarkers.get(point.id).getLatLng()])
-        })
-      }
-
-    }
-
-    this.routePointMarkers.set(point.id, selectedRouteMarker);
-
-
-    // if (!isStartPoint) {
-    //   var newPolyline = L.polyline([this.routePointMarkers.get(this.selectedRoutePoint.id).getLatLng(), selectedRouteMarker.getLatLng()]).addTo(this.map);
-
-    //   this.routePolylines.set(point.id, newPolyline);
-    // }
-
-    this.selectedRoutePoint = point
-
-    return selectedRouteMarker;
+  viewRoomInfo(roomId: number) {
+    this.router.navigate(['main', 'room', roomId])
   }
 }

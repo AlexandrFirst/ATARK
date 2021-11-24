@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { CompartmentDto } from 'src/app/Models/Compartment/compartmentDto';
 import { FloorDto } from 'src/app/Models/Compartment/floorDto';
 import { HttpUserService } from 'src/app/Services/httpUser.service';
 import { AsyncUserValidator } from 'src/app/Validators/asyncUserValidator';
@@ -13,18 +14,14 @@ import { FloorLevelValidator } from 'src/app/Validators/floorLevelValidator';
 })
 export class CompartmentAddDialogComponent {
 
-  private takenFloors: number[] = [];
-
-  addFloorToBuildingForm: FormGroup = new FormGroup({
+  addCompartmentForm: FormGroup = new FormGroup({
     name: new FormControl('', [Validators.required]),
     description: new FormControl('', [Validators.required]),
     safetyRules: new FormControl('', [Validators.required]),
-    level: new FormControl('', [Validators.required])
-
   });
 
   get validatingForm() {
-    return this.addFloorToBuildingForm;
+    return this.addCompartmentForm;
   }
 
   get formName() {
@@ -39,39 +36,22 @@ export class CompartmentAddDialogComponent {
     return this.validatingForm.get('safetyRules');
   }
 
-  get formLevel() {
-    return this.validatingForm.get('level')
-  }
-
-
-
   constructor(public dialogRef: MatDialogRef<CompartmentAddDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any, private userService: HttpUserService) {
-    if (data.takenFloors) {
-      console.log(data.takenFloors)
-      this.takenFloors = data.takenFloors
-    }
-
-
-
-    if (data.floorInfo) {
-      const currentInfo: FloorDto = data.floorInfo;
-      this.addFloorToBuildingForm.setValue({
-        name: currentInfo.name,
-        description: currentInfo.description,
-        safetyRules: currentInfo.safetyRules,
-        level: currentInfo.level
-      });
-      const floorIndex = this.takenFloors.indexOf(data.floorInfo.level);
-      this.takenFloors.splice(floorIndex, 1);
-    }
-
-    this.addFloorToBuildingForm.get('level').setValidators([Validators.required, FloorLevelValidator(this.takenFloors)])
+    @Inject(MAT_DIALOG_DATA) public data: any) {
+    
+      if (data.roomInfo) {
+        const currentInfo: CompartmentDto = data.floorInfo;
+        this.addCompartmentForm.setValue({
+          name: currentInfo.name,
+          description: currentInfo.description,
+          safetyRules: currentInfo.safetyRules
+        });
+      }
   }
 
   submitForm() {
-    if (this.addFloorToBuildingForm.valid) {
-      this.dialogRef.close(this.addFloorToBuildingForm.value)
+    if (this.addCompartmentForm.valid) {
+      this.dialogRef.close(this.addCompartmentForm.value)
     }
   }
 

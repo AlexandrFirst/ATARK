@@ -25,6 +25,7 @@ import { BuildingDialogComponent } from './Components/building-dialog/building-d
 import { CompartmentAddDialogComponent } from './Components/compartment-add-dialog/compartment-add-dialog.component';
 import { ResponsibleUserAddDialogComponent } from './Components/responsible-user-add-dialog/responsible-user-add-dialog.component';
 import { PositionInputDialogComponent } from './Components/position-input-dialog/position-input-dialog.component';
+import { FloorAddDialogComponent } from './Components/floor-add-dialog/floor-add-dialog.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { PositionInputDialogComponent } from './Components/position-input-dialog
     BuildingDialogComponent,
     CompartmentAddDialogComponent,
     ResponsibleUserAddDialogComponent,
-    PositionInputDialogComponent
+    PositionInputDialogComponent,
+    FloorAddDialogComponent
   ],
   imports: [
     CommonModule,

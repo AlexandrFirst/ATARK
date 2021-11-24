@@ -19,7 +19,7 @@
           Name:
         </div>
         <div style="width: 700px;">
-          {{floorInfo?.name}}
+          {{compartmentInfo?.name}}
         </div>
       </section>
       <section style="margin-top: 10px; display: flex;">
@@ -27,7 +27,7 @@
           Describtion:
         </div>
         <div style="width: 700px;">
-          {{floorInfo?.description}}
+          {{compartmentInfo?.description}}
         </div>
       </section>
       <section style="margin-top: 10px; display: flex;">
@@ -35,15 +35,15 @@
           Safety Rules:
         </div>
         <div style="width: 700px;">
-          {{floorInfo?.safetyRules}}
+          {{compartmentInfo?.safetyRules}}
         </div>
       </section>
-      <section style="margin-top: 10px; display: flex;">
+      <section style="margin-top: 10px; display: flex;" *ngIf="isCompartmentFloor()">
         <div style="width: 100px;">
           Level:
         </div>
         <div style="width: 700px;">
-          {{floorInfo?.level}}
+          {{compartmentInfo?.level}}
         </div>
       </section>
       <button class="btn btn-warning" style="display: block; margin-top: 10px; font-size: large; float: right;">
@@ -101,6 +101,8 @@
                 <button class="btn btn-success" (click)="file.click()">Load map
                   <span *ngIf="uploadingValue > 0">{{uploadingValue}}</span>
                 </button>
+                <input type="file" #file placeholder="Choose file" (change)="uploadFile(file.files)"
+                  style="display:none;">
               </div>
             </ng-template>
 
@@ -135,11 +137,16 @@
                 <button class="btn btn-success" (click)="file.click()">Load map
                   <span *ngIf="uploadingValue > 0">{{uploadingValue}}</span>
                 </button>
+                <input type="file" #file placeholder="Choose file" (change)="uploadFile(file.files)"
+                  style="display:none;">
               </div>
             </ng-template>
           </div>
         </div>
-        <div class="card f">
+
+      </div>
+      <div class="card f">
+        <div *ngIf="isCompartmentFloor()">
           <div class="card-header" id="headingTwo">
             <h5 class="mb-0">
               <button class="btn" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false"
@@ -150,7 +157,14 @@
           </div>
           <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
             <div class="card-body">
-              <button class="btn btn-primary">Add new room</button>
+              <div *ngFor="let room of FloorRooms"
+                style="display: flex; justify-content: center; height: 40px; margin-top: 10px;">
+                <div style="line-height: 40px;">{{room.name}} </div>
+                <button class="btn btn-danger" style="margin-left: 50px;">Delete</button>
+                <button class="btn btn-info" style="margin-left: 50px;" (click)="viewRoomInfo(room.id)">View</button>
+                <button class="btn btn-warning" style="margin-left: 50px;">Change</button>
+              </div>
+              <button class="btn btn-primary" (click)="addRoomInfo()">Add new room</button>
             </div>
           </div>
         </div>
