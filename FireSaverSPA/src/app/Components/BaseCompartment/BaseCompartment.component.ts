@@ -16,6 +16,7 @@ import { PositionInputDialogComponent } from '../position-input-dialog/position-
 import { HttpPointService } from 'src/app/Services/httpPoint.service';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { CompartmentDto } from 'src/app/Models/Compartment/compartmentDto';
+import { QrCodeDialogComponent } from '../qr-code-dialog/qr-code-dialog.component';
 
 enum MapType {
   ScalePoints,
@@ -419,6 +420,12 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
     this.routePolylines.clear();
     this.routePoints = [];
 
+  }
+
+  getCompartmentQrCode() {
+    const dialogRef = this.matDialog.open(QrCodeDialogComponent, {
+      data: { info: JSON.stringify({ compartmentId: this.compartmentId }) }
+    })
   }
 
   private selectRoutePoint(routePointId: number): L.CircleMarker {

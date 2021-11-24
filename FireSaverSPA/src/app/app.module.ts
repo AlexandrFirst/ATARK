@@ -26,6 +26,9 @@ import { CompartmentAddDialogComponent } from './Components/compartment-add-dial
 import { ResponsibleUserAddDialogComponent } from './Components/responsible-user-add-dialog/responsible-user-add-dialog.component';
 import { PositionInputDialogComponent } from './Components/position-input-dialog/position-input-dialog.component';
 import { FloorAddDialogComponent } from './Components/floor-add-dialog/floor-add-dialog.component';
+import { NgxQRCodeModule } from '@techiediaries/ngx-qrcode';
+import { QrCodeDialogComponent } from './Components/qr-code-dialog/qr-code-dialog.component';
+import {NgxPrintModule} from 'ngx-print';
 
 @NgModule({
   declarations: [
@@ -39,7 +42,8 @@ import { FloorAddDialogComponent } from './Components/floor-add-dialog/floor-add
     CompartmentAddDialogComponent,
     ResponsibleUserAddDialogComponent,
     PositionInputDialogComponent,
-    FloorAddDialogComponent
+    FloorAddDialogComponent,
+    QrCodeDialogComponent
   ],
   imports: [
     CommonModule,
@@ -51,6 +55,8 @@ import { FloorAddDialogComponent } from './Components/floor-add-dialog/floor-add
     HttpClientModule,
     ReactiveFormsModule,
     NgxPaginationModule,
+    NgxQRCodeModule,
+    NgxPrintModule,
     RouterModule.forRoot([
       {
         path: 'entrance',

@@ -13,7 +13,7 @@ export class PositionInputDialogComponent {
     latitude: new FormControl('', [Validators.required]),
     longtitude: new FormControl('', [Validators.required]),
   });
-
+ 
   get formLatitude() {
     return this.positionForm.get('latitude');
   }
