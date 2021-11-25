@@ -136,8 +136,9 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
     this.initMapPoints();
   }
 
-
   protected abstract initCompartmentInfo(): void;
+  abstract updateCOmpartmentInfo();
+  abstract canChangeCompartment():boolean
 
   private initExpandableList() {
     console.log("Floor component expandabel count: ", $('.collapse').length)
@@ -171,8 +172,6 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
       })
     }
   }
-
-
 
   private initMap() {
     if (this.evacPlanInfo) {
@@ -261,7 +260,6 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
       }
     })
   }
-
 
   removeScalePointMarker(pointId: number) {
 

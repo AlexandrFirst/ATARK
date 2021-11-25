@@ -40,7 +40,7 @@ export class CompartmentAddDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: any) {
     
       if (data.roomInfo) {
-        const currentInfo: CompartmentDto = data.floorInfo;
+        const currentInfo: CompartmentDto = data.roomInfo;
         this.addCompartmentForm.setValue({
           name: currentInfo.name,
           description: currentInfo.description,

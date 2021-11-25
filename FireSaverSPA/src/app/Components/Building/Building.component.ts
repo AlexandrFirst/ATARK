@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, NavigationExtras, Params, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import * as $ from 'jquery';
 import { BuildingInfoDto } from 'src/app/Models/BuildingService/buildingInfoDto';
@@ -222,7 +222,13 @@ export class BuildingComponent implements OnInit {
   }
 
   goToFloorPage(floorId: number) {
-    this.router.navigate(['main', 'floor', floorId]);
+    const takenFloors = this.buildingInfo.floors.map(floor => floor.level);
+    let NavigationExtars: NavigationExtras = {
+      state: {
+        takenFloors: takenFloors
+      }
+    }
+    this.router.navigate(['main', 'floor', floorId], NavigationExtars);
   }
 
 }

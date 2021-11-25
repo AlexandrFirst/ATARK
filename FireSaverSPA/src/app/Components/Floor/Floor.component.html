@@ -46,7 +46,8 @@
           {{compartmentInfo?.level}}
         </div>
       </section>
-      <button class="btn btn-warning" style="display: block; margin-top: 10px; font-size: large; float: right;">
+      <button *ngIf="canChangeCompartment()" (click)="updateCOmpartmentInfo()" class="btn btn-warning"
+        style="display: block; margin-top: 10px; font-size: large; float: right;">
         Chnage Info
       </button>
       <button class="btn btn-primary"
@@ -161,9 +162,11 @@
               <div *ngFor="let room of FloorRooms"
                 style="display: flex; justify-content: center; height: 40px; margin-top: 10px;">
                 <div style="line-height: 40px;">{{room.name}} </div>
-                <button class="btn btn-danger" style="margin-left: 50px;">Delete</button>
+                <button class="btn btn-danger" style="margin-left: 50px;"
+                  (click)="deleteRoomInfo(room.id)">Delete</button>
                 <button class="btn btn-info" style="margin-left: 50px;" (click)="viewRoomInfo(room.id)">View</button>
-                <button class="btn btn-warning" style="margin-left: 50px;">Change</button>
+                <button class="btn btn-warning" style="margin-left: 50px;"
+                  (click)="changeRoomInfo(room.id)">Change</button>
               </div>
               <button class="btn btn-primary" (click)="addRoomInfo()">Add new room</button>
             </div>

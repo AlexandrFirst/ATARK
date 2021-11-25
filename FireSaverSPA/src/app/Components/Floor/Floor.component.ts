@@ -20,6 +20,7 @@ import { HttpRoomService } from 'src/app/Services/httpRoom.service';
 import { CompartmentAddDialogComponent } from '../compartment-add-dialog/compartment-add-dialog.component';
 import { CompartmentDto } from 'src/app/Models/Compartment/compartmentDto';
 import { HttpTestService } from 'src/app/Services/httpTest.service';
+import { FloorAddDialogComponent } from '../floor-add-dialog/floor-add-dialog.component';
 
 
 
@@ -32,10 +33,12 @@ import { HttpTestService } from 'src/app/Services/httpTest.service';
 export class FloorComponent extends BaseCompartmentComponent<FloorDto> {
 
 
+  private takenFloors: number[] = null;
+
   constructor(private floorService: HttpFloorService,
     private router: Router,
     private roomService: HttpRoomService,
-    location: Location, 
+    location: Location,
     activatedRoute: ActivatedRoute,
     toastrService: ToastrService,
     evacuationService: HttpEvacuationPlanService,
@@ -43,6 +46,13 @@ export class FloorComponent extends BaseCompartmentComponent<FloorDto> {
     pointService: HttpPointService,
     testService: HttpTestService) {
     super(location, activatedRoute, toastrService, evacuationService, matDialog, pointService, testService)
+
+    this.activatedRoute.queryParams.subscribe(params => {
+      if (this.router.getCurrentNavigation().extras.state) {
+        this.takenFloors = this.router.getCurrentNavigation().extras.state.takenFloors
+        console.log(this.takenFloors)
+      }
+    })
   }
 
   protected initCompartmentInfo(): void {
@@ -52,6 +62,12 @@ export class FloorComponent extends BaseCompartmentComponent<FloorDto> {
     }, error => {
       this.toastrService.error("Something went wrong! Reload the page")
     })
+  }
+
+  canChangeCompartment(): boolean {
+    if (this.takenFloors)
+      return true;
+    return false;
   }
 
   get FloorRooms() {
@@ -79,4 +95,57 @@ export class FloorComponent extends BaseCompartmentComponent<FloorDto> {
   viewRoomInfo(roomId: number) {
     this.router.navigate(['main', 'room', roomId])
   }
+
+  updateCOmpartmentInfo() {
+    const dialogRef = this.matDialog.open(FloorAddDialogComponent, {
+      data: { floorInfo: this.compartmentInfo, takenFloors: this.takenFloors }
+    })
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data) {
+        this.floorService.changeFloorOfBuilding(data, this.compartmentId).subscribe(success => {
+          this.initCompartmentInfo();
+          this.toastrService.success("Floor info updated")
+        }, error => {
+          this.toastrService.error("Something went wrong! Try again")
+        })
+      }
+    })
+  }
+
+  changeRoomInfo(compartmentId: number) {
+    var roomInfo = this.compartmentInfo.rooms.find(r => r.id == compartmentId);
+    if (roomInfo) {
+      const dialogRef = this.matDialog.open(CompartmentAddDialogComponent, {
+        data: { roomInfo: roomInfo }
+      });
+
+      dialogRef.afterClosed().subscribe(data => {
+        if (data) {
+          this.roomService.updateRoomInfo(compartmentId, data).subscribe(response => {
+            this.initCompartmentInfo();
+            this.toastrService.success(`Room with id: ${compartmentId} updated`)
+          }, error => {
+            this.toastrService.error("SOmething went wrong! Try again")
+          });
+        }
+      })
+    }
+  }
+
+  deleteRoomInfo(compartmentId: number) {
+    const dialogRef = this.matDialog.open(ConfirmDialogComponent, {
+      data: { message: `Are you sure you want to delete room with id: ${this.compartmentId}` }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if(data){
+        this.roomService.deleteRoom(compartmentId).subscribe(success => {
+          this.toastrService.success(`Room with id: ${compartmentId} deleted`);
+          this.initCompartmentInfo();
+        })
+      }
+    })
+  }
+
 }

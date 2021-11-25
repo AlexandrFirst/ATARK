@@ -20,4 +20,12 @@ export class HttpRoomService extends BaseHttpService {
   addRoomInfo(floorId: number, roomInfo: CompartmentDto): Observable<CompartmentDto> {
     return this.client.post<CompartmentDto>(this.baseUrl + `Room/addRoomToFloor/${floorId}`, roomInfo);
   }
+
+  updateRoomInfo(roomId: number, roomInfo: CompartmentDto): Observable<CompartmentDto> {
+    return this.client.put<CompartmentDto>(this.baseUrl + `Room/changeRoomInfo/${roomId}`, roomInfo);
+  }
+
+  deleteRoom(roomId: number): Observable<any> {
+    return this.client.delete(this.baseUrl + `Room/${roomId}`);
+  }
 }
