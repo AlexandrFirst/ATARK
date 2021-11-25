@@ -30,6 +30,8 @@ import { NgxQRCodeModule } from '@techiediaries/ngx-qrcode';
 import { QrCodeDialogComponent } from './Components/qr-code-dialog/qr-code-dialog.component';
 import {NgxPrintModule} from 'ngx-print';
 import { TestDialogComponent } from './Components/test-dialog/test-dialog.component';
+import { AddIotDialogComponent } from './Components/add-iot-dialog/add-iot-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -45,7 +47,8 @@ import { TestDialogComponent } from './Components/test-dialog/test-dialog.compon
     PositionInputDialogComponent,
     FloorAddDialogComponent,
     QrCodeDialogComponent,
-    TestDialogComponent
+    TestDialogComponent,
+    AddIotDialogComponent
   ],
   imports: [
     CommonModule,
@@ -56,6 +59,7 @@ import { TestDialogComponent } from './Components/test-dialog/test-dialog.compon
     NgbModule,
     HttpClientModule,
     ReactiveFormsModule,
+    MatDialogModule,
     NgxPaginationModule,
     NgxQRCodeModule,
     NgxPrintModule,

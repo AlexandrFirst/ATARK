@@ -10,6 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { HttpPointService } from 'src/app/Services/httpPoint.service';
 import { HttpTestService } from 'src/app/Services/httpTest.service';
 import { CompartmentAddDialogComponent } from '../compartment-add-dialog/compartment-add-dialog.component';
+import { HttpIotService } from 'src/app/Services/httpIot.service';
 
 @Component({
   selector: 'app-Room',
@@ -26,8 +27,9 @@ export class RoomComponent extends BaseCompartmentComponent<CompartmentDto> {
     evacuationService: HttpEvacuationPlanService,
     matDialog: MatDialog,
     pointService: HttpPointService,
-    testService: HttpTestService) {
-    super(location, activatedRoute, toastrService, evacuationService, matDialog, pointService, testService)
+    testService: HttpTestService,
+    iotService: HttpIotService) {
+    super(location, activatedRoute, toastrService, evacuationService, matDialog, pointService, testService, iotService)
   }
 
   isCompartmentFloor() {

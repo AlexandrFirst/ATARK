@@ -1,0 +1,6 @@
+<div class="form-group" style="margin-bottom: 20px;" [formGroup]="newIotForm">
+  <label>IoT identifier: </label>
+  <input type="text" class="form-control " placeholder="Enter iot Id" formControlName="iotIdField">
+</div>
+<button class="btn btn-primary" (click)="submitForm()" [disabled]="newIotForm.invalid">Submit</button>
+<button class="btn btn-danger" (click)="closeForm()">Cancel</button>

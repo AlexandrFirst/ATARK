@@ -20,10 +20,13 @@ import { QrCodeDialogComponent } from '../qr-code-dialog/qr-code-dialog.componen
 import { TestInput } from 'src/app/Models/TestModels/testInput';
 import { TestDialogComponent } from '../test-dialog/test-dialog.component';
 import { HttpTestService } from 'src/app/Services/httpTest.service';
+import { HttpIotService } from 'src/app/Services/httpIot.service';
+import { AddIotDialogComponent } from '../add-iot-dialog/add-iot-dialog.component';
 
 enum MapType {
   ScalePoints,
-  RoutePoints
+  RoutePoints,
+  Iots
 }
 
 @Component({ template: '' })
@@ -60,6 +63,7 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
   private routePolylines = new Map();
   private selectedRoutePoint: RoutePoint;
 
+  private iotPos = new Map<string, L.CircleMarker>();
 
   constructor(protected location: Location,
     protected activatedRoute: ActivatedRoute,
@@ -67,7 +71,8 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
     protected evacuationService: HttpEvacuationPlanService,
     protected matDialog: MatDialog,
     protected pointService: HttpPointService,
-    protected testService: HttpTestService) { }
+    protected testService: HttpTestService,
+    protected iotService: HttpIotService) { }
 
   ngAfterViewInit(): void {
   }
@@ -136,9 +141,14 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
     this.initMapPoints();
   }
 
+  displayIots() {
+    this.mapType = MapType.Iots;
+    this.initMapPoints();
+  }
+
   protected abstract initCompartmentInfo(): void;
   abstract updateCOmpartmentInfo();
-  abstract canChangeCompartment():boolean
+  abstract canChangeCompartment(): boolean
 
   private initExpandableList() {
     console.log("Floor component expandabel count: ", $('.collapse').length)
@@ -211,11 +221,18 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
 
   private initMapPoints() {
     if (this.mapType == MapType.ScalePoints) {
+      this.clearIotsMarkers()
       this.clearRoute()
       this.initScalePointMarkers();
     } else if (this.mapType == MapType.RoutePoints) {
       this.clearScalePoints();
+      this.clearIotsMarkers();
       this.initRoutePointMarkers();
+    } else if (this.mapType == MapType.Iots) {
+      this.clearRoute()
+      this.clearScalePoints();
+      this.initIotMarkers();
+
     }
   }
 
@@ -321,7 +338,7 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
   }
 
   placeMarker(lat, lng, color): L.CircleMarker {
-
+    //TODO:  Check lat lng aspect 
     const newRoutePoint: L.CircleMarker = L.circleMarker([lat, lng], {
       radius: 8,
       fillColor: color,
@@ -569,4 +586,63 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
     })
   }
 
+  clearIotsMarkers() {
+    this.compartmentInfo?.ioTs.forEach(iot => {
+      var iotMarker = this.iotPos.get(iot.iotIdentifier);
+      if (iotMarker)
+        this.map.removeLayer(iotMarker);
+    })
+  }
+
+  initIotMarkers() {
+    this.clearIotsMarkers()
+    var iots = this.compartmentInfo.ioTs;
+    iots.forEach(iot => {
+      const iotMarker = this.placeMarker(iot.mapPosition.latitude, iot.mapPosition.longtitude, this.pointBaseColor);
+      this.iotPos.set(iot.iotIdentifier, iotMarker);
+    })
+  }
+
+  addIotToCompartment() {
+    const dialogRef = this.matDialog.open(AddIotDialogComponent);
+    dialogRef.afterClosed().subscribe(data => {
+      if (data) {
+        const identifier = data.iotIdField;
+        const iotPos = this.selectedMapPosition;
+        this.iotService.addIotToCompartment(this.compartmentId, identifier).subscribe(success => {
+          this.iotService.updateIotPos(identifier, iotPos).subscribe(data => {
+            this.toastrService.success("New iot is added");
+            this.initCompartmentInfo();
+          })
+        })
+      }
+    })
+  }
+
+  selectIotMarker(iotIdentifier: string) {
+    const iotMarker = this.iotPos.get(iotIdentifier);
+    if (iotMarker) {
+      this.selectPoint(iotMarker);
+    }
+  }
+
+  removeIotFromCompartment(identifier: string) {
+    var iot = this.compartmentInfo.ioTs.find(iot => iot.iotIdentifier == identifier);
+    if (iot) {
+      this.iotService.removeIotFromCompartment(this.compartmentId, iot.iotIdentifier).subscribe(data => {
+        const iotMarker = this.iotPos.get(iot.iotIdentifier);
+        this.map.removeLayer(iotMarker);
+        this.toastrService.success("Iot is removed")
+        this.initCompartmentInfo();
+      }, error => {
+        this.toastrService.error("Something went wrong! Try again");
+      })
+    }
+  }
+
+  printQrCode(identifier: string) {
+    this.matDialog.open(QrCodeDialogComponent, {
+      data: { info: JSON.stringify({ compartmentId: this.compartmentId, iotId: identifier }) }
+    })
+  }
 }

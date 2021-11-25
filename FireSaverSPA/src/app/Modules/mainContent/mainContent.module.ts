@@ -7,7 +7,6 @@ import { BuildingsComponent } from 'src/app/Components/Buildings/Buildings.compo
 import { AccountComponent } from 'src/app/Components/Account/Account.component';
 import { RoomComponent } from 'src/app/Components/Room/Room.component';
 import { FloorComponent } from 'src/app/Components/Floor/Floor.component';
-import { TestComponent } from 'src/app/Components/Test/Test.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {MatDialogModule} from '@angular/material/dialog';
 import {NgxPaginationModule} from 'ngx-pagination';
@@ -19,12 +18,11 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatDialogModule,
+
     NgxPaginationModule,
     MatPaginatorModule,
     MatProgressBarModule,
     RouterModule.forChild([
-      { path: 'compartment/:compartmentId/test', component: TestComponent },
       { path: 'room/:Id', component: RoomComponent },
       { path: 'floor/:Id', component: FloorComponent },
       { path: 'account', component: AccountComponent },
@@ -36,7 +34,6 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
   ],
   declarations: [
     MainContentComponent,
-    TestComponent,
     RoomComponent,
     FloorComponent,
     AccountComponent,

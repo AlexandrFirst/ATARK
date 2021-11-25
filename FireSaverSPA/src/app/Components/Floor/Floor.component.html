@@ -107,7 +107,6 @@
                   style="display:none;">
               </div>
             </ng-template>
-
           </div>
         </div>
       </div>
@@ -145,7 +144,41 @@
             </ng-template>
           </div>
         </div>
-
+      </div>
+      <div class="card f">
+        <div class="card-header" id="headingOne" (click)="displayIots();">
+          <h5 class="mb-0">
+            <button class="btn" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
+              aria-controls="collapseOne">
+              Iots
+            </button>
+          </h5>
+        </div>
+        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+          <div class="card-body">
+            <div *ngIf="evacPlanInfo != null; else no_map_template_scale">
+              <div *ngIf="compartmentInfo?.ioTs.length == 0; else route_points">No iots</div>
+              <ng-template #route_points>
+                <div *ngFor="let iot of compartmentInfo?.ioTs" style="display: flex; justify-content: center;">
+                  <div>{{iot.iotIdentifier}}</div>
+                  <div><button class="btn btn-info" (click)="printQrCode(iot.iotIdentifier)">Print qr iot info</button></div>
+                  <div><button class="btn btn-danger" (click)="removeIotFromCompartment(iot.iotIdentifier)">Delete</button></div>
+                </div>
+              </ng-template>
+              <button class="btn btn-primary" (click)="addIotToCompartment()" [disabled]="this.selectedMapPosition == null">
+                Add iot</button>
+            </div>
+            <ng-template #no_map_template_scale>
+              <div style="width: 100%; display: flex; justify-content: center; height: 50px; align-items: center;">
+                <button class="btn btn-success" (click)="file.click()">Load map
+                  <span *ngIf="uploadingValue > 0">{{uploadingValue}}</span>
+                </button>
+                <input type="file" #file placeholder="Choose file" (change)="uploadFile(file.files)"
+                  style="display:none;">
+              </div>
+            </ng-template>
+          </div>
+        </div>
       </div>
       <div class="card f">
         <div *ngIf="isCompartmentFloor()">

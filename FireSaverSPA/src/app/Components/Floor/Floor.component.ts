@@ -21,6 +21,7 @@ import { CompartmentAddDialogComponent } from '../compartment-add-dialog/compart
 import { CompartmentDto } from 'src/app/Models/Compartment/compartmentDto';
 import { HttpTestService } from 'src/app/Services/httpTest.service';
 import { FloorAddDialogComponent } from '../floor-add-dialog/floor-add-dialog.component';
+import { HttpIotService } from 'src/app/Services/httpIot.service';
 
 
 
@@ -44,8 +45,9 @@ export class FloorComponent extends BaseCompartmentComponent<FloorDto> {
     evacuationService: HttpEvacuationPlanService,
     matDialog: MatDialog,
     pointService: HttpPointService,
-    testService: HttpTestService) {
-    super(location, activatedRoute, toastrService, evacuationService, matDialog, pointService, testService)
+    testService: HttpTestService,
+    iotService: HttpIotService) {
+    super(location, activatedRoute, toastrService, evacuationService, matDialog, pointService, testService, iotService)
 
     this.activatedRoute.queryParams.subscribe(params => {
       if (this.router.getCurrentNavigation().extras.state) {
