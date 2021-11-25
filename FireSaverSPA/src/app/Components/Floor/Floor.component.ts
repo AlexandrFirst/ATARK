@@ -19,6 +19,7 @@ import { BaseCompartmentComponent } from '../BaseCompartment/BaseCompartment.com
 import { HttpRoomService } from 'src/app/Services/httpRoom.service';
 import { CompartmentAddDialogComponent } from '../compartment-add-dialog/compartment-add-dialog.component';
 import { CompartmentDto } from 'src/app/Models/Compartment/compartmentDto';
+import { HttpTestService } from 'src/app/Services/httpTest.service';
 
 
 
@@ -39,8 +40,9 @@ export class FloorComponent extends BaseCompartmentComponent<FloorDto> {
     toastrService: ToastrService,
     evacuationService: HttpEvacuationPlanService,
     matDialog: MatDialog,
-    pointService: HttpPointService) {
-    super(location, activatedRoute, toastrService, evacuationService, matDialog, pointService)
+    pointService: HttpPointService,
+    testService: HttpTestService) {
+    super(location, activatedRoute, toastrService, evacuationService, matDialog, pointService, testService)
   }
 
   protected initCompartmentInfo(): void {

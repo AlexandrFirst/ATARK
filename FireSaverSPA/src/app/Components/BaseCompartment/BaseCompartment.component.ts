@@ -19,6 +19,7 @@ import { CompartmentDto } from 'src/app/Models/Compartment/compartmentDto';
 import { QrCodeDialogComponent } from '../qr-code-dialog/qr-code-dialog.component';
 import { TestInput } from 'src/app/Models/TestModels/testInput';
 import { TestDialogComponent } from '../test-dialog/test-dialog.component';
+import { HttpTestService } from 'src/app/Services/httpTest.service';
 
 enum MapType {
   ScalePoints,
@@ -37,7 +38,10 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
 
   compartmentInfo: T;
   evacPlanInfo: EvacuationPlanDto;
-  testInfo: TestInput = null
+
+  get testInfo(): TestInput {
+    return this.compartmentInfo?.compartmentTest
+  }
 
   uploadingValue: number = 0;
 
@@ -62,7 +66,8 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
     protected toastrService: ToastrService,
     protected evacuationService: HttpEvacuationPlanService,
     protected matDialog: MatDialog,
-    protected pointService: HttpPointService) { }
+    protected pointService: HttpPointService,
+    protected testService: HttpTestService) { }
 
   ngAfterViewInit(): void {
   }
@@ -84,10 +89,6 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
       if (this.compartmentId) {
         this.initCompartmentInfo();
         this.initEvacuationPlanInfo();
-
-        if (this.compartmentInfo?.compartmentTest) {
-          this.testInfo = this.compartmentInfo?.compartmentTest;
-        }
       } else {
         this.toastrService.error("Unknown compartment id")
       }
@@ -243,19 +244,21 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
   addScalePoint() {
     let dialogRef = this.matDialog.open(PositionInputDialogComponent);
     dialogRef.afterClosed().subscribe(data => {
-      const sendData: ScalePointDto = {
-        id: 0,
-        mapPosition: this.selectedMapPosition,
-        worldPosition: data
-      };
+      if (data) {
+        const sendData: ScalePointDto = {
+          id: 0,
+          mapPosition: this.selectedMapPosition,
+          worldPosition: data
+        };
 
-      this.pointService.addScalePoint(sendData, this.evacPlanInfo.id).subscribe(response => {
+        this.pointService.addScalePoint(sendData, this.evacPlanInfo.id).subscribe(response => {
 
-        const newScalePointMarker = this.placeMarker(this.selectedMapPosition.latitude,
-          this.selectedMapPosition.longtitude,
-          this.pointBaseColor)
-        this.scalePointMarkers.set(response.id, newScalePointMarker)
-      })
+          const newScalePointMarker = this.placeMarker(this.selectedMapPosition.latitude,
+            this.selectedMapPosition.longtitude,
+            this.pointBaseColor)
+          this.scalePointMarkers.set(response.id, newScalePointMarker)
+        })
+      }
     })
   }
 
@@ -525,7 +528,47 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
 
   addTest() {
     const dialogRef = this.matDialog.open(TestDialogComponent)
+    dialogRef.afterClosed().subscribe((data: TestInput) => {
+      if (data) {
+        this.testService.addTestToCompartment(this.compartmentId, data).subscribe(success => {
+          this.compartmentInfo.compartmentTest = success
+          this.toastrService.success("Test is added to compartment")
+        }, error => {
+          this.toastrService.success("Something went wrong! Try again")
+        });
+      }
+    })
   }
 
+  updateTest() {
+    const dialogRef = this.matDialog.open(TestDialogComponent, {
+      data: this.compartmentInfo.compartmentTest
+    })
+    dialogRef.afterClosed().subscribe((data: TestInput) => {
+      if (data) {
+        this.testService.updateCompartmentTest(this.compartmentInfo.id, data).subscribe(success => {
+          this.compartmentInfo.compartmentTest = success
+          this.toastrService.success("Test is successfully updated")
+        })
+      }
+    })
+  }
+
+  deleteTest() {
+    const dialogRef = this.matDialog.open(ConfirmDialogComponent, {
+      data: { message: `Are you sure you wnat to delete test for compartment with id: ${this.compartmentId}` }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data) {
+        this.testService.deleteTestFromCompartment(this.compartmentId).subscribe(success => {
+          this.compartmentInfo.compartmentTest = null
+          this.toastrService.success("Test removed successfully")
+        }, error => {
+          this.toastrService.error("Something went wrong! Try again")
+        });
+      }
+    })
+  }
 
 }

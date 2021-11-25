@@ -8,6 +8,7 @@ import { ToastrService } from 'ngx-toastr';
 import { HttpEvacuationPlanService } from 'src/app/Services/httpEvacuationPlan.service';
 import { MatDialog } from '@angular/material/dialog';
 import { HttpPointService } from 'src/app/Services/httpPoint.service';
+import { HttpTestService } from 'src/app/Services/httpTest.service';
 
 @Component({
   selector: 'app-Room',
@@ -23,8 +24,9 @@ export class RoomComponent extends BaseCompartmentComponent<CompartmentDto> {
     toastrService: ToastrService,
     evacuationService: HttpEvacuationPlanService,
     matDialog: MatDialog,
-    pointService: HttpPointService) {
-    super(location, activatedRoute, toastrService, evacuationService, matDialog, pointService)
+    pointService: HttpPointService,
+    testService: HttpTestService) {
+    super(location, activatedRoute, toastrService, evacuationService, matDialog, pointService, testService)
   }
 
   isCompartmentFloor() {

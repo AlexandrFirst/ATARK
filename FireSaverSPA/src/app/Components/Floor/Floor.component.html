@@ -175,7 +175,7 @@
   <div style="width: 800px; margin: 10px auto; text-align: end;">
     <button class="btn btn-info" *ngIf="testInfo==null; else test_exists" (click)="addTest()">Add test</button>
     <ng-template #test_exists>
-      <button class="btn btn-info">View test</button>
-      <button class="btn btn-danger" style="margin-left: 20px;">Delete test</button>
+      <button class="btn btn-info" (click)="updateTest()">View test</button>
+      <button class="btn btn-danger" style="margin-left: 20px;" (click)="deleteTest()">Delete test</button>
     </ng-template>
   </div>
