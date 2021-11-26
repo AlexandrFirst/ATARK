@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { JsonPipe, Location } from '@angular/common';
 import * as L from 'leaflet'
 import * as $ from 'jquery';
@@ -29,10 +29,16 @@ enum MapType {
   Iots
 }
 
+export interface InitCallback {
+  (): void;
+}
+
 @Component({ template: '' })
 export abstract class BaseCompartmentComponent<T extends CompartmentDto> implements OnInit, AfterViewInit {
 
   private mapType: MapType = MapType.ScalePoints;
+
+  @ViewChildren("card") private cards: QueryList<ElementRef>
 
   private map: any;
   private bounds: LatLngBoundsLiteral = [[0, 0], [1000, 1000]];
@@ -75,6 +81,7 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
     protected iotService: HttpIotService) { }
 
   ngAfterViewInit(): void {
+    this.initExpandableList();
   }
 
   centerMap() {
@@ -83,16 +90,26 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
     }
   }
 
+  expandList(element) {
+    console.log(element)
+    const elem = element.nativeElement.querySelector('.collapse')
+    if (elem?.classList.contains('show')) {
+      elem?.classList.remove('show')
+    } else {
+      elem?.classList.add('show')
+    }
+  }
+
   abstract isCompartmentFloor();
 
   ngOnInit() {
-    this.initExpandableList();
+
 
     this.activatedRoute.params.subscribe((params: Params) => {
       this.compartmentId = params.Id
 
       if (this.compartmentId) {
-        this.initCompartmentInfo();
+        this.initCompartmentInfo(() => { });
         this.initEvacuationPlanInfo();
       } else {
         this.toastrService.error("Unknown compartment id")
@@ -146,30 +163,24 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
     this.initMapPoints();
   }
 
-  protected abstract initCompartmentInfo(): void;
+
+  protected abstract initCompartmentInfo(callback: InitCallback): void;
   abstract updateCOmpartmentInfo();
   abstract canChangeCompartment(): boolean
 
   private initExpandableList() {
-    console.log("Floor component expandabel count: ", $('.collapse').length)
-    $('.f').each((index, value) => {
-      value.addEventListener('click', (e) => {
-        $('.collapse').each((index1, value1) => {
-
-          if (index == index1) {
-            if (value1.classList.contains('show')) {
-              return;
-            } else {
-              value1.classList.add('show')
-            }
-          }
-          else {
-            value1.classList.remove('show')
-          }
-        });
+    this.cards.forEach((card: ElementRef) => {
+      card.nativeElement.addEventListener('click', (e) => {
+        const elem = card.nativeElement.querySelector('.collapse')
+        if (elem?.classList.contains('show')) {
+          elem?.classList.remove('show')
+        } else {
+          elem?.classList.add('show')
+        }
       })
     })
   }
+
 
   private initEvacuationPlanInfo() {
     if (this.compartmentId) {
@@ -338,7 +349,6 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
   }
 
   placeMarker(lat, lng, color): L.CircleMarker {
-    //TODO:  Check lat lng aspect 
     const newRoutePoint: L.CircleMarker = L.circleMarker([lat, lng], {
       radius: 8,
       fillColor: color,
@@ -595,8 +605,10 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
   }
 
   initIotMarkers() {
+    console.log("initing iot Points")
     this.clearIotsMarkers()
     var iots = this.compartmentInfo.ioTs;
+    console.log(iots)
     iots.forEach(iot => {
       const iotMarker = this.placeMarker(iot.mapPosition.latitude, iot.mapPosition.longtitude, this.pointBaseColor);
       this.iotPos.set(iot.iotIdentifier, iotMarker);
@@ -612,7 +624,10 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
         this.iotService.addIotToCompartment(this.compartmentId, identifier).subscribe(success => {
           this.iotService.updateIotPos(identifier, iotPos).subscribe(data => {
             this.toastrService.success("New iot is added");
-            this.initCompartmentInfo();
+            this.initCompartmentInfo(() => {
+              this.displayIots();
+            });
+
           })
         })
       }
@@ -633,7 +648,7 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
         const iotMarker = this.iotPos.get(iot.iotIdentifier);
         this.map.removeLayer(iotMarker);
         this.toastrService.success("Iot is removed")
-        this.initCompartmentInfo();
+        this.initCompartmentInfo(() => { });
       }, error => {
         this.toastrService.error("Something went wrong! Try again");
       })

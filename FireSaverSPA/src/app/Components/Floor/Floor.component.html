@@ -75,7 +75,7 @@
   </div>
   <div style="display: flex; justify-content: center; margin-top: 20px;">
     <div class="accordion" id="accordionExample" style="width: 800px;" #floor_exp_list>
-      <div class="card f">
+      <div class="card f r" #card>
         <div class="card-header" id="headingOne" (click)="displayScalePoints()">
           <h5 class="mb-0">
             <button class="btn" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
@@ -110,7 +110,7 @@
           </div>
         </div>
       </div>
-      <div class="card f">
+      <div class="card f r" #card>
         <div class="card-header" id="headingOne" (click)="displayRoutePoints();">
           <h5 class="mb-0">
             <button class="btn" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
@@ -145,7 +145,7 @@
           </div>
         </div>
       </div>
-      <div class="card f">
+      <div class="card f r" #card>
         <div class="card-header" id="headingOne" (click)="displayIots();">
           <h5 class="mb-0">
             <button class="btn" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
@@ -161,11 +161,14 @@
               <ng-template #route_points>
                 <div *ngFor="let iot of compartmentInfo?.ioTs" style="display: flex; justify-content: center;">
                   <div>{{iot.iotIdentifier}}</div>
-                  <div><button class="btn btn-info" (click)="printQrCode(iot.iotIdentifier)">Print qr iot info</button></div>
-                  <div><button class="btn btn-danger" (click)="removeIotFromCompartment(iot.iotIdentifier)">Delete</button></div>
+                  <div><button class="btn btn-info" (click)="printQrCode(iot.iotIdentifier)">Print qr iot info</button>
+                  </div>
+                  <div><button class="btn btn-danger"
+                      (click)="removeIotFromCompartment(iot.iotIdentifier)">Delete</button></div>
                 </div>
               </ng-template>
-              <button class="btn btn-primary" (click)="addIotToCompartment()" [disabled]="this.selectedMapPosition == null">
+              <button class="btn btn-primary" (click)="addIotToCompartment()"
+                [disabled]="this.selectedMapPosition == null">
                 Add iot</button>
             </div>
             <ng-template #no_map_template_scale>
@@ -180,7 +183,7 @@
           </div>
         </div>
       </div>
-      <div class="card f">
+      <div class="card f" #card>
         <div *ngIf="isCompartmentFloor()">
           <div class="card-header" id="headingTwo">
             <h5 class="mb-0">

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CompartmentDto } from 'src/app/Models/Compartment/compartmentDto';
 import { HttpRoomService } from 'src/app/Services/httpRoom.service';
-import { BaseCompartmentComponent } from '../BaseCompartment/BaseCompartment.component';
+import { BaseCompartmentComponent, InitCallback } from '../BaseCompartment/BaseCompartment.component';
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -11,6 +11,7 @@ import { HttpPointService } from 'src/app/Services/httpPoint.service';
 import { HttpTestService } from 'src/app/Services/httpTest.service';
 import { CompartmentAddDialogComponent } from '../compartment-add-dialog/compartment-add-dialog.component';
 import { HttpIotService } from 'src/app/Services/httpIot.service';
+import * as $ from 'jquery';
 
 @Component({
   selector: 'app-Room',
@@ -36,13 +37,36 @@ export class RoomComponent extends BaseCompartmentComponent<CompartmentDto> {
     return false;
   }
 
-  protected initCompartmentInfo(): void {
+  protected initCompartmentInfo(callback: InitCallback = null): void {
     this.roomService.getRoomInfo(this.compartmentId).subscribe(data => {
       this.compartmentInfo = data;
+      if(callback)
+        callback();
     }, error => {
       this.toastrService.error("Can't get room info")
     })
   }
+
+  // protected initExpandableList() {
+  //   console.log("Floor component expandabel count: ", $('.collapse').length)
+  //   $('.r').each((index, value) => {
+  //     value.addEventListener('click', (e) => {
+  //       $('.collapse').each((index1, value1) => {
+
+  //         if (index == index1) {
+  //           if (value1.classList.contains('show')) {
+  //             return;
+  //           } else {
+  //             value1.classList.add('show')
+  //           }
+  //         }
+  //         else {
+  //           value1.classList.remove('show')
+  //         }
+  //       });
+  //     })
+  //   })
+  // }
 
   canChangeCompartment(): boolean {
     return true;

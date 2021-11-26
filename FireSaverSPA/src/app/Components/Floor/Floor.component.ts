@@ -15,7 +15,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { PositionInputDialogComponent } from '../position-input-dialog/position-input-dialog.component';
 import { HttpPointService } from 'src/app/Services/httpPoint.service';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
-import { BaseCompartmentComponent } from '../BaseCompartment/BaseCompartment.component';
+import { BaseCompartmentComponent, InitCallback } from '../BaseCompartment/BaseCompartment.component';
 import { HttpRoomService } from 'src/app/Services/httpRoom.service';
 import { CompartmentAddDialogComponent } from '../compartment-add-dialog/compartment-add-dialog.component';
 import { CompartmentDto } from 'src/app/Models/Compartment/compartmentDto';
@@ -57,14 +57,37 @@ export class FloorComponent extends BaseCompartmentComponent<FloorDto> {
     })
   }
 
-  protected initCompartmentInfo(): void {
+  protected initCompartmentInfo(callback: InitCallback = null): void {
     this.floorService.getFloorInfo(this.compartmentId).subscribe(data => {
       this.compartmentInfo = data;
+      if(callback)
+        callback();
       console.log(data)
     }, error => {
       this.toastrService.error("Something went wrong! Reload the page")
     })
   }
+
+  // protected initExpandableList() {
+  //   console.log("Floor component expandabel count: ", $('.collapse').length)
+  //   $('.f').each((index, value) => {
+  //     value.addEventListener('click', (e) => {
+  //       $('.collapse').each((index1, value1) => {
+
+  //         if (index == index1) {
+  //           if (value1.classList.contains('show')) {
+  //             return;
+  //           } else {
+  //             value1.classList.add('show')
+  //           }
+  //         }
+  //         else {
+  //           value1.classList.remove('show')
+  //         }
+  //       });
+  //     })
+  //   })
+  // }
 
   canChangeCompartment(): boolean {
     if (this.takenFloors)
