@@ -23,6 +23,8 @@ export class LoginComponent implements OnInit {
 
   registerForm: FormGroup;
 
+  private passwordPattern: string = '^\\d{10,}$'
+
   get registrationName() {
     return this.registerForm.get('name');
   }
@@ -63,11 +65,13 @@ export class LoginComponent implements OnInit {
     return this.loginForm.get('password');
   }
 
-  constructor(private userService: HttpUserService, 
-              private toastr: ToastrService,
-              private loaderSignService: LoaderSignServiceService,
-              private router: Router) {
 
+  constructor(private userService: HttpUserService,
+    private toastr: ToastrService,
+    private loaderSignService: LoaderSignServiceService,
+    private router: Router) {
+
+    const localizedPassword: string = "(^\\d{10,})|(^\\+?3?8?(0[\\s\\.-]\\d{2}[\\s\\.-]\\d{3}[\\s\\.-]\\d{2}[\\s\\.-]\\d{2})$)"
     this.loginForm = new FormGroup({
       mail: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required])
@@ -95,7 +99,7 @@ export class LoginComponent implements OnInit {
       ], [AsyncUserValidator.createUniqueUserValidator(this.userService)]),
       telNumber: new FormControl('', [
         Validators.required,
-        Validators.pattern('^\\+?3?8?(0[\\s\\.-]\\d{2}[\\s\\.-]\\d{3}[\\s\\.-]\\d{2}[\\s\\.-]\\d{2})$')
+        Validators.pattern(localizedPassword)
       ]),
       dob: new FormControl('', [
         Validators.required
@@ -147,9 +151,9 @@ export class LoginComponent implements OnInit {
 
       }, error => {
         console.log(error);
-        this.toastr.error("Error while signing up. Try again");        
+        this.toastr.error("Error while signing up. Try again");
         this.loaderSignService.deactivate();
-      }, () =>{
+      }, () => {
         this.loaderSignService.deactivate();
       })
     }

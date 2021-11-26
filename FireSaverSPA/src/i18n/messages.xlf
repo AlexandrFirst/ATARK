@@ -1,0 +1,521 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en-US" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="ngb.alert.close" datatype="html">
+        <source>Close</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/alert/alert.ts</context>
+          <context context-type="linenumber">58,63</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.carousel.slide-number" datatype="html">
+        <source> Slide <x id="INTERPOLATION" equiv-text="= new BehaviorS"/> of <x id="INTERPOLATION_1" equiv-text="te _pauseOnHove"/> </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/carousel/carousel.ts</context>
+          <context context-type="linenumber">113,117</context>
+        </context-group>
+        <note priority="1" from="description">Currently selected slide number read by screen reader</note>
+      </trans-unit>
+      <trans-unit id="ngb.carousel.previous" datatype="html">
+        <source>Previous</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/carousel/carousel.ts</context>
+          <context context-type="linenumber">130,132</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.carousel.next" datatype="html">
+        <source>Next</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/carousel/carousel.ts</context>
+          <context context-type="linenumber">147,150</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.datepicker.select-month" datatype="html">
+        <source>Select month</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/datepicker/datepicker-navigation-select.ts</context>
+          <context context-type="linenumber">44,47</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/datepicker/datepicker-navigation-select.ts</context>
+          <context context-type="linenumber">49,50</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.datepicker.select-year" datatype="html">
+        <source>Select year</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/datepicker/datepicker-navigation-select.ts</context>
+          <context context-type="linenumber">59,63</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/datepicker/datepicker-navigation-select.ts</context>
+          <context context-type="linenumber">74</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.datepicker.previous-month" datatype="html">
+        <source>Previous month</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/datepicker/datepicker-navigation.ts</context>
+          <context context-type="linenumber">24,27</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/datepicker/datepicker-navigation.ts</context>
+          <context context-type="linenumber">35,36</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.datepicker.next-month" datatype="html">
+        <source>Next month</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/datepicker/datepicker-navigation.ts</context>
+          <context context-type="linenumber">46,49</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/datepicker/datepicker-navigation.ts</context>
+          <context context-type="linenumber">60,64</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.pagination.first" datatype="html">
+        <source>««</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/pagination/pagination.ts</context>
+          <context context-type="linenumber">181,182</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.pagination.previous" datatype="html">
+        <source>«</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/pagination/pagination.ts</context>
+          <context context-type="linenumber">186,190</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.pagination.next" datatype="html">
+        <source>»</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/pagination/pagination.ts</context>
+          <context context-type="linenumber">194,195</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.pagination.last" datatype="html">
+        <source>»»</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/pagination/pagination.ts</context>
+          <context context-type="linenumber">201,204</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.pagination.first-aria" datatype="html">
+        <source>First</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/pagination/pagination.ts</context>
+          <context context-type="linenumber">208,209</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.pagination.previous-aria" datatype="html">
+        <source>Previous</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/pagination/pagination.ts</context>
+          <context context-type="linenumber">215,216</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.pagination.next-aria" datatype="html">
+        <source>Next</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/pagination/pagination.ts</context>
+          <context context-type="linenumber">225,228</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.pagination.last-aria" datatype="html">
+        <source>Last</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/pagination/pagination.ts</context>
+          <context context-type="linenumber">232,233</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.progressbar.value" datatype="html">
+        <source><x id="INTERPOLATION" equiv-text="turn this._max;"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/progressbar/progressbar.ts</context>
+          <context context-type="linenumber">31,38</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.timepicker.HH" datatype="html">
+        <source>HH</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/timepicker/timepicker.ts</context>
+          <context context-type="linenumber">40,41</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.timepicker.hours" datatype="html">
+        <source>Hours</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/timepicker/timepicker.ts</context>
+          <context context-type="linenumber">46</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.timepicker.MM" datatype="html">
+        <source>MM</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/timepicker/timepicker.ts</context>
+          <context context-type="linenumber">50,53</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.timepicker.minutes" datatype="html">
+        <source>Minutes</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/timepicker/timepicker.ts</context>
+          <context context-type="linenumber">58,59</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.timepicker.increment-hours" datatype="html">
+        <source>Increment hours</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/timepicker/timepicker.ts</context>
+          <context context-type="linenumber">63,64</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.timepicker.decrement-hours" datatype="html">
+        <source>Decrement hours</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/timepicker/timepicker.ts</context>
+          <context context-type="linenumber">69,70</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.timepicker.increment-minutes" datatype="html">
+        <source>Increment minutes</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/timepicker/timepicker.ts</context>
+          <context context-type="linenumber">76,77</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.timepicker.decrement-minutes" datatype="html">
+        <source>Decrement minutes</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/timepicker/timepicker.ts</context>
+          <context context-type="linenumber">82,84</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.timepicker.SS" datatype="html">
+        <source>SS</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/timepicker/timepicker.ts</context>
+          <context context-type="linenumber">86,87</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.timepicker.seconds" datatype="html">
+        <source>Seconds</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/timepicker/timepicker.ts</context>
+          <context context-type="linenumber">92,93</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.timepicker.increment-seconds" datatype="html">
+        <source>Increment seconds</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/timepicker/timepicker.ts</context>
+          <context context-type="linenumber">99,101</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.timepicker.decrement-seconds" datatype="html">
+        <source>Decrement seconds</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/timepicker/timepicker.ts</context>
+          <context context-type="linenumber">105,106</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.timepicker.AM" datatype="html">
+        <source><x id="INTERPOLATION" equiv-text="ngAcceptInputTy"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/timepicker/timepicker.ts</context>
+          <context context-type="linenumber">114,117</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.timepicker.PM" datatype="html">
+        <source><x id="INTERPOLATION" equiv-text="
+
+  /**
+   * Wh"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/timepicker/timepicker.ts</context>
+          <context context-type="linenumber">121,126</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.toast.close-aria" datatype="html">
+        <source>Close</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">node_modules/@ng-bootstrap/src/toast/toast.ts</context>
+          <context context-type="linenumber">84,87</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1569820326576977422" datatype="html">
+        <source> Responsible users </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Building/Building.component.html</context>
+          <context context-type="linenumber">36,37</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3696758777615157174" datatype="html">
+        <source> Login <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;underline&quot;&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Login/Login.component.html</context>
+          <context context-type="linenumber">9,10</context>
+        </context-group>
+        <note priority="1" from="description">label on login form</note>
+        <note priority="1" from="meaning">login</note>
+      </trans-unit>
+      <trans-unit id="6004830818397126030" datatype="html">
+        <source>E-mail</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Login/Login.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Login/Login.component.html</context>
+          <context context-type="linenumber">79</context>
+        </context-group>
+        <note priority="1" from="description">mail on login form</note>
+        <note priority="1" from="meaning">mail</note>
+      </trans-unit>
+      <trans-unit id="4691725691155040353" datatype="html">
+        <source> Mail can&apos;t be empty </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Login/Login.component.html</context>
+          <context context-type="linenumber">20,21</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Login/Login.component.html</context>
+          <context context-type="linenumber">95,96</context>
+        </context-group>
+        <note priority="1" from="description">mail exception</note>
+        <note priority="1" from="meaning">mail</note>
+      </trans-unit>
+      <trans-unit id="8311694611557664215" datatype="html">
+        <source>Password</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Login/Login.component.html</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+        <note priority="1" from="description">pass on login form</note>
+        <note priority="1" from="meaning">pass</note>
+      </trans-unit>
+      <trans-unit id="3999207036712026993" datatype="html">
+        <source> Pass can&apos;t be empty </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Login/Login.component.html</context>
+          <context context-type="linenumber">35,36</context>
+        </context-group>
+        <note priority="1" from="description">pass exception</note>
+        <note priority="1" from="meaning">pass</note>
+      </trans-unit>
+      <trans-unit id="2227404918402380557" datatype="html">
+        <source>Login</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Login/Login.component.html</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+        <note priority="1" from="description">login btn on login form</note>
+        <note priority="1" from="meaning">login</note>
+      </trans-unit>
+      <trans-unit id="2909990884672931853" datatype="html">
+        <source> Sign Up <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;underline&quot;&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Login/Login.component.html</context>
+          <context context-type="linenumber">45,46</context>
+        </context-group>
+        <note priority="1" from="description">signup label on login form</note>
+        <note priority="1" from="meaning">signup</note>
+      </trans-unit>
+      <trans-unit id="2784504342419666597" datatype="html">
+        <source>Name</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Login/Login.component.html</context>
+          <context context-type="linenumber">52</context>
+        </context-group>
+        <note priority="1" from="description">name input field on login form</note>
+        <note priority="1" from="meaning">name</note>
+      </trans-unit>
+      <trans-unit id="4696691688804752540" datatype="html">
+        <source> Name can&apos;t be empty </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Login/Login.component.html</context>
+          <context context-type="linenumber">56,57</context>
+        </context-group>
+        <note priority="1" from="description">name exception</note>
+        <note priority="1" from="meaning">name</note>
+      </trans-unit>
+      <trans-unit id="8171229590270317612" datatype="html">
+        <source>Surname</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Login/Login.component.html</context>
+          <context context-type="linenumber">61</context>
+        </context-group>
+        <note priority="1" from="description">surname label</note>
+        <note priority="1" from="meaning">surname</note>
+      </trans-unit>
+      <trans-unit id="8680920758557822595" datatype="html">
+        <source> Surname can&apos;t be empty </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Login/Login.component.html</context>
+          <context context-type="linenumber">65,66</context>
+        </context-group>
+        <note priority="1" from="description">surname exception</note>
+        <note priority="1" from="meaning">surname</note>
+      </trans-unit>
+      <trans-unit id="2439775808113547790" datatype="html">
+        <source>Patronymic</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Login/Login.component.html</context>
+          <context context-type="linenumber">70</context>
+        </context-group>
+        <note priority="1" from="description">patronymic label</note>
+        <note priority="1" from="meaning">patronymic</note>
+      </trans-unit>
+      <trans-unit id="7422035202806705891" datatype="html">
+        <source> Patronymic can&apos;t be empty </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Login/Login.component.html</context>
+          <context context-type="linenumber">74,75</context>
+        </context-group>
+        <note priority="1" from="description">patronymic exception</note>
+        <note priority="1" from="meaning">patronymic</note>
+      </trans-unit>
+      <trans-unit id="4447221348834499876" datatype="html">
+        <source> Mail should be unique </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Login/Login.component.html</context>
+          <context context-type="linenumber">92,93</context>
+        </context-group>
+        <note priority="1" from="description">reg mail should be uniq</note>
+        <note priority="1" from="meaning">mail</note>
+      </trans-unit>
+      <trans-unit id="4536711719633477987" datatype="html">
+        <source> Mail has incorrect format </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Login/Login.component.html</context>
+          <context context-type="linenumber">98,99</context>
+        </context-group>
+        <note priority="1" from="description">reg mail has incorrect format</note>
+        <note priority="1" from="meaning">mail</note>
+      </trans-unit>
+      <trans-unit id="4757147375622993596" datatype="html">
+        <source>Telephone number</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Login/Login.component.html</context>
+          <context context-type="linenumber">103</context>
+        </context-group>
+        <note priority="1" from="description">phone-label</note>
+        <note priority="1" from="meaning">phone</note>
+      </trans-unit>
+      <trans-unit id="5665018409729615511" datatype="html">
+        <source>Enter 10 digits or more</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Login/Login.component.html</context>
+          <context context-type="linenumber">104</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="9007752963478617497" datatype="html">
+        <source> Telephone can&apos;t be empty </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Login/Login.component.html</context>
+          <context context-type="linenumber">107,108</context>
+        </context-group>
+        <note priority="1" from="description">phone empty exception</note>
+        <note priority="1" from="meaning">phone</note>
+      </trans-unit>
+      <trans-unit id="6845683034640753969" datatype="html">
+        <source> Telephone is incorrect </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Login/Login.component.html</context>
+          <context context-type="linenumber">110,111</context>
+        </context-group>
+        <note priority="1" from="description">phone pattern wrong</note>
+        <note priority="1" from="meaning">phone</note>
+      </trans-unit>
+      <trans-unit id="2899682849188136933" datatype="html">
+        <source>Date of birth</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Login/Login.component.html</context>
+          <context context-type="linenumber">115</context>
+        </context-group>
+        <note priority="1" from="description">dob label</note>
+        <note priority="1" from="meaning">dob</note>
+      </trans-unit>
+      <trans-unit id="877940374780852986" datatype="html">
+        <source> Date of birth should be specified </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Login/Login.component.html</context>
+          <context context-type="linenumber">119,120</context>
+        </context-group>
+        <note priority="1" from="description">dob empty field</note>
+        <note priority="1" from="meaning">dob</note>
+      </trans-unit>
+      <trans-unit id="7883669510349279303" datatype="html">
+        <source>Password</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Login/Login.component.html</context>
+          <context context-type="linenumber">124</context>
+        </context-group>
+        <note priority="1" from="description">password input</note>
+        <note priority="1" from="meaning">reg pass</note>
+      </trans-unit>
+      <trans-unit id="6481656070949484512" datatype="html">
+        <source> Password can&apos;t be empty </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Login/Login.component.html</context>
+          <context context-type="linenumber">135,136</context>
+        </context-group>
+        <note priority="1" from="description">password emty error</note>
+        <note priority="1" from="meaning">reg pass</note>
+      </trans-unit>
+      <trans-unit id="5510768618612694992" datatype="html">
+        <source> Password must be 8 chars at least, small, big letters, nums and special symbols </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Login/Login.component.html</context>
+          <context context-type="linenumber">138,139</context>
+        </context-group>
+        <note priority="1" from="description">password wrong format</note>
+        <note priority="1" from="meaning">reg pass</note>
+      </trans-unit>
+      <trans-unit id="3782563238994348625" datatype="html">
+        <source>Confirm password</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Login/Login.component.html</context>
+          <context context-type="linenumber">143</context>
+        </context-group>
+        <note priority="1" from="description">confirm password</note>
+      </trans-unit>
+      <trans-unit id="815932806983871278" datatype="html">
+        <source> You should confirm password </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Login/Login.component.html</context>
+          <context context-type="linenumber">154,155</context>
+        </context-group>
+        <note priority="1" from="description">confirm password emty</note>
+        <note priority="1" from="meaning">confirm password</note>
+      </trans-unit>
+      <trans-unit id="4016507774002395652" datatype="html">
+        <source> Password are not the same </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Login/Login.component.html</context>
+          <context context-type="linenumber">160,161</context>
+        </context-group>
+        <note priority="1" from="description">non-coincidence</note>
+        <note priority="1" from="meaning">confirm password</note>
+      </trans-unit>
+      <trans-unit id="6962699013778688473" datatype="html">
+        <source>Continue</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Login/Login.component.html</context>
+          <context context-type="linenumber">166</context>
+        </context-group>
+        <note priority="1" from="description">register btn</note>
+      </trans-unit>
+      <trans-unit id="1737753151350322492" datatype="html">
+        <source><x id="PH" equiv-text="this.passwordPattern"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Login/Login.component.ts</context>
+          <context context-type="linenumber">73</context>
+        </context-group>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

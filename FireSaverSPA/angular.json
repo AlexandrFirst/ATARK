@@ -16,11 +16,17 @@
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
+      "i18n": {
+        "sourceLocale": "en-US",
+        "locales": {
+          "uk": "src/i18n/messages.uk.xlf"
+        }
+      },
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/FireSaverSPA",
+            "outputPath": "dist/",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -44,6 +50,11 @@
             ]
           },
           "configurations": {
+            "uk": {
+              "localize": [
+                "uk"
+              ]
+            },
             "production": {
               "fileReplacements": [
                 {
@@ -81,6 +92,9 @@
           "configurations": {
             "production": {
               "browserTarget": "FireSaverSPA:build:production"
+            },
+            "uk":{
+              "browserTarget": "FireSaverSPA:build:uk"
             }
           }
         },

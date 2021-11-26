@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -32,6 +32,10 @@ import {NgxPrintModule} from 'ngx-print';
 import { TestDialogComponent } from './Components/test-dialog/test-dialog.component';
 import { AddIotDialogComponent } from './Components/add-iot-dialog/add-iot-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { registerLocaleData } from '@angular/common';
+import localeUk from '@angular/common/locales/uk'
+
+registerLocaleData(localeUk, 'uk')
 
 @NgModule({
   declarations: [
