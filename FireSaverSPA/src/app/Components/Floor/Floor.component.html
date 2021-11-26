@@ -15,7 +15,7 @@
   <div style="display: flex; justify-content: center;">
     <div style="font-size: large; width: 800px; text-align: justify;">
       <section style="margin-top: 10px; display: flex;">
-        <div style="width: 100px;">
+        <div style="width: 100px;" i18n="compartment name">
           Name:
         </div>
         <div style="width: 700px;">
@@ -23,7 +23,7 @@
         </div>
       </section>
       <section style="margin-top: 10px; display: flex;">
-        <div style="width: 100px;">
+        <div style="width: 100px;" i18n="compartment description">
           Describtion:
         </div>
         <div style="width: 700px;">
@@ -31,7 +31,7 @@
         </div>
       </section>
       <section style="margin-top: 10px; display: flex;">
-        <div style="width: 100px;">
+        <div style="width: 100px;" i18n="compartment rules">
           Safety Rules:
         </div>
         <div style="width: 700px;">
@@ -39,7 +39,7 @@
         </div>
       </section>
       <section style="margin-top: 10px; display: flex;" *ngIf="isCompartmentFloor()">
-        <div style="width: 100px;">
+        <div style="width: 100px;" i18n="floor level">
           Level:
         </div>
         <div style="width: 700px;">
@@ -47,17 +47,17 @@
         </div>
       </section>
       <button *ngIf="canChangeCompartment()" (click)="updateCOmpartmentInfo()" class="btn btn-warning"
-        style="display: block; margin-top: 10px; font-size: large; float: right;">
+        style="display: block; margin-top: 10px; font-size: large; float: right;" i18n="@@editBtn">
         Chnage Info
       </button>
       <button class="btn btn-primary"
         style="display: block; margin-top: 10px; margin-right: 10px; font-size: large; float: right;"
-        (click)="centerMap()">
+        (click)="centerMap()" i18n="center map|btn">
         Center map
       </button>
       <button class="btn btn-primary"
         style="display: block; margin-top: 10px; margin-right: 10px; font-size: large; float: right;"
-        (click)="getCompartmentQrCode()">
+        (click)="getCompartmentQrCode()" i18n="get qr code for buidling">
         Generate QR-code
       </button>
     </div>
@@ -66,10 +66,11 @@
   <div *ngIf="evacPlanInfo == null">
     <div style="width: 100%; display: flex; justify-content: center; height: 200px; align-items: center;">
       <div>
-        <button class="btn btn-success" (click)="file.click()">Load map
+        <button class="btn btn-success" (click)="file.click()" i18n="@@loadMapBtn">Load map
           <span *ngIf="uploadingValue > 0">{{uploadingValue}}</span>
         </button>
-        <input type="file" #file placeholder="Choose file" (change)="uploadFile(file.files)" style="display:none;">
+        <input type="file" #file i18n i18n-placeholder="@@chooseFilePlaceholder" placeholder="Choose file"
+          (change)="uploadFile(file.files)" style="display:none;">
       </div>
     </div>
   </div>
@@ -87,24 +88,27 @@
         <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
           <div class="card-body">
             <div *ngIf="evacPlanInfo != null; else no_map_template_scale">
-              <div *ngIf="scalePointMarkers.size == 0; else scale_points">No points</div>
+              <div *ngIf="scalePointMarkers.size == 0; else scale_points" i18n="no points label|compartment page">No points</div>
               <ng-template #scale_points>
-                <div *ngFor="let item of scalePointMarkers | keyvalue" style="display: flex; justify-content: center;">
+                <div *ngFor="let item of scalePointMarkers | keyvalue"
+                  style="display: flex; justify-content: space-around; align-items: center; margin-top: 5px;">
                   <div>{{item.key}}</div>
-                  <div><button class="btn btn-info" (click)="selectScalePoint(item.key)">Select</button></div>
-                  <div><button class="btn btn-danger" (click)="removeScalePointMarker(item.key)">Delete</button></div>
+                  <div><button class="btn btn-info" (click)="selectScalePoint(item.key)"
+                      i18n="@@selectBtn">Select</button></div>
+                  <div><button class="btn btn-danger" (click)="removeScalePointMarker(item.key)"
+                      i18n="@@deletebtn">Delete</button></div>
                 </div>
               </ng-template>
               <button class="btn btn-primary" (click)="addScalePoint()"
-                [disabled]="this.selectedMapPosition == null">Add scale point</button>
+                [disabled]="this.selectedMapPosition == null" i18n="add scale point">Add scale point</button>
             </div>
             <ng-template #no_map_template_scale>
               <div style="width: 100%; display: flex; justify-content: center; height: 50px; align-items: center;">
-                <button class="btn btn-success" (click)="file.click()">Load map
+                <button class="btn btn-success" (click)="file.click()" i18n="@@loadMapBtn">Load map
                   <span *ngIf="uploadingValue > 0">{{uploadingValue}}</span>
                 </button>
-                <input type="file" #file placeholder="Choose file" (change)="uploadFile(file.files)"
-                  style="display:none;">
+                <input type="file" #file i18n i18n-placeholder="@@chooseFilePlaceholder" placeholder="Choose file"
+                  (change)="uploadFile(file.files)" style="display:none;">
               </div>
             </ng-template>
           </div>
@@ -114,7 +118,7 @@
         <div class="card-header" id="headingOne" (click)="displayRoutePoints();">
           <h5 class="mb-0">
             <button class="btn" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
-              aria-controls="collapseOne">
+              aria-controls="collapseOne" i18n="add route point">
               Route points
             </button>
           </h5>
@@ -124,10 +128,13 @@
             <div *ngIf="evacPlanInfo != null; else no_map_template_scale">
               <div *ngIf="routePoints.length == 0; else route_points">No route points</div>
               <ng-template #route_points>
-                <div *ngFor="let item of routePoints" style="display: flex; justify-content: center;">
+                <div *ngFor="let item of routePoints"
+                  style="display: flex; justify-content: space-around; align-items: center; margin-top: 5px;">
                   <div>{{item.id}}</div>
-                  <div><button class="btn btn-info" (click)="selectRoutePoint(item.id)">Select</button></div>
-                  <div><button class="btn btn-danger" (click)="removeRoutePoint(item.id)">Delete</button></div>
+                  <div><button class="btn btn-info" (click)="selectRoutePoint(item.id)"
+                      i18n="@@selectBtn">Select</button></div>
+                  <div><button class="btn btn-danger" (click)="removeRoutePoint(item.id)"
+                      i18n="@@deletebtn">Delete</button></div>
                 </div>
               </ng-template>
               <button class="btn btn-primary" (click)="addRoutePoint()" [disabled]="this.selectedMapPosition == null">
@@ -135,11 +142,11 @@
             </div>
             <ng-template #no_map_template_scale>
               <div style="width: 100%; display: flex; justify-content: center; height: 50px; align-items: center;">
-                <button class="btn btn-success" (click)="file.click()">Load map
+                <button class="btn btn-success" (click)="file.click()" i18n="@@loadMapBtn">Load map
                   <span *ngIf="uploadingValue > 0">{{uploadingValue}}</span>
                 </button>
-                <input type="file" #file placeholder="Choose file" (change)="uploadFile(file.files)"
-                  style="display:none;">
+                <input type="file" #file i18n i18n-placeholder="@@chooseFilePlaceholder" placeholder="Choose file"
+                  (change)="uploadFile(file.files)" style="display:none;">
               </div>
             </ng-template>
           </div>
@@ -149,7 +156,7 @@
         <div class="card-header" id="headingOne" (click)="displayIots();">
           <h5 class="mb-0">
             <button class="btn" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
-              aria-controls="collapseOne">
+              aria-controls="collapseOne" i18n="iot label|compartment page">
               Iots
             </button>
           </h5>
@@ -157,27 +164,28 @@
         <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
           <div class="card-body">
             <div *ngIf="evacPlanInfo != null; else no_map_template_scale">
-              <div *ngIf="compartmentInfo?.ioTs.length == 0; else route_points">No iots</div>
+              <div *ngIf="compartmentInfo?.ioTs.length == 0; else route_points" i18n="no iot found label|compartment page">No iots</div>
               <ng-template #route_points>
-                <div *ngFor="let iot of compartmentInfo?.ioTs" style="display: flex; justify-content: center;">
+                <div *ngFor="let iot of compartmentInfo?.ioTs"
+                  style="display: flex; justify-content: space-around; align-items: center; margin-top: 5px;">
                   <div>{{iot.iotIdentifier}}</div>
-                  <div><button class="btn btn-info" (click)="printQrCode(iot.iotIdentifier)">Print qr iot info</button>
+                  <div><button class="btn btn-info" (click)="printQrCode(iot.iotIdentifier)" i18n="print iot qr">Print qr iot info</button>
                   </div>
-                  <div><button class="btn btn-danger"
-                      (click)="removeIotFromCompartment(iot.iotIdentifier)">Delete</button></div>
+                  <div><button class="btn btn-danger" (click)="removeIotFromCompartment(iot.iotIdentifier)"
+                      i18n="@@deletebtn">Delete</button></div>
                 </div>
               </ng-template>
               <button class="btn btn-primary" (click)="addIotToCompartment()"
-                [disabled]="this.selectedMapPosition == null">
+                [disabled]="this.selectedMapPosition == null" i18n="add iot to compartment">
                 Add iot</button>
             </div>
             <ng-template #no_map_template_scale>
               <div style="width: 100%; display: flex; justify-content: center; height: 50px; align-items: center;">
-                <button class="btn btn-success" (click)="file.click()">Load map
+                <button class="btn btn-success" (click)="file.click()" i18n="@@loadMapBtn">Load map
                   <span *ngIf="uploadingValue > 0">{{uploadingValue}}</span>
                 </button>
-                <input type="file" #file placeholder="Choose file" (change)="uploadFile(file.files)"
-                  style="display:none;">
+                <input type="file" #file i18n i18n-placeholder="@@chooseFilePlaceholder" placeholder="Choose file"
+                  (change)="uploadFile(file.files)" style="display:none;">
               </div>
             </ng-template>
           </div>
@@ -188,7 +196,7 @@
           <div class="card-header" id="headingTwo">
             <h5 class="mb-0">
               <button class="btn" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false"
-                aria-controls="collapseTwo">
+                aria-controls="collapseTwo" i18n="rooms header label">
                 Rooms
               </button>
             </h5>
@@ -198,13 +206,15 @@
               <div *ngFor="let room of FloorRooms"
                 style="display: flex; justify-content: center; height: 40px; margin-top: 10px;">
                 <div style="line-height: 40px;">{{room.name}} </div>
-                <button class="btn btn-danger" style="margin-left: 50px;"
-                  (click)="deleteRoomInfo(room.id)">Delete</button>
-                <button class="btn btn-info" style="margin-left: 50px;" (click)="viewRoomInfo(room.id)">View</button>
+                <button class="btn btn-danger" style="margin-left: 50px;" (click)="deleteRoomInfo(room.id)"
+                  i18n="@@deletebtn">Delete</button>
+                <button class="btn btn-info" style="margin-left: 50px;" (click)="viewRoomInfo(room.id)"
+                  i18n="@@viewbtn">View</button>
                 <button class="btn btn-warning" style="margin-left: 50px;"
-                  (click)="changeRoomInfo(room.id)">Change</button>
+                  (click)="changeRoomInfo(room.id)" i18n="@@editBtn">Change</button>
               </div>
-              <button class="btn btn-primary" (click)="addRoomInfo()">Add new room</button>
+              <button class="btn btn-primary" (click)="addRoomInfo()" i18n="add new room|floor page">Add new
+                room</button>
             </div>
           </div>
         </div>
@@ -212,9 +222,11 @@
     </div>
   </div>
   <div style="width: 800px; margin: 10px auto; text-align: end;">
-    <button class="btn btn-info" *ngIf="testInfo==null; else test_exists" (click)="addTest()">Add test</button>
+    <button class="btn btn-info" *ngIf="testInfo==null; else test_exists" (click)="addTest()" i18n="add test">Add
+      test</button>
     <ng-template #test_exists>
-      <button class="btn btn-info" (click)="updateTest()">View test</button>
-      <button class="btn btn-danger" style="margin-left: 20px;" (click)="deleteTest()">Delete test</button>
+      <button class="btn btn-info" (click)="updateTest()" i18n="view test">View test</button>
+      <button class="btn btn-danger" style="margin-left: 20px;" (click)="deleteTest()" i18n="delete test">Delete
+        test</button>
     </ng-template>
   </div>

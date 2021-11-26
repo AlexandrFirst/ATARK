@@ -5,7 +5,7 @@
     </div>
     <div class="forms">
       <div class="form-wrapper is-active">
-        <button type="button" class="switcher switcher-login" i18n="login|label on login form">
+        <button type="button" class="switcher switcher-login" i18n="login|label on login form@@loginlabel">
           Login
           <span class="underline"></span>
         </button>
@@ -13,10 +13,10 @@
           <fieldset>
             <legend>Please, enter your email and password for login.</legend>
             <div class="input-block" style="position: relative;">
-              <label for="login-email" i18n="mail|mail on login form">E-mail</label>
+              <label for="login-email" i18n="mail|mail on login form@@mail">E-mail</label>
               <input id="login-email" type="email" required formControlName="mail">
               <div *ngIf="loginMail.invalid  && loginMail.touched">
-                <div *ngIf="loginMail.errors?.required" i18n="mail|mail exception">
+                <div *ngIf="loginMail.errors?.required" i18n="mail|mail exception@@mailEmpty">
                   Mail can't be empty
                 </div>
               </div>
@@ -49,34 +49,34 @@
           <fieldset>
             <legend>Please, enter your email, password and password confirmation for sign up.</legend>
             <div class="input-block">
-              <label for="signup-name" i18n="name|name input field on login form">Name</label>
+              <label for="signup-name" i18n="name|name input field on login form@@name">Name</label>
               <input id="signup-name" type="text" required formControlName="name">
               <div *ngIf="registrationName.invalid  && registrationName.touched">
-                <div *ngIf="registrationName.errors?.required" i18n="name|name exception">
+                <div *ngIf="registrationName.errors?.required" i18n="name|name exception@@emptyName">
                   Name can't be empty
                 </div>
               </div>
             </div>
             <div class="input-block">
-              <label for="signup-surname" i18n="surname|surname label">Surname</label>
+              <label for="signup-surname" i18n="surname|surname label@@surname">Surname</label>
               <input id="signup-surname" type="text" required formControlName="surname">
               <div *ngIf="registrationSurname.invalid  && registrationSurname.touched">
-                <div *ngIf="registrationSurname.errors?.required" i18n="surname|surname exception">
+                <div *ngIf="registrationSurname.errors?.required" i18n="surname|surname exception@@emptySurname">
                   Surname can't be empty
                 </div>
               </div>
             </div>
             <div class="input-block">
-              <label for="signup-patronymic" i18n="patronymic|patronymic label">Patronymic</label>
+              <label for="signup-patronymic" i18n="patronymic|patronymic label@@patron">Patronymic</label>
               <input id="signup-patronymic" type="text" required formControlName="patronymic">
               <div *ngIf="registrationPatronymic.invalid  && registrationPatronymic.touched">
-                <div *ngIf="registrationPatronymic.errors?.required" i18n="patronymic|patronymic exception">
+                <div *ngIf="registrationPatronymic.errors?.required" i18n="patronymic|patronymic exception@@patronEmpty">
                   Patronymic can't be empty
                 </div>
               </div>
             </div>
             <div class="input-block">
-              <label for="signup-email" i18n="mail|mail on registration form">E-mail</label>
+              <label for="signup-email" i18n="mail|mail on registration form@@mail">E-mail</label>
               <div style="position: relative;  width: 100%; height: 44px;">
                 <input id="signup-email" type="email" required formControlName="mail"
                   style="position: absolute; padding-right: 30px;">
@@ -88,40 +88,40 @@
               </div>
               <div *ngIf="registrationMail.invalid  && registrationMail.touched"
                 style="position: relative; margin-top: 5px;">
-                <div *ngIf="registrationMail.errors?.isEmailUnique == false" i18n="mail|reg mail should be uniq">
+                <div *ngIf="registrationMail.errors?.isEmailUnique == false" i18n="mail|reg mail should be uniq@@mailUniq">
                   Mail should be unique
                 </div>
-                <div *ngIf="registrationMail.errors?.required" i18n="mail|reg mail should not be empty">
+                <div *ngIf="registrationMail.errors?.required" i18n="mail|reg mail should not be empty@@mailEmpty">
                   Mail can't be empty
                 </div>
-                <div *ngIf="registrationMail.errors?.email" i18n="mail|reg mail has incorrect format">
+                <div *ngIf="registrationMail.errors?.email" i18n="mail|reg mail has incorrect format@@mailIncorrect">
                   Mail has incorrect format
                 </div>
               </div>
             </div>
             <div class="input-block">
-              <label for="signup-telephone" i18n="phone|phone-label">Telephone number</label>
-              <input id="signup-telephone" type="tel" required formControlName="telNumber" i18n i18n-placeholder placeholder="Enter 10 digits or more">
+              <label for="signup-telephone" i18n="phone|phone-label@@phone">Telephone number</label>
+              <input id="signup-telephone" type="tel" required formControlName="telNumber" i18n i18n-placeholder="@@phonePlaceholder" placeholder="Enter 10 digits or more">
               <div *ngIf="registrationTelNumber.invalid  && registrationTelNumber.touched">
-                <div *ngIf="registrationTelNumber.errors?.required" i18n="phone|phone empty exception">
+                <div *ngIf="registrationTelNumber.errors?.required" i18n="phone|phone empty exception@@phoneEmty">
                   Telephone can't be empty
                 </div>
-                <div *ngIf="registrationTelNumber.errors?.pattern" i18n="phone|phone pattern wrong">
+                <div *ngIf="registrationTelNumber.errors?.pattern" i18n="phone|phone pattern wrong@@phoneIncorrect">
                   Telephone is incorrect
                 </div>
               </div>
             </div>
             <div class="input-block">
-              <label for="signup-dob" i18n="dob|dob label">Date of birth</label>
+              <label for="signup-dob" i18n="dob|dob label@@dob">Date of birth</label>
               <input id="signup-dob" type="date" required formControlName="dob">
               <div *ngIf="registrationDob.invalid  && registrationDob.touched">
-                <div *ngIf="registrationDob.errors?.required" i18n="dob|dob empty field">
+                <div *ngIf="registrationDob.errors?.required" i18n="dob|dob empty field@@dobEmpty">
                   Date of birth should be specified
                 </div>
               </div>
             </div>
             <div class="input-block">
-              <label for="signup-password" i18n="reg pass|password input">Password</label>
+              <label for="signup-password" i18n="reg pass|password input@@password">Password</label>
               <div style="position: relative; width: 100%; height: 44px;">
                 <input id="signup-password" [attr.type]="showPassword ? 'text': 'password'" required
                   style="position: absolute; padding-right: 30px;" formControlName="password">
@@ -131,16 +131,16 @@
               </div>
               <div *ngIf="registrationPassword.invalid  && registrationPassword.touched"
                 style="position: relative; margin-top: 5px;">
-                <div *ngIf="registrationPassword.errors?.required" i18n="reg pass|password emty error">
+                <div *ngIf="registrationPassword.errors?.required" i18n="reg pass|password emty error@@passwordEmpty">
                   Password can't be empty
                 </div>
-                <div *ngIf="registrationPassword.errors?.pattern" i18n="reg pass|password wrong format">
+                <div *ngIf="registrationPassword.errors?.pattern" i18n="reg pass|password wrong format@@passwordWrongFormat">
                   Password must be 8 chars at least, small, big letters, nums and special symbols
                 </div>
               </div>
             </div>
             <div class="input-block">
-              <label for="signup-password-confirm" i18n="confirm password">Confirm password</label>
+              <label for="signup-password-confirm" i18n="confirm password@@passwordConfirm">Confirm password</label>
               <div style="position: relative; width: 100%; height: 44px;">
                 <input id="signup-password-confirm" [attr.type]="showPassword ? 'text': 'password'" required
                   style="position: absolute; padding-right: 30px;" formControlName="confirmPassword">
@@ -150,13 +150,13 @@
               </div>
               <div *ngIf="registrationConfirmPassword.invalid  && registrationConfirmPassword.touched"
                 style="position: relative; margin-top: 5px;">
-                <div *ngIf="registrationConfirmPassword.errors?.required" i18n="confirm password|confirm password emty">
+                <div *ngIf="registrationConfirmPassword.errors?.required" i18n="confirm password|confirm password emty@@passwordConfirmEmpty">
                   You should confirm password
                 </div>
               </div>
               <div
                 *ngIf="registerForm.errors?.passwordConfirmation && (registrationConfirmPassword.touched || registrationConfirmPassword.dirty)"
-                style="position: relative; margin-top: 5px;" i18n="confirm password|non-coincidence">
+                style="position: relative; margin-top: 5px;" i18n="confirm password|non-coincidence@@passwordConfirmNonCoincidence">
                 Password are not the same
               </div>
             </div>

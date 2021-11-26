@@ -102,11 +102,21 @@ namespace FireSaverApi
             {
                 options.AddPolicy("AnyHeadersAllowed", builder =>
                 {
-                    builder.AllowAnyOrigin()
-                            .AllowAnyHeader()
-                            .AllowAnyMethod();
+                    builder.AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowAnyOrigin();
                 });
             });
+
+
+            // services.AddCors(options =>
+            // {
+            //     options.AddPolicy("AnyHeadersAllowed",
+            //     builder =>
+            //     {
+            //         builder.WithOrigins("https://localhost:4200");
+            //     });
+            // });
 
             services.AddControllers();
             services.AddControllers().AddNewtonsoftJson(o =>

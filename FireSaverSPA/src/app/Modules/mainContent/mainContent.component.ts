@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AddIotDialogComponent } from 'src/app/Components/add-iot-dialog/add-iot-dialog.component';
 import { BaseHttpService } from 'src/app/Services/baseHttp.service';
@@ -10,7 +11,7 @@ import { HttpIotService } from 'src/app/Services/httpIot.service';
   templateUrl: './mainContent.component.html',
   styleUrls: ['./mainContent.component.scss']
 })
-export class  MainContentComponent implements OnInit {
+export class MainContentComponent implements OnInit {
 
   buildingLink: string = '/main'
 
@@ -23,7 +24,8 @@ export class  MainContentComponent implements OnInit {
   constructor(private httpBaseService: BaseHttpService,
     private iotService: HttpIotService,
     private matDialog: MatDialog,
-    private toastr: ToastrService) { }
+    private toastr: ToastrService,
+    private router: Router) { }
 
   ngOnInit() {
     var authData = this.httpBaseService.readAuthResponse();
@@ -54,5 +56,15 @@ export class  MainContentComponent implements OnInit {
         })
       }
     })
+  }
+
+  changeToUkraine() {
+    const currentUrl = this.router.url;
+    window.location.href = 'https://localhost:4201' + currentUrl
+  }
+
+  changeToEnglish() {
+    const currentUrl = this.router.url;
+    window.location.href = 'https://localhost:4200' + currentUrl
   }
 }

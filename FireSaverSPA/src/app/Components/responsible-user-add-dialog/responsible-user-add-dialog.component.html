@@ -1,18 +1,18 @@
 <form [formGroup]="addResponsibleUserForm">
   <div class="form-group" style="margin-bottom: 20px;">
-    <label>Email address</label>
-    <input type="text" class="form-control" aria-describedby="emailHelp" placeholder="Enter email"
+    <label i18n="@@mail">Email address</label>
+    <input type="text" class="form-control" aria-describedby="emailHelp" i18n i18n-placeholder="mail placeholder" placeholder="Enter email"
       formControlName="mail">
     <div *ngIf="formMail.invalid">
       <small style="color: red !important;" *ngIf="formMail.errors?.email && (formMail.touched || formMail.dirty)"
-        id="emailHelp" class="form-text">Enter valid mail format
+        id="emailHelp" class="form-text" i18n="@@mailIncorrect">Enter valid mail format
       </small>
       <small style="color: red !important;"
         *ngIf="formMail.errors?.canBeResponsible && (formMail.touched || formMail.dirty)" id="emailHelp"
-        class="form-text">This user is already responsible
+        class="form-text" i18n="user alraedy responsible">This user is already responsible
       </small>
     </div>
   </div>
-  <button type="button" class="btn btn-primary" [disabled]="validatingForm.invalid" (click)="submitForm()">Add</button>
-  <button type="button" class="btn btn-danger" (click)="closeForm()">Cancel</button>
+  <button type="button" class="btn btn-primary" [disabled]="validatingForm.invalid" (click)="submitForm()" i18n="@@submitBtn">Add</button>
+  <button type="button" class="btn btn-danger" (click)="closeForm()" i18n="@@cancelBtn">Cancel</button>
 </form>

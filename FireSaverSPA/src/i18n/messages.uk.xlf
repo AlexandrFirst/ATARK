@@ -272,13 +272,17 @@
           <context context-type="linenumber">36,37</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="4200501648415835756" datatype="html">
+      <trans-unit id="loginlabel" datatype="html">
         <source>
           Login
           <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;underline&quot;&gt;" />
           <x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;" />
         </source>
-        <target>Вхід</target>
+        <target>
+          Вхід
+          <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;underline&quot;&gt;" />
+          <x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;" />
+        </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Login/Login.component.html</context>
           <context context-type="linenumber">9,10</context>
@@ -286,7 +290,7 @@
         <note priority="1" from="description">label on login form</note>
         <note priority="1" from="meaning">login btn</note>
       </trans-unit>
-      <trans-unit id="6004830818397126030" datatype="html">
+      <trans-unit id="mail" datatype="html">
         <source>E-mail</source>
         <target>Електрона пошта</target>
         <context-group purpose="location">
@@ -297,10 +301,14 @@
           <context context-type="sourcefile">src/app/Components/Login/Login.component.html</context>
           <context context-type="linenumber">79</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/responsible-user-add-dialog/responsible-user-add-dialog.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
         <note priority="1" from="description">mail on login form</note>
         <note priority="1" from="meaning">mail</note>
       </trans-unit>
-      <trans-unit id="4691725691155040353" datatype="html">
+      <trans-unit id="mailEmpty" datatype="html">
         <source> Mail can&apos;t be empty </source>
         <target>Пошта не може бути пустою</target>
         <context-group purpose="location">
@@ -362,7 +370,7 @@
         <note priority="1" from="description">signup label on login form</note>
         <note priority="1" from="meaning">signup</note>
       </trans-unit>
-      <trans-unit id="2784504342419666597" datatype="html">
+      <trans-unit id="name" datatype="html">
         <source>Name</source>
         <target>Ім'я</target>
         <context-group purpose="location">
@@ -372,7 +380,7 @@
         <note priority="1" from="description">name input field on login form</note>
         <note priority="1" from="meaning">name</note>
       </trans-unit>
-      <trans-unit id="4696691688804752540" datatype="html">
+      <trans-unit id="emptyName" datatype="html">
         <source> Name can&apos;t be empty </source>
         <target>Ім'я не може бути пустим</target>
         <context-group purpose="location">
@@ -382,7 +390,7 @@
         <note priority="1" from="description">name exception</note>
         <note priority="1" from="meaning">name</note>
       </trans-unit>
-      <trans-unit id="8171229590270317612" datatype="html">
+      <trans-unit id="surname" datatype="html">
         <source>Surname</source>
         <target>Прізвище</target>
         <context-group purpose="location">
@@ -392,7 +400,7 @@
         <note priority="1" from="description">surname label</note>
         <note priority="1" from="meaning">surname</note>
       </trans-unit>
-      <trans-unit id="8680920758557822595" datatype="html">
+      <trans-unit id="emptySurname" datatype="html">
         <source> Surname can&apos;t be empty </source>
         <target>Прізвище не може бути пустим</target>
         <context-group purpose="location">
@@ -402,7 +410,7 @@
         <note priority="1" from="description">surname exception</note>
         <note priority="1" from="meaning">surname</note>
       </trans-unit>
-      <trans-unit id="2439775808113547790" datatype="html">
+      <trans-unit id="patron" datatype="html">
         <source>Patronymic</source>
         <target>По-батькові</target>
         <context-group purpose="location">
@@ -412,7 +420,7 @@
         <note priority="1" from="description">patronymic label</note>
         <note priority="1" from="meaning">patronymic</note>
       </trans-unit>
-      <trans-unit id="7422035202806705891" datatype="html">
+      <trans-unit id="patronEmpty" datatype="html">
         <source> Patronymic can&apos;t be empty </source>
         <target>По-батькові не може бути пустим</target>
         <context-group purpose="location">
@@ -422,7 +430,7 @@
         <note priority="1" from="description">patronymic exception</note>
         <note priority="1" from="meaning">patronymic</note>
       </trans-unit>
-      <trans-unit id="4447221348834499876" datatype="html">
+      <trans-unit id="mailUniq" datatype="html">
         <source> Mail should be unique </source>
         <target> Така пошта вже існує </target>
         <context-group purpose="location">
@@ -432,7 +440,7 @@
         <note priority="1" from="description">reg mail should be uniq</note>
         <note priority="1" from="meaning">mail</note>
       </trans-unit>
-      <trans-unit id="4536711719633477987" datatype="html">
+      <trans-unit id="mailIncorrect" datatype="html">
         <source> Mail has incorrect format </source>
         <target> Це не є поштою </target>
         <context-group purpose="location">
@@ -442,7 +450,7 @@
         <note priority="1" from="description">reg mail has incorrect format</note>
         <note priority="1" from="meaning">mail</note>
       </trans-unit>
-      <trans-unit id="4757147375622993596" datatype="html">
+      <trans-unit id="phone" datatype="html">
         <source>Telephone number</source>
         <target> Номер телефону </target>
         <context-group purpose="location">
@@ -452,7 +460,7 @@
         <note priority="1" from="description">phone-label</note>
         <note priority="1" from="meaning">phone</note>
       </trans-unit>
-      <trans-unit id="5665018409729615511" datatype="html">
+      <trans-unit id="phonePlaceholder" datatype="html">
         <source>Enter 10 digits or more</source>
         <target> +380 XX XXX XX XX or +380-XX-XXX-XX-XX </target>
         <context-group purpose="location">
@@ -460,7 +468,7 @@
           <context context-type="linenumber">104</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="9007752963478617497" datatype="html">
+      <trans-unit id="phoneEmty" datatype="html">
         <source> Telephone can&apos;t be empty </source>
         <target> Номер телефону не може бути пустим</target>
         <context-group purpose="location">
@@ -470,7 +478,7 @@
         <note priority="1" from="description">phone empty exception</note>
         <note priority="1" from="meaning">phone</note>
       </trans-unit>
-      <trans-unit id="6845683034640753969" datatype="html">
+      <trans-unit id="phoneIncorrect" datatype="html">
         <source> Telephone is incorrect </source>
         <target> Формат телефону не вірний</target>
         <context-group purpose="location">
@@ -480,7 +488,7 @@
         <note priority="1" from="description">phone pattern wrong</note>
         <note priority="1" from="meaning">phone</note>
       </trans-unit>
-      <trans-unit id="2899682849188136933" datatype="html">
+      <trans-unit id="dob" datatype="html">
         <source>Date of birth</source>
         <target>Дата народження</target>
         <context-group purpose="location">
@@ -490,7 +498,7 @@
         <note priority="1" from="description">dob label</note>
         <note priority="1" from="meaning">dob</note>
       </trans-unit>
-      <trans-unit id="877940374780852986" datatype="html">
+      <trans-unit id="dobEmpty" datatype="html">
         <source> Date of birth should be specified </source>
         <target>Дата народження повинна бути вказана</target>
         <context-group purpose="location">
@@ -500,7 +508,7 @@
         <note priority="1" from="description">dob empty field</note>
         <note priority="1" from="meaning">dob</note>
       </trans-unit>
-      <trans-unit id="7883669510349279303" datatype="html">
+      <trans-unit id="password" datatype="html">
         <source>Password</source>
         <target>Пароль</target>
         <context-group purpose="location">
@@ -510,7 +518,7 @@
         <note priority="1" from="description">password input</note>
         <note priority="1" from="meaning">reg pass</note>
       </trans-unit>
-      <trans-unit id="6481656070949484512" datatype="html">
+      <trans-unit id="passwordEmpty" datatype="html">
         <source> Password can&apos;t be empty </source>
         <target>Пароль не може бути пустим</target>
         <context-group purpose="location">
@@ -520,7 +528,7 @@
         <note priority="1" from="description">password emty error</note>
         <note priority="1" from="meaning">reg pass</note>
       </trans-unit>
-      <trans-unit id="5510768618612694992" datatype="html">
+      <trans-unit id="passwordWrongFormat" datatype="html">
         <source> Password must be 8 chars at least, small, big letters, nums and special symbols </source>
         <target>Пароль повинен бути від 8 символів, великі, маленькі літери, цифри, спец символи</target>
         <context-group purpose="location">
@@ -530,7 +538,7 @@
         <note priority="1" from="description">password wrong format</note>
         <note priority="1" from="meaning">reg pass</note>
       </trans-unit>
-      <trans-unit id="3782563238994348625" datatype="html">
+      <trans-unit id="passwordConfirm" datatype="html">
         <source>Confirm password</source>
         <target>Підтвердження паролю</target>
         <context-group purpose="location">
@@ -539,7 +547,7 @@
         </context-group>
         <note priority="1" from="description">confirm password</note>
       </trans-unit>
-      <trans-unit id="815932806983871278" datatype="html">
+      <trans-unit id="passwordConfirmEmpty" datatype="html">
         <source> You should confirm password </source>
         <target>Ви повинні підтвердити пароль</target>
         <context-group purpose="location">
@@ -549,7 +557,7 @@
         <note priority="1" from="description">confirm password emty</note>
         <note priority="1" from="meaning">confirm password</note>
       </trans-unit>
-      <trans-unit id="4016507774002395652" datatype="html">
+      <trans-unit id="passwordConfirmNonCoincidence" datatype="html">
         <source> Password are not the same </source>
         <target>Паролі не збігаються</target>
         <context-group purpose="location">
@@ -579,6 +587,1017 @@
           <context context-type="sourcefile">src/app/Components/Login/Login.component.ts</context>
           <context context-type="linenumber">73</context>
         </context-group>
+      </trans-unit>
+      <trans-unit id="7942796041132188427" datatype="html">
+        <source> Work is done by Alexandr Lohvinov PZPI-19-3</source>
+        <target>Робота виконана Олександром Логвіновим ПЗПІ-19-3</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/footer/footer.component.html</context>
+          <context context-type="linenumber">2,3</context>
+        </context-group>
+        <note priority="1" from="description">footer content</note>
+      </trans-unit>
+      <trans-unit id="btnSave" datatype="html">
+        <source>Save</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Account/Account.component.html</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+        <note priority="1" from="description">save button</note>
+      </trans-unit>
+      <trans-unit id="btnCancel" datatype="html">
+        <source>Cancel</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Account/Account.component.html</context>
+          <context context-type="linenumber">30</context>
+        </context-group>
+        <note priority="1" from="description">cancel button</note>
+      </trans-unit>
+      <trans-unit id="btnLogout" datatype="html">
+        <source>Logout</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Account/Account.component.html</context>
+          <context context-type="linenumber">32</context>
+        </context-group>
+        <note priority="1" from="description">cancel button</note>
+      </trans-unit>
+      <trans-unit id="6197309191668201384" datatype="html">
+        <source>Chnage Info</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Building/Building.component.html</context>
+          <context context-type="linenumber">15,16</context>
+        </context-group>
+        <note priority="1" from="description">building page</note>
+        <note priority="1" from="meaning">change info btn</note>
+      </trans-unit>
+      <trans-unit id="6267871893420992574" datatype="html">
+        <source>Delete</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Building/Building.component.html</context>
+          <context context-type="linenumber">36</context>
+        </context-group>
+        <note priority="1" from="description">building page</note>
+        <note priority="1" from="meaning">delete btn</note>
+      </trans-unit>
+      <trans-unit id="2247459104532366705" datatype="html">
+        <source> No responsible users yet </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Building/Building.component.html</context>
+          <context context-type="linenumber">39,40</context>
+        </context-group>
+        <note priority="1" from="description">no responsible user label</note>
+      </trans-unit>
+      <trans-unit id="8047000754279129228" datatype="html">
+        <source>Add responsible user</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Building/Building.component.html</context>
+          <context context-type="linenumber">42,43</context>
+        </context-group>
+        <note priority="1" from="description">building page</note>
+        <note priority="1" from="meaning">add responsible user</note>
+      </trans-unit>
+      <trans-unit id="6593650063554305942" datatype="html">
+        <source> Floors </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Building/Building.component.html</context>
+          <context context-type="linenumber">52,53</context>
+        </context-group>
+        <note priority="1" from="description">floor label</note>
+      </trans-unit>
+      <trans-unit id="deletebtn" datatype="html">
+        <source>Delete</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Building/Building.component.html</context>
+          <context context-type="linenumber">62</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Buildings/Buildings.component.html</context>
+          <context context-type="linenumber">28</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">99</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">99</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">137</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">137</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">175</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">175</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">210</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">210</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="viewbtn" datatype="html">
+        <source>View</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Building/Building.component.html</context>
+          <context context-type="linenumber">64</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Buildings/Buildings.component.html</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">212</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">212</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="editBtn" datatype="html">
+        <source>Change</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Building/Building.component.html</context>
+          <context context-type="linenumber">66</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Buildings/Buildings.component.html</context>
+          <context context-type="linenumber">27</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">51,52</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">51,52</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">214</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">214</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2183885649538557204" datatype="html">
+        <source> No floors added </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Building/Building.component.html</context>
+          <context context-type="linenumber">69,70</context>
+        </context-group>
+        <note priority="1" from="description">no floor added message</note>
+      </trans-unit>
+      <trans-unit id="4703237212126459977" datatype="html">
+        <source>Add floor</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Building/Building.component.html</context>
+          <context context-type="linenumber">72</context>
+        </context-group>
+        <note priority="1" from="description">building page</note>
+        <note priority="1" from="meaning">add floor</note>
+      </trans-unit>
+      <trans-unit id="2224230670992820965" datatype="html">
+        <source>mail</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Buildings/Buildings.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+        <note priority="1" from="description">user mail to serach</note>
+      </trans-unit>
+      <trans-unit id="3574029220806789207" datatype="html">
+        <source>Search</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Buildings/Buildings.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+        <note priority="1" from="description">buildings component</note>
+        <note priority="1" from="meaning">search btn</note>
+      </trans-unit>
+      <trans-unit id="4058582102721145192" datatype="html">
+        <source> Id: <x id="INTERPOLATION" equiv-text=" {{item.id}"/> </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Buildings/Buildings.component.html</context>
+          <context context-type="linenumber">16,18</context>
+        </context-group>
+        <note priority="1" from="description">building id</note>
+      </trans-unit>
+      <trans-unit id="5802426684694130637" datatype="html">
+        <source>Address: <x id="START_TAG_DIV" ctype="x-div" equiv-text="&lt;div&gt;"/><x id="INTERPOLATION" equiv-text="{{item.address}}"/><x id="CLOSE_TAG_DIV" ctype="x-div" equiv-text="&lt;/div&gt;"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Buildings/Buildings.component.html</context>
+          <context context-type="linenumber">19,20</context>
+        </context-group>
+        <note priority="1" from="description">building address</note>
+      </trans-unit>
+      <trans-unit id="1006817910944306780" datatype="html">
+        <source>Info: <x id="START_TAG_DIV" ctype="x-div" equiv-text="&lt;div&gt;"/><x id="INTERPOLATION" equiv-text="{{item.info}}"/><x id="CLOSE_TAG_DIV" ctype="x-div" equiv-text="&lt;/div&gt;"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Buildings/Buildings.component.html</context>
+          <context context-type="linenumber">22,23</context>
+        </context-group>
+        <note priority="1" from="description">building info</note>
+      </trans-unit>
+      <trans-unit id="3249513483374643425" datatype="html">
+        <source>Add</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Buildings/Buildings.component.html</context>
+          <context context-type="linenumber">34</context>
+        </context-group>
+        <note priority="1" from="description">add building</note>
+      </trans-unit>
+      <trans-unit id="2055167529156953889" datatype="html">
+        <source> Name: </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">19,20</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">19,20</context>
+        </context-group>
+        <note priority="1" from="description">compartment name</note>
+      </trans-unit>
+      <trans-unit id="3425166091140188170" datatype="html">
+        <source> Describtion: </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">27,28</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">27,28</context>
+        </context-group>
+        <note priority="1" from="description">compartment description</note>
+      </trans-unit>
+      <trans-unit id="7324831172322589999" datatype="html">
+        <source> Safety Rules: </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">35,36</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">35,36</context>
+        </context-group>
+        <note priority="1" from="description">compartment rules</note>
+      </trans-unit>
+      <trans-unit id="8851482693166266979" datatype="html">
+        <source> Level: </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">43,44</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">43,44</context>
+        </context-group>
+        <note priority="1" from="description">floor level</note>
+      </trans-unit>
+      <trans-unit id="461448451057862980" datatype="html">
+        <source> Center map </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">56,57</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">56,57</context>
+        </context-group>
+        <note priority="1" from="description">btn</note>
+        <note priority="1" from="meaning">center map</note>
+      </trans-unit>
+      <trans-unit id="1008218481683917792" datatype="html">
+        <source> Generate QR-code </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">61,62</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">61,62</context>
+        </context-group>
+        <note priority="1" from="description">get qr code for buidling</note>
+      </trans-unit>
+      <trans-unit id="loadMapBtn" datatype="html">
+        <source>Load map <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span *ngIf=&quot;uploadingValue &gt; 0&quot;&gt;"/><x id="INTERPOLATION" equiv-text="{{uploadingValue}}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">69,70</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">69,70</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">107,108</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">107,108</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">145,146</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">145,146</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">184,185</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">184,185</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="chooseFilePlaceholder" datatype="html">
+        <source>Choose file</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">72</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">72</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">110</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">110</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">148</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">148</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">187</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">187</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="769303368838622881" datatype="html">
+        <source>No points</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">91</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">91</context>
+        </context-group>
+        <note priority="1" from="description">compartment page</note>
+        <note priority="1" from="meaning">no points label</note>
+      </trans-unit>
+      <trans-unit id="selectBtn" datatype="html">
+        <source>Select</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">97</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">97</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">135</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">135</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1284028467561965375" datatype="html">
+        <source>Add scale point</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">103</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">103</context>
+        </context-group>
+        <note priority="1" from="description">add scale point</note>
+      </trans-unit>
+      <trans-unit id="333829310175224391" datatype="html">
+        <source> Route points </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">122,123</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">122,123</context>
+        </context-group>
+        <note priority="1" from="description">add route point</note>
+      </trans-unit>
+      <trans-unit id="5730887114570556921" datatype="html">
+        <source> Iots </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">160,161</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">160,161</context>
+        </context-group>
+        <note priority="1" from="description">compartment page</note>
+        <note priority="1" from="meaning">iot label</note>
+      </trans-unit>
+      <trans-unit id="2571387609159395588" datatype="html">
+        <source>No iots</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">167</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">167</context>
+        </context-group>
+        <note priority="1" from="description">compartment page</note>
+        <note priority="1" from="meaning">no iot found label</note>
+      </trans-unit>
+      <trans-unit id="1839012448624557988" datatype="html">
+        <source>Print qr iot info</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">172</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">172</context>
+        </context-group>
+        <note priority="1" from="description">print iot qr</note>
+      </trans-unit>
+      <trans-unit id="3206500510434503385" datatype="html">
+        <source> Add iot</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">180</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">180</context>
+        </context-group>
+        <note priority="1" from="description">add iot to compartment</note>
+      </trans-unit>
+      <trans-unit id="7260998863517747178" datatype="html">
+        <source> Rooms </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">200,201</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">200,201</context>
+        </context-group>
+        <note priority="1" from="description">rooms header label</note>
+      </trans-unit>
+      <trans-unit id="2160565482803081386" datatype="html">
+        <source>Add new room</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">216,217</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">216,217</context>
+        </context-group>
+        <note priority="1" from="description">floor page</note>
+        <note priority="1" from="meaning">add new room</note>
+      </trans-unit>
+      <trans-unit id="1163766319292226295" datatype="html">
+        <source>Add test</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">225,226</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">225,226</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/test-dialog/test-dialog.component.html</context>
+          <context context-type="linenumber">62</context>
+        </context-group>
+        <note priority="1" from="description">add test</note>
+      </trans-unit>
+      <trans-unit id="4082827638164923264" datatype="html">
+        <source>View test</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">228</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">228</context>
+        </context-group>
+        <note priority="1" from="description">view test</note>
+      </trans-unit>
+      <trans-unit id="9169399864391820005" datatype="html">
+        <source>Delete test</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">229,230</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">229,230</context>
+        </context-group>
+        <note priority="1" from="description">delete test</note>
+      </trans-unit>
+      <trans-unit id="7619560701830330401" datatype="html">
+        <source>Loading</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Loader/Loader.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+        <note priority="1" from="description">loader title</note>
+      </trans-unit>
+      <trans-unit id="loginlabel" datatype="html">
+        <source> Login <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;underline&quot;&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Login/Login.component.html</context>
+          <context context-type="linenumber">9,10</context>
+        </context-group>
+        <note priority="1" from="description">label on login form</note>
+        <note priority="1" from="meaning">login</note>
+      </trans-unit>
+      <trans-unit id="6209127024726038223" datatype="html">
+        <source>IoT identifier: </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/add-iot-dialog/add-iot-dialog.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+        <note priority="1" from="description">iot id on popup</note>
+      </trans-unit>
+      <trans-unit id="7240829729447359185" datatype="html">
+        <source>Enter iot Id</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/add-iot-dialog/add-iot-dialog.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="submitBtn" datatype="html">
+        <source>Submit</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/add-iot-dialog/add-iot-dialog.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/building-dialog/building-dialog.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/compartment-add-dialog/compartment-add-dialog.component.html</context>
+          <context context-type="linenumber">32</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/confirm-dialog/confirm-dialog.component.html</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/floor-add-dialog/floor-add-dialog.component.html</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/position-input-dialog/position-input-dialog.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/responsible-user-add-dialog/responsible-user-add-dialog.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+        <note priority="1" from="description">dialog</note>
+        <note priority="1" from="meaning">submit btn</note>
+      </trans-unit>
+      <trans-unit id="cancelBtn" datatype="html">
+        <source>Cancel</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/add-iot-dialog/add-iot-dialog.component.html</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/building-dialog/building-dialog.component.html</context>
+          <context context-type="linenumber">20</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/compartment-add-dialog/compartment-add-dialog.component.html</context>
+          <context context-type="linenumber">33</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/confirm-dialog/confirm-dialog.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/floor-add-dialog/floor-add-dialog.component.html</context>
+          <context context-type="linenumber">54</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/position-input-dialog/position-input-dialog.component.html</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/responsible-user-add-dialog/responsible-user-add-dialog.component.html</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+        <note priority="1" from="description">dialog</note>
+        <note priority="1" from="meaning">cancel btn</note>
+      </trans-unit>
+      <trans-unit id="6304432362546770951" datatype="html">
+        <source>Address</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/building-dialog/building-dialog.component.html</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+        <note priority="1" from="description">buidling address</note>
+      </trans-unit>
+      <trans-unit id="6865776186919034166" datatype="html">
+        <source> Fill in this field </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/building-dialog/building-dialog.component.html</context>
+          <context context-type="linenumber">8,9</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/building-dialog/building-dialog.component.html</context>
+          <context context-type="linenumber">16,17</context>
+        </context-group>
+        <note priority="1" from="description">buidling address empty</note>
+      </trans-unit>
+      <trans-unit id="314315645942131479" datatype="html">
+        <source>Info</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/building-dialog/building-dialog.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+        <note priority="1" from="description">buidling info</note>
+      </trans-unit>
+      <trans-unit id="floorName" datatype="html">
+        <source>Name: </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/compartment-add-dialog/compartment-add-dialog.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8603105031059760358" datatype="html">
+        <source>Enter floor name</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/compartment-add-dialog/compartment-add-dialog.component.html</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/floor-add-dialog/floor-add-dialog.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1033800430344227549" datatype="html">
+        <source>This field should not be emty </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/compartment-add-dialog/compartment-add-dialog.component.html</context>
+          <context context-type="linenumber">7,9</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/compartment-add-dialog/compartment-add-dialog.component.html</context>
+          <context context-type="linenumber">17,19</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/compartment-add-dialog/compartment-add-dialog.component.html</context>
+          <context context-type="linenumber">27,29</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/floor-add-dialog/floor-add-dialog.component.html</context>
+          <context context-type="linenumber">8,10</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/floor-add-dialog/floor-add-dialog.component.html</context>
+          <context context-type="linenumber">20,22</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/floor-add-dialog/floor-add-dialog.component.html</context>
+          <context context-type="linenumber">32,34</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/floor-add-dialog/floor-add-dialog.component.html</context>
+          <context context-type="linenumber">43,45</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/test-dialog/test-dialog.component.html</context>
+          <context context-type="linenumber">7,8</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/test-dialog/test-dialog.component.html</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/test-dialog/test-dialog.component.html</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+        <note priority="1" from="description">floor name emty</note>
+      </trans-unit>
+      <trans-unit id="4678185361290766066" datatype="html">
+        <source>Description: </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/compartment-add-dialog/compartment-add-dialog.component.html</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/floor-add-dialog/floor-add-dialog.component.html</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+        <note priority="1" from="description">floor describtion</note>
+      </trans-unit>
+      <trans-unit id="8505886711062121305" datatype="html">
+        <source>Enter floor describtion</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/compartment-add-dialog/compartment-add-dialog.component.html</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/floor-add-dialog/floor-add-dialog.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+        <note priority="1" from="description">floor describtion placeholder</note>
+      </trans-unit>
+      <trans-unit id="1667512532199927709" datatype="html">
+        <source>Safety rules: </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/compartment-add-dialog/compartment-add-dialog.component.html</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/floor-add-dialog/floor-add-dialog.component.html</context>
+          <context context-type="linenumber">26</context>
+        </context-group>
+        <note priority="1" from="description">floor safety rules</note>
+      </trans-unit>
+      <trans-unit id="2883014345917386779" datatype="html">
+        <source>Enter safety rules</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/compartment-add-dialog/compartment-add-dialog.component.html</context>
+          <context context-type="linenumber">24</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/floor-add-dialog/floor-add-dialog.component.html</context>
+          <context context-type="linenumber">28</context>
+        </context-group>
+        <note priority="1" from="description">floor rules placeholder</note>
+      </trans-unit>
+      <trans-unit id="402785015655073812" datatype="html">
+        <source>Name: </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/floor-add-dialog/floor-add-dialog.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+        <note priority="1" from="description">room name</note>
+      </trans-unit>
+      <trans-unit id="7800729495881615170" datatype="html">
+        <source>Floor number: </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/floor-add-dialog/floor-add-dialog.component.html</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+        <note priority="1" from="description">floor number</note>
+      </trans-unit>
+      <trans-unit id="542012294802441837" datatype="html">
+        <source>Enter floor level</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/floor-add-dialog/floor-add-dialog.component.html</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+        <note priority="1" from="description">floor number placeholder</note>
+      </trans-unit>
+      <trans-unit id="1887370296612109279" datatype="html">
+        <source>This floor is already taken </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/floor-add-dialog/floor-add-dialog.component.html</context>
+          <context context-type="linenumber">47,49</context>
+        </context-group>
+        <note priority="1" from="description">floor number taken</note>
+      </trans-unit>
+      <trans-unit id="8314090883669143391" datatype="html">
+        <source>Latitude</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/position-input-dialog/position-input-dialog.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+        <note priority="1" from="description">Latitude</note>
+      </trans-unit>
+      <trans-unit id="419973695543130728" datatype="html">
+        <source>Enter latitude</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/position-input-dialog/position-input-dialog.component.html</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+        <note priority="1" from="description">Latitude placeholder</note>
+      </trans-unit>
+      <trans-unit id="2501969335659826225" datatype="html">
+        <source>This field is required</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/position-input-dialog/position-input-dialog.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/position-input-dialog/position-input-dialog.component.html</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+        <note priority="1" from="description">latitude empty</note>
+      </trans-unit>
+      <trans-unit id="8494914266039675066" datatype="html">
+        <source>Longtitude</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/position-input-dialog/position-input-dialog.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+        <note priority="1" from="description">Longtitude</note>
+      </trans-unit>
+      <trans-unit id="5298117268231351396" datatype="html">
+        <source>Enter longtitude</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/position-input-dialog/position-input-dialog.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+        <note priority="1" from="description">Longtitude placeholder</note>
+      </trans-unit>
+      <trans-unit id="5495149747457702941" datatype="html">
+        <source>Enter email</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/responsible-user-add-dialog/responsible-user-add-dialog.component.html</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+        <note priority="1" from="description">mail placeholder</note>
+      </trans-unit>
+      <trans-unit id="470397948685175015" datatype="html">
+        <source>This user is already responsible </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/responsible-user-add-dialog/responsible-user-add-dialog.component.html</context>
+          <context context-type="linenumber">12,13</context>
+        </context-group>
+        <note priority="1" from="description">user alraedy responsible</note>
+      </trans-unit>
+      <trans-unit id="6578661886852082609" datatype="html">
+        <source>Try count: </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/test-dialog/test-dialog.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+        <note priority="1" from="description">test try count</note>
+      </trans-unit>
+      <trans-unit id="2105864439351340530" datatype="html">
+        <source>Enter try count for test</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/test-dialog/test-dialog.component.html</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+        <note priority="1" from="description">test try count placeholder</note>
+      </trans-unit>
+      <trans-unit id="7827407208749809032" datatype="html">
+        <source>Question #<x id="INTERPOLATION" equiv-text="{{questionIndex + 1}}"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/test-dialog/test-dialog.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+        <note priority="1" from="description">question label</note>
+      </trans-unit>
+      <trans-unit id="8727387071629795713" datatype="html">
+        <source>Content: </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/test-dialog/test-dialog.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+        <note priority="1" from="description">question content label</note>
+      </trans-unit>
+      <trans-unit id="5335510350489301503" datatype="html">
+        <source>Enter question</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/test-dialog/test-dialog.component.html</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+        <note priority="1" from="description">question placeholder</note>
+      </trans-unit>
+      <trans-unit id="2171197756533579819" datatype="html">
+        <source>Answer #<x id="INTERPOLATION" equiv-text="{{answerIndex + 1}}"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/test-dialog/test-dialog.component.html</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+        <note priority="1" from="description">answer label</note>
+      </trans-unit>
+      <trans-unit id="8299501963779844119" datatype="html">
+        <source>answer text</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/test-dialog/test-dialog.component.html</context>
+          <context context-type="linenumber">32</context>
+        </context-group>
+        <note priority="1" from="description">answer text label</note>
+      </trans-unit>
+      <trans-unit id="2932980784121826967" datatype="html">
+        <source>Answer text</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/test-dialog/test-dialog.component.html</context>
+          <context context-type="linenumber">33</context>
+        </context-group>
+        <note priority="1" from="description">answer placeholder</note>
+      </trans-unit>
+      <trans-unit id="727174180192908130" datatype="html">
+        <source>is correct</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/test-dialog/test-dialog.component.html</context>
+          <context context-type="linenumber">42</context>
+        </context-group>
+        <note priority="1" from="description">answer correct check box</note>
+      </trans-unit>
+      <trans-unit id="2914092449805857162" datatype="html">
+        <source>Add answer</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/test-dialog/test-dialog.component.html</context>
+          <context context-type="linenumber">52</context>
+        </context-group>
+        <note priority="1" from="description">add answer btn</note>
+      </trans-unit>
+      <trans-unit id="1287324381040263940" datatype="html">
+        <source>Add question</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/test-dialog/test-dialog.component.html</context>
+          <context context-type="linenumber">61</context>
+        </context-group>
+        <note priority="1" from="description">add question btn</note>
+      </trans-unit>
+      <trans-unit id="9116426053114374171" datatype="html">
+        <source>Building(s)</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Modules/mainContent/mainContent.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+        <note priority="1" from="description">building_s</note>
+      </trans-unit>
+      <trans-unit id="7521898913387959387" datatype="html">
+        <source>Add IoT</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Modules/mainContent/mainContent.component.html</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+        <note priority="1" from="description">add_iot</note>
+      </trans-unit>
+      <trans-unit id="3235430115434370531" datatype="html">
+        <source>Add responsible user</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Modules/mainContent/mainContent.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+        <note priority="1" from="description">add_resp_user</note>
+      </trans-unit>
+      <trans-unit id="7078666663346281473" datatype="html">
+        <source>Eng</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Modules/mainContent/mainContent.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+        <note priority="1" from="description">language change</note>
+        <note priority="1" from="meaning">EngLable</note>
+      </trans-unit>
+      <trans-unit id="345351472562575668" datatype="html">
+        <source>Uk</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Modules/mainContent/mainContent.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+        <note priority="1" from="description">language change</note>
+        <note priority="1" from="meaning">UkrLable</note>
+      </trans-unit>
+      <trans-unit id="4086606389696938932" datatype="html">
+        <source>Account</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Modules/mainContent/mainContent.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+        <note priority="1" from="description">user data</note>
       </trans-unit>
     </body>
   </file>

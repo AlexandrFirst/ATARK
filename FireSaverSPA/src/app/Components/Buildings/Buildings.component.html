@@ -1,8 +1,10 @@
 <div style="width: 100%; height: 600px; overflow-y: scroll;">
   <div class="input-group mb-3 centered-div" style="width: 400px;">
-    <input type="text" class="form-control" #dat (input)="onSearchInput(dat.value)" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="button-addon2">
+    <input type="text" class="form-control" #dat (input)="onSearchInput(dat.value)" i18n i18n-placeholder="user mail to serach" placeholder="mail"
+      aria-label="Recipient's username" aria-describedby="button-addon2">
     <div class="input-group-append">
-      <button class="btn btn-primary" type="button" id="button-addon2">Search</button>
+      <button class="btn btn-primary" type="button" id="button-addon2"
+        i18n="search btn|buildings component">Search</button>
     </div>
   </div>
   <mat-paginator style="width: 600px; margin: 0 auto; padding-top: 10px; color: black; background-color: white; "
@@ -11,22 +13,22 @@
   <div class="building-info-wrapper" *ngFor="let item of allBuildingInfo">
     <div class="building-info">
       <div style="width: 50%; align-self: center;">
-        <div>
+        <div i18n="building id">
           Id: {{item.id}}
         </div>
-        <div>Address:
+        <div i18n="building address">Address:
           <div>{{item.address}}</div>
         </div>
-        <div>Info:
+        <div i18n="building info">Info:
           <div>{{item.info}}</div>
         </div>
       </div>
       <div class="btn-section">
-        <button (click)="editBuilding(item)" class="btn btn-warning">Edit</button>
-        <button (click)="deleteBuilding(item.id)" class="btn btn-danger">Delete</button>
-        <button (click)="goToBuildingPage(item.id)" class="btn btn-info">View</button>
+        <button (click)="editBuilding(item)" class="btn btn-warning" i18n="@@editBtn">Edit</button>
+        <button (click)="deleteBuilding(item.id)" class="btn btn-danger" i18n="@@deletebtn">Delete</button>
+        <button (click)="goToBuildingPage(item.id)" class="btn btn-info" i18n="@@viewbtn">View</button>
       </div>
     </div>
   </div>
 </div>
-<button class="add-btn btn btn-success" (click)="addNewBuilding()">Add</button>
+<button class="add-btn btn btn-success" (click)="addNewBuilding()" i18n="add building">Add</button>
