@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { InputRoutePoint, RoutePoint, ScalePointDto } from '../Models/PointService/pointDtos';
+import { InputRoutePoint, Postion, RoutePoint, ScalePointDto } from '../Models/PointService/pointDtos';
 import { BaseHttpService } from './baseHttp.service';
 
 @Injectable({
@@ -43,5 +43,9 @@ export class HttpPointService extends BaseHttpService {
 
   deleteRoutePoint(routePointId: number): Observable<any> {
     return this.client.delete(this.baseUrl + `RouteBuilder/routepoint/${routePointId}`)
+  }
+
+  TransformUserWorldPostion(compartmentId: number, userWorldPostion: Postion): Observable<Postion> {
+    return this.client.post<Postion>(this.baseUrl + `user/GetTransformedPostions/${compartmentId}`, userWorldPostion);
   }
 }

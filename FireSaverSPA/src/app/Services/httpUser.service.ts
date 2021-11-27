@@ -48,4 +48,6 @@ export class HttpUserService extends BaseHttpService {
     CheckIfUserCanBeResponsible(mail: string): Observable<any> {
         return this.client.get(this.baseUrl + 'user/canUserBeResponsible/' + mail);
     }
+
+  
 }

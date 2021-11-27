@@ -60,6 +60,11 @@
         (click)="getCompartmentQrCode()" i18n="get qr code for buidling">
         Generate QR-code
       </button>
+      <button class="btn btn-primary"
+        style="display: block; margin-top: 10px; margin-right: 10px; font-size: large; float: right;"
+        (click)="getUserPostion()" i18n="update user positions on map">
+        Update user positions
+      </button>
     </div>
   </div>
   <div id="myMap" [style.display]="evacPlanInfo == null ? 'none':'block'"></div>
@@ -88,7 +93,8 @@
         <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
           <div class="card-body">
             <div *ngIf="evacPlanInfo != null; else no_map_template_scale">
-              <div *ngIf="scalePointMarkers.size == 0; else scale_points" i18n="no points label|compartment page">No points</div>
+              <div *ngIf="scalePointMarkers.size == 0; else scale_points" i18n="no points label|compartment page">No
+                points</div>
               <ng-template #scale_points>
                 <div *ngFor="let item of scalePointMarkers | keyvalue"
                   style="display: flex; justify-content: space-around; align-items: center; margin-top: 5px;">
@@ -99,8 +105,8 @@
                       i18n="@@deletebtn">Delete</button></div>
                 </div>
               </ng-template>
-              <button class="btn btn-primary" (click)="addScalePoint()"
-                [disabled]="this.selectedMapPosition == null" i18n="add scale point">Add scale point</button>
+              <button class="btn btn-primary" (click)="addScalePoint()" [disabled]="this.selectedMapPosition == null"
+                i18n="add scale point">Add scale point</button>
             </div>
             <ng-template #no_map_template_scale>
               <div style="width: 100%; display: flex; justify-content: center; height: 50px; align-items: center;">
@@ -164,12 +170,14 @@
         <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
           <div class="card-body">
             <div *ngIf="evacPlanInfo != null; else no_map_template_scale">
-              <div *ngIf="compartmentInfo?.ioTs.length == 0; else route_points" i18n="no iot found label|compartment page">No iots</div>
+              <div *ngIf="compartmentInfo?.ioTs.length == 0; else route_points"
+                i18n="no iot found label|compartment page">No iots</div>
               <ng-template #route_points>
                 <div *ngFor="let iot of compartmentInfo?.ioTs"
                   style="display: flex; justify-content: space-around; align-items: center; margin-top: 5px;">
                   <div>{{iot.iotIdentifier}}</div>
-                  <div><button class="btn btn-info" (click)="printQrCode(iot.iotIdentifier)" i18n="print iot qr">Print qr iot info</button>
+                  <div><button class="btn btn-info" (click)="printQrCode(iot.iotIdentifier)" i18n="print iot qr">Print
+                      qr iot info</button>
                   </div>
                   <div><button class="btn btn-danger" (click)="removeIotFromCompartment(iot.iotIdentifier)"
                       i18n="@@deletebtn">Delete</button></div>
@@ -210,8 +218,8 @@
                   i18n="@@deletebtn">Delete</button>
                 <button class="btn btn-info" style="margin-left: 50px;" (click)="viewRoomInfo(room.id)"
                   i18n="@@viewbtn">View</button>
-                <button class="btn btn-warning" style="margin-left: 50px;"
-                  (click)="changeRoomInfo(room.id)" i18n="@@editBtn">Change</button>
+                <button class="btn btn-warning" style="margin-left: 50px;" (click)="changeRoomInfo(room.id)"
+                  i18n="@@editBtn">Change</button>
               </div>
               <button class="btn btn-primary" (click)="addRoomInfo()" i18n="add new room|floor page">Add new
                 room</button>

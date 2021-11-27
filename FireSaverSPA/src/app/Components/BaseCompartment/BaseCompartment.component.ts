@@ -61,6 +61,7 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
 
   private pointBaseColor: string = "#ff7800";
   private pointeSelectedColor: string = "#ff0000";
+  private userPointColor: string = "#4000ff";
 
   scalePointMarkers = new Map();
 
@@ -70,6 +71,8 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
   private selectedRoutePoint: RoutePoint;
 
   private iotPos = new Map<string, L.CircleMarker>();
+
+  private userMarker = new Map<number, L.CircleMarker>();
 
   constructor(protected location: Location,
     protected activatedRoute: ActivatedRoute,
@@ -109,7 +112,7 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
       this.compartmentId = params.Id
 
       if (this.compartmentId) {
-        this.initCompartmentInfo(() => { });
+        this.initCompartmentInfo(() => { this.initUserPostions(); });
         this.initEvacuationPlanInfo();
       } else {
         this.toastrService.error("Unknown compartment id")
@@ -188,8 +191,41 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
         this.evacPlanInfo = response;
         this.initMap();
         this.initMapPoints();
+
       }, error => {
         this.toastrService.error("Can't get evacuation plan info")
+      })
+    }
+  }
+
+  getUserPostion() {
+    this.initCompartmentInfo(() => {
+      this.initUserPostions();
+    });
+
+  }
+
+  private initUserPostions() {
+    this.clearUserMarkers();
+    if (this.compartmentInfo.inboundUsers && this.compartmentInfo.inboundUsers.length > 0) {
+      this.compartmentInfo.inboundUsers.forEach(user => {
+        if (user.lastSeenBuildingPosition) {
+          this.pointService.TransformUserWorldPostion(this.compartmentId, user.lastSeenBuildingPosition).subscribe(transformedPos => {
+            const convertedUserWorldPosToMapPos = transformedPos;
+            const userMarker = this.placeMarker(convertedUserWorldPosToMapPos.latitude,
+              convertedUserWorldPosToMapPos.longtitude,
+              this.userPointColor);
+            this.userMarker.set(user.id, userMarker);
+          });
+        }
+      });
+    }
+  }
+
+  private clearUserMarkers() {
+    if (this.userMarker.size > 0) {
+      this.userMarker.forEach((value, key) => {
+        this.map.removeLayer(value);
       })
     }
   }

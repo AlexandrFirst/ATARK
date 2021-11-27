@@ -40,7 +40,13 @@ namespace FireSaverApi.Controllers
             var authResponse = await authService.AuthUser(authUserInfo);
 
             return Ok(authResponse);
+        }
 
+        [HttpPost("GetTransformedPostions/{compartmentId}")]
+        public async Task<IActionResult> GetTransformedPostions(int compartmentId, [FromBody] PositionDto worldPostion)
+        {
+            var transformedPostion = await userService.TransformWorldPostionToMap(worldPostion, compartmentId);
+            return Ok(transformedPostion);
         }
 
         [HttpGet("guestAuth")]

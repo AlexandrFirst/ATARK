@@ -13,5 +13,6 @@ namespace FireSaverApi.Dtos.CompartmentDtos
         public string SafetyRules { get; set; }
         public TestInputDto CompartmentTest { get; set; }
         public List<IotNewPositionDto> IoTs { get; set; }
+        public IList<UserInfoDto> InboundUsers { get; set; }
     }
 }

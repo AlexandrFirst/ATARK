@@ -17,5 +17,6 @@ namespace FireSaverApi.Contracts
         Task SetAlaramForBuilding(int userId);
         Task<UserInfoDto> SetWorldPostion(int userId, PositionDto worldUserPostion);
         Task<bool> CheckIfUserCanBeResponsible(string userMail);
+        Task<PositionDto> TransformWorldPostionToMap(PositionDto worldPostion, int compartmentId);
     }
 }

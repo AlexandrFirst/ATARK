@@ -394,5 +394,11 @@ namespace FireSaverApi.Services
                 return false;
             }
         }
+
+        public async Task<PositionDto> TransformWorldPostionToMap(PositionDto worldPostion, int compartmentId)
+        {
+            var mappedWorldPostion = await locationService.WorldToImgPostion(worldPostion, compartmentId);
+            return mappedWorldPostion;
+        }
     }
 }

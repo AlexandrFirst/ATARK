@@ -20,7 +20,8 @@ namespace FireSaverApi.Profiles
             CreateMap<UserInfoDto, User>()
                     .ForMember(userInfo => userInfo.Id, memberOptions => memberOptions.Ignore())
                     .ForMember(userInfo => userInfo.Mail, memberOptions => memberOptions.Ignore())
-                    .ForMember(userInfo => userInfo.RolesList, memberOptions => memberOptions.Ignore());
+                    .ForMember(userInfo => userInfo.RolesList, memberOptions => memberOptions.Ignore())
+                    .ForMember(UserInfoDto => UserInfoDto.LastSeenBuildingPosition, memberOptions => memberOptions.Ignore());
 
             CreateMap<UserInfoDto, MyHttpContext>();
         }
