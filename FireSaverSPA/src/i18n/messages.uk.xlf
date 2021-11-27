@@ -599,6 +599,7 @@
       </trans-unit>
       <trans-unit id="btnSave" datatype="html">
         <source>Save</source>
+        <target>Зберігти</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Account/Account.component.html</context>
           <context context-type="linenumber">29</context>
@@ -607,6 +608,7 @@
       </trans-unit>
       <trans-unit id="btnCancel" datatype="html">
         <source>Cancel</source>
+        <target>Відмінити</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Account/Account.component.html</context>
           <context context-type="linenumber">30</context>
@@ -615,6 +617,7 @@
       </trans-unit>
       <trans-unit id="btnLogout" datatype="html">
         <source>Logout</source>
+        <target>Вийти</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Account/Account.component.html</context>
           <context context-type="linenumber">32</context>
@@ -623,6 +626,7 @@
       </trans-unit>
       <trans-unit id="6197309191668201384" datatype="html">
         <source>Chnage Info</source>
+        <target>Змінити</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Building/Building.component.html</context>
           <context context-type="linenumber">15,16</context>
@@ -632,6 +636,7 @@
       </trans-unit>
       <trans-unit id="6267871893420992574" datatype="html">
         <source>Delete</source>
+        <target>Видалити</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Building/Building.component.html</context>
           <context context-type="linenumber">36</context>
@@ -641,6 +646,7 @@
       </trans-unit>
       <trans-unit id="2247459104532366705" datatype="html">
         <source> No responsible users yet </source>
+        <target>Відповідальних користувачей нема</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Building/Building.component.html</context>
           <context context-type="linenumber">39,40</context>
@@ -649,6 +655,7 @@
       </trans-unit>
       <trans-unit id="8047000754279129228" datatype="html">
         <source>Add responsible user</source>
+        <target>Додати відповідальних користувачей</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Building/Building.component.html</context>
           <context context-type="linenumber">42,43</context>
@@ -658,6 +665,7 @@
       </trans-unit>
       <trans-unit id="6593650063554305942" datatype="html">
         <source> Floors </source>
+        <target>Поверх</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Building/Building.component.html</context>
           <context context-type="linenumber">52,53</context>
@@ -666,6 +674,7 @@
       </trans-unit>
       <trans-unit id="deletebtn" datatype="html">
         <source>Delete</source>
+        <target>Видалити</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Building/Building.component.html</context>
           <context context-type="linenumber">62</context>
@@ -709,6 +718,7 @@
       </trans-unit>
       <trans-unit id="viewbtn" datatype="html">
         <source>View</source>
+        <target>Переглянути</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Building/Building.component.html</context>
           <context context-type="linenumber">64</context>
@@ -728,6 +738,7 @@
       </trans-unit>
       <trans-unit id="editBtn" datatype="html">
         <source>Change</source>
+        <target>Змінити</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Building/Building.component.html</context>
           <context context-type="linenumber">66</context>
@@ -755,6 +766,7 @@
       </trans-unit>
       <trans-unit id="2183885649538557204" datatype="html">
         <source> No floors added </source>
+        <target>Поверхів не знайдено</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Building/Building.component.html</context>
           <context context-type="linenumber">69,70</context>
@@ -763,6 +775,7 @@
       </trans-unit>
       <trans-unit id="4703237212126459977" datatype="html">
         <source>Add floor</source>
+        <target>Додати поверх</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Building/Building.component.html</context>
           <context context-type="linenumber">72</context>
@@ -772,6 +785,7 @@
       </trans-unit>
       <trans-unit id="2224230670992820965" datatype="html">
         <source>mail</source>
+        <target># щоб шукати за id та без # - за адресою</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Buildings/Buildings.component.html</context>
           <context context-type="linenumber">3</context>
@@ -780,6 +794,7 @@
       </trans-unit>
       <trans-unit id="3574029220806789207" datatype="html">
         <source>Search</source>
+        <target>Знайти</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Buildings/Buildings.component.html</context>
           <context context-type="linenumber">7</context>
@@ -789,22 +804,25 @@
       </trans-unit>
       <trans-unit id="4058582102721145192" datatype="html">
         <source> Id: <x id="INTERPOLATION" equiv-text=" {{item.id}"/> </source>
+        <target> Індентифікатор: <x id="INTERPOLATION" equiv-text=" {{item.id}"/> </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Buildings/Buildings.component.html</context>
           <context context-type="linenumber">16,18</context>
         </context-group>
         <note priority="1" from="description">building id</note>
       </trans-unit>
-      <trans-unit id="5802426684694130637" datatype="html">
+      <trans-unit id="buildingAddress" datatype="html">
         <source>Address: <x id="START_TAG_DIV" ctype="x-div" equiv-text="&lt;div&gt;"/><x id="INTERPOLATION" equiv-text="{{item.address}}"/><x id="CLOSE_TAG_DIV" ctype="x-div" equiv-text="&lt;/div&gt;"/></source>
+        <target>Адреса: <x id="START_TAG_DIV" ctype="x-div" equiv-text="&lt;div&gt;"/><x id="INTERPOLATION" equiv-text="{{item.address}}"/><x id="CLOSE_TAG_DIV" ctype="x-div" equiv-text="&lt;/div&gt;"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Buildings/Buildings.component.html</context>
           <context context-type="linenumber">19,20</context>
         </context-group>
         <note priority="1" from="description">building address</note>
       </trans-unit>
-      <trans-unit id="1006817910944306780" datatype="html">
+      <trans-unit id="buildingInfo" datatype="html">
         <source>Info: <x id="START_TAG_DIV" ctype="x-div" equiv-text="&lt;div&gt;"/><x id="INTERPOLATION" equiv-text="{{item.info}}"/><x id="CLOSE_TAG_DIV" ctype="x-div" equiv-text="&lt;/div&gt;"/></source>
+        <target>Інформація: <x id="START_TAG_DIV" ctype="x-div" equiv-text="&lt;div&gt;"/><x id="INTERPOLATION" equiv-text="{{item.info}}"/><x id="CLOSE_TAG_DIV" ctype="x-div" equiv-text="&lt;/div&gt;"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Buildings/Buildings.component.html</context>
           <context context-type="linenumber">22,23</context>
@@ -813,6 +831,7 @@
       </trans-unit>
       <trans-unit id="3249513483374643425" datatype="html">
         <source>Add</source>
+        <target>Додати</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Buildings/Buildings.component.html</context>
           <context context-type="linenumber">34</context>
@@ -821,6 +840,7 @@
       </trans-unit>
       <trans-unit id="2055167529156953889" datatype="html">
         <source> Name: </source>
+        <target>Ім'я</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
           <context context-type="linenumber">19,20</context>
@@ -833,6 +853,7 @@
       </trans-unit>
       <trans-unit id="3425166091140188170" datatype="html">
         <source> Describtion: </source>
+        <target>Опис</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
           <context context-type="linenumber">27,28</context>
@@ -845,6 +866,7 @@
       </trans-unit>
       <trans-unit id="7324831172322589999" datatype="html">
         <source> Safety Rules: </source>
+        <target> Правила безпеки: </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
           <context context-type="linenumber">35,36</context>
@@ -857,6 +879,7 @@
       </trans-unit>
       <trans-unit id="8851482693166266979" datatype="html">
         <source> Level: </source>
+        <target>Номер поверху: </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
           <context context-type="linenumber">43,44</context>
@@ -869,6 +892,7 @@
       </trans-unit>
       <trans-unit id="461448451057862980" datatype="html">
         <source> Center map </source>
+        <target> Вирівняти карту</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
           <context context-type="linenumber">56,57</context>
@@ -882,6 +906,7 @@
       </trans-unit>
       <trans-unit id="1008218481683917792" datatype="html">
         <source> Generate QR-code </source>
+        <target>Згенерувати QR-код</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
           <context context-type="linenumber">61,62</context>
@@ -894,6 +919,7 @@
       </trans-unit>
       <trans-unit id="loadMapBtn" datatype="html">
         <source>Load map <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span *ngIf=&quot;uploadingValue &gt; 0&quot;&gt;"/><x id="INTERPOLATION" equiv-text="{{uploadingValue}}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></source>
+        <target>Завантажити карту <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span *ngIf=&quot;uploadingValue &gt; 0&quot;&gt;"/><x id="INTERPOLATION" equiv-text="{{uploadingValue}}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
           <context context-type="linenumber">69,70</context>
@@ -929,6 +955,7 @@
       </trans-unit>
       <trans-unit id="chooseFilePlaceholder" datatype="html">
         <source>Choose file</source>
+        <target>Обрати файл</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
           <context context-type="linenumber">72</context>
@@ -964,6 +991,7 @@
       </trans-unit>
       <trans-unit id="769303368838622881" datatype="html">
         <source>No points</source>
+        <target>Точок не знайден</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
           <context context-type="linenumber">91</context>
@@ -977,6 +1005,7 @@
       </trans-unit>
       <trans-unit id="selectBtn" datatype="html">
         <source>Select</source>
+        <target>Обрати</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
           <context context-type="linenumber">97</context>
@@ -996,6 +1025,7 @@
       </trans-unit>
       <trans-unit id="1284028467561965375" datatype="html">
         <source>Add scale point</source>
+        <target>Додати точку масштабу</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
           <context context-type="linenumber">103</context>
@@ -1008,6 +1038,7 @@
       </trans-unit>
       <trans-unit id="333829310175224391" datatype="html">
         <source> Route points </source>
+        <target>Точки маршруту</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
           <context context-type="linenumber">122,123</context>
@@ -1020,6 +1051,7 @@
       </trans-unit>
       <trans-unit id="5730887114570556921" datatype="html">
         <source> Iots </source>
+        <target>Розумний пристрій</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
           <context context-type="linenumber">160,161</context>
@@ -1033,6 +1065,7 @@
       </trans-unit>
       <trans-unit id="2571387609159395588" datatype="html">
         <source>No iots</source>
+        <target>Розумних пристрієв нема</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
           <context context-type="linenumber">167</context>
@@ -1046,6 +1079,7 @@
       </trans-unit>
       <trans-unit id="1839012448624557988" datatype="html">
         <source>Print qr iot info</source>
+        <target>qr код для розумного пристрою</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
           <context context-type="linenumber">172</context>
@@ -1058,6 +1092,7 @@
       </trans-unit>
       <trans-unit id="3206500510434503385" datatype="html">
         <source> Add iot</source>
+        <target>Додати розумний пристрій</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
           <context context-type="linenumber">180</context>
@@ -1070,6 +1105,7 @@
       </trans-unit>
       <trans-unit id="7260998863517747178" datatype="html">
         <source> Rooms </source>
+        <target>Кімнати</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
           <context context-type="linenumber">200,201</context>
@@ -1082,6 +1118,7 @@
       </trans-unit>
       <trans-unit id="2160565482803081386" datatype="html">
         <source>Add new room</source>
+        <target>Нова кімната</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
           <context context-type="linenumber">216,217</context>
@@ -1095,6 +1132,7 @@
       </trans-unit>
       <trans-unit id="1163766319292226295" datatype="html">
         <source>Add test</source>
+        <target>Додати тест</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
           <context context-type="linenumber">225,226</context>
@@ -1111,6 +1149,7 @@
       </trans-unit>
       <trans-unit id="4082827638164923264" datatype="html">
         <source>View test</source>
+        <target>Переглянути тест</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
           <context context-type="linenumber">228</context>
@@ -1123,6 +1162,7 @@
       </trans-unit>
       <trans-unit id="9169399864391820005" datatype="html">
         <source>Delete test</source>
+        <target>Видалити тест</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
           <context context-type="linenumber">229,230</context>
@@ -1135,23 +1175,16 @@
       </trans-unit>
       <trans-unit id="7619560701830330401" datatype="html">
         <source>Loading</source>
+        <target>Загрузка</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Loader/Loader.component.html</context>
           <context context-type="linenumber">2</context>
         </context-group>
         <note priority="1" from="description">loader title</note>
       </trans-unit>
-      <trans-unit id="loginlabel" datatype="html">
-        <source> Login <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;underline&quot;&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/Components/Login/Login.component.html</context>
-          <context context-type="linenumber">9,10</context>
-        </context-group>
-        <note priority="1" from="description">label on login form</note>
-        <note priority="1" from="meaning">login</note>
-      </trans-unit>
       <trans-unit id="6209127024726038223" datatype="html">
         <source>IoT identifier: </source>
+        <target>Номер розумного пристрою</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/add-iot-dialog/add-iot-dialog.component.html</context>
           <context context-type="linenumber">2</context>
@@ -1160,6 +1193,7 @@
       </trans-unit>
       <trans-unit id="7240829729447359185" datatype="html">
         <source>Enter iot Id</source>
+        <target>Введыть номер пристрою</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/add-iot-dialog/add-iot-dialog.component.html</context>
           <context context-type="linenumber">3</context>
@@ -1167,6 +1201,7 @@
       </trans-unit>
       <trans-unit id="submitBtn" datatype="html">
         <source>Submit</source>
+        <target>Підтвердити</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/add-iot-dialog/add-iot-dialog.component.html</context>
           <context context-type="linenumber">5</context>
@@ -1200,6 +1235,7 @@
       </trans-unit>
       <trans-unit id="cancelBtn" datatype="html">
         <source>Cancel</source>
+        <target>Відмінити</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/add-iot-dialog/add-iot-dialog.component.html</context>
           <context context-type="linenumber">6</context>
@@ -1233,6 +1269,7 @@
       </trans-unit>
       <trans-unit id="6304432362546770951" datatype="html">
         <source>Address</source>
+        <target>Адреса</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/building-dialog/building-dialog.component.html</context>
           <context context-type="linenumber">4</context>
@@ -1241,6 +1278,7 @@
       </trans-unit>
       <trans-unit id="6865776186919034166" datatype="html">
         <source> Fill in this field </source>
+        <target>Заповніть це поле</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/building-dialog/building-dialog.component.html</context>
           <context context-type="linenumber">8,9</context>
@@ -1253,6 +1291,7 @@
       </trans-unit>
       <trans-unit id="314315645942131479" datatype="html">
         <source>Info</source>
+        <target>Інформація</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/building-dialog/building-dialog.component.html</context>
           <context context-type="linenumber">12</context>
@@ -1261,6 +1300,7 @@
       </trans-unit>
       <trans-unit id="floorName" datatype="html">
         <source>Name: </source>
+        <target>Ім'я</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/compartment-add-dialog/compartment-add-dialog.component.html</context>
           <context context-type="linenumber">3</context>
@@ -1268,6 +1308,7 @@
       </trans-unit>
       <trans-unit id="8603105031059760358" datatype="html">
         <source>Enter floor name</source>
+        <target>Розумний пристрій</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/compartment-add-dialog/compartment-add-dialog.component.html</context>
           <context context-type="linenumber">4</context>
@@ -1279,6 +1320,7 @@
       </trans-unit>
       <trans-unit id="1033800430344227549" datatype="html">
         <source>This field should not be emty </source>
+        <target>Заповніть це поле</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/compartment-add-dialog/compartment-add-dialog.component.html</context>
           <context context-type="linenumber">7,9</context>
@@ -1323,6 +1365,7 @@
       </trans-unit>
       <trans-unit id="4678185361290766066" datatype="html">
         <source>Description: </source>
+        <target>Опис</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/compartment-add-dialog/compartment-add-dialog.component.html</context>
           <context context-type="linenumber">13</context>
@@ -1335,6 +1378,7 @@
       </trans-unit>
       <trans-unit id="8505886711062121305" datatype="html">
         <source>Enter floor describtion</source>
+        <target>Введіть опис поверха</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/compartment-add-dialog/compartment-add-dialog.component.html</context>
           <context context-type="linenumber">14</context>
@@ -1347,6 +1391,7 @@
       </trans-unit>
       <trans-unit id="1667512532199927709" datatype="html">
         <source>Safety rules: </source>
+        <target>Правила безпеки</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/compartment-add-dialog/compartment-add-dialog.component.html</context>
           <context context-type="linenumber">23</context>
@@ -1359,6 +1404,7 @@
       </trans-unit>
       <trans-unit id="2883014345917386779" datatype="html">
         <source>Enter safety rules</source>
+        <target>Введіть правила безпеки</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/compartment-add-dialog/compartment-add-dialog.component.html</context>
           <context context-type="linenumber">24</context>
@@ -1371,6 +1417,7 @@
       </trans-unit>
       <trans-unit id="402785015655073812" datatype="html">
         <source>Name: </source>
+        <target>Назва</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/floor-add-dialog/floor-add-dialog.component.html</context>
           <context context-type="linenumber">3</context>
@@ -1379,6 +1426,7 @@
       </trans-unit>
       <trans-unit id="7800729495881615170" datatype="html">
         <source>Floor number: </source>
+        <target>Номер поверха</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/floor-add-dialog/floor-add-dialog.component.html</context>
           <context context-type="linenumber">38</context>
@@ -1387,6 +1435,7 @@
       </trans-unit>
       <trans-unit id="542012294802441837" datatype="html">
         <source>Enter floor level</source>
+        <target>Введіть номер поверха</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/floor-add-dialog/floor-add-dialog.component.html</context>
           <context context-type="linenumber">40</context>
@@ -1395,6 +1444,7 @@
       </trans-unit>
       <trans-unit id="1887370296612109279" datatype="html">
         <source>This floor is already taken </source>
+        <target>Цей номер поверха зайнят</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/floor-add-dialog/floor-add-dialog.component.html</context>
           <context context-type="linenumber">47,49</context>
@@ -1403,6 +1453,7 @@
       </trans-unit>
       <trans-unit id="8314090883669143391" datatype="html">
         <source>Latitude</source>
+        <target>Довгота</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/position-input-dialog/position-input-dialog.component.html</context>
           <context context-type="linenumber">3</context>
@@ -1411,6 +1462,7 @@
       </trans-unit>
       <trans-unit id="419973695543130728" datatype="html">
         <source>Enter latitude</source>
+        <target>Введіть довготу</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/position-input-dialog/position-input-dialog.component.html</context>
           <context context-type="linenumber">4</context>
@@ -1419,6 +1471,7 @@
       </trans-unit>
       <trans-unit id="2501969335659826225" datatype="html">
         <source>This field is required</source>
+        <target>Заповніть це поле</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/position-input-dialog/position-input-dialog.component.html</context>
           <context context-type="linenumber">7</context>
@@ -1431,6 +1484,7 @@
       </trans-unit>
       <trans-unit id="8494914266039675066" datatype="html">
         <source>Longtitude</source>
+        <target>Широта</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/position-input-dialog/position-input-dialog.component.html</context>
           <context context-type="linenumber">9</context>
@@ -1439,6 +1493,7 @@
       </trans-unit>
       <trans-unit id="5298117268231351396" datatype="html">
         <source>Enter longtitude</source>
+        <target>Ведіть широту</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/position-input-dialog/position-input-dialog.component.html</context>
           <context context-type="linenumber">10</context>
@@ -1447,6 +1502,7 @@
       </trans-unit>
       <trans-unit id="5495149747457702941" datatype="html">
         <source>Enter email</source>
+        <target>Ведіть електрону пошту</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/responsible-user-add-dialog/responsible-user-add-dialog.component.html</context>
           <context context-type="linenumber">4</context>
@@ -1455,6 +1511,7 @@
       </trans-unit>
       <trans-unit id="470397948685175015" datatype="html">
         <source>This user is already responsible </source>
+        <target>Цей користувач вже відповідальний</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/responsible-user-add-dialog/responsible-user-add-dialog.component.html</context>
           <context context-type="linenumber">12,13</context>
@@ -1463,6 +1520,7 @@
       </trans-unit>
       <trans-unit id="6578661886852082609" datatype="html">
         <source>Try count: </source>
+        <target>Кількість спроб</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/test-dialog/test-dialog.component.html</context>
           <context context-type="linenumber">3</context>
@@ -1471,6 +1529,7 @@
       </trans-unit>
       <trans-unit id="2105864439351340530" datatype="html">
         <source>Enter try count for test</source>
+        <target>Введіть кількість спроб</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/test-dialog/test-dialog.component.html</context>
           <context context-type="linenumber">4</context>
@@ -1479,6 +1538,7 @@
       </trans-unit>
       <trans-unit id="7827407208749809032" datatype="html">
         <source>Question #<x id="INTERPOLATION" equiv-text="{{questionIndex + 1}}"/></source>
+        <target>Питання #<x id="INTERPOLATION" equiv-text="{{questionIndex + 1}}"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/test-dialog/test-dialog.component.html</context>
           <context context-type="linenumber">15</context>
@@ -1487,6 +1547,7 @@
       </trans-unit>
       <trans-unit id="8727387071629795713" datatype="html">
         <source>Content: </source>
+        <target>Вміст: </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/test-dialog/test-dialog.component.html</context>
           <context context-type="linenumber">16</context>
@@ -1495,6 +1556,7 @@
       </trans-unit>
       <trans-unit id="5335510350489301503" datatype="html">
         <source>Enter question</source>
+        <target>Введіть запитання: </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/test-dialog/test-dialog.component.html</context>
           <context context-type="linenumber">17</context>
@@ -1503,6 +1565,7 @@
       </trans-unit>
       <trans-unit id="2171197756533579819" datatype="html">
         <source>Answer #<x id="INTERPOLATION" equiv-text="{{answerIndex + 1}}"/></source>
+        <target>Відповідь #<x id="INTERPOLATION" equiv-text="{{answerIndex + 1}}"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/test-dialog/test-dialog.component.html</context>
           <context context-type="linenumber">31</context>
@@ -1511,6 +1574,7 @@
       </trans-unit>
       <trans-unit id="8299501963779844119" datatype="html">
         <source>answer text</source>
+        <target>текст відповіді</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/test-dialog/test-dialog.component.html</context>
           <context context-type="linenumber">32</context>
@@ -1519,6 +1583,7 @@
       </trans-unit>
       <trans-unit id="2932980784121826967" datatype="html">
         <source>Answer text</source>
+        <target>текст відповіді</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/test-dialog/test-dialog.component.html</context>
           <context context-type="linenumber">33</context>
@@ -1527,6 +1592,7 @@
       </trans-unit>
       <trans-unit id="727174180192908130" datatype="html">
         <source>is correct</source>
+        <target>Правильний</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/test-dialog/test-dialog.component.html</context>
           <context context-type="linenumber">42</context>
@@ -1535,6 +1601,7 @@
       </trans-unit>
       <trans-unit id="2914092449805857162" datatype="html">
         <source>Add answer</source>
+        <target>додати відповідь</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/test-dialog/test-dialog.component.html</context>
           <context context-type="linenumber">52</context>
@@ -1543,6 +1610,7 @@
       </trans-unit>
       <trans-unit id="1287324381040263940" datatype="html">
         <source>Add question</source>
+        <target>додати запитання</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/test-dialog/test-dialog.component.html</context>
           <context context-type="linenumber">61</context>
@@ -1551,6 +1619,7 @@
       </trans-unit>
       <trans-unit id="9116426053114374171" datatype="html">
         <source>Building(s)</source>
+        <target>Будівля(і)</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Modules/mainContent/mainContent.component.html</context>
           <context context-type="linenumber">3</context>
@@ -1559,6 +1628,7 @@
       </trans-unit>
       <trans-unit id="7521898913387959387" datatype="html">
         <source>Add IoT</source>
+        <target>Додати пристрій</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Modules/mainContent/mainContent.component.html</context>
           <context context-type="linenumber">4</context>
@@ -1567,6 +1637,7 @@
       </trans-unit>
       <trans-unit id="3235430115434370531" datatype="html">
         <source>Add responsible user</source>
+        <target>Додати відповідальну особу</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Modules/mainContent/mainContent.component.html</context>
           <context context-type="linenumber">5</context>
@@ -1575,6 +1646,7 @@
       </trans-unit>
       <trans-unit id="7078666663346281473" datatype="html">
         <source>Eng</source>
+        <target>Англ</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Modules/mainContent/mainContent.component.html</context>
           <context context-type="linenumber">7</context>
@@ -1584,6 +1656,7 @@
       </trans-unit>
       <trans-unit id="345351472562575668" datatype="html">
         <source>Uk</source>
+        <target>Укр</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Modules/mainContent/mainContent.component.html</context>
           <context context-type="linenumber">8</context>
@@ -1593,11 +1666,25 @@
       </trans-unit>
       <trans-unit id="4086606389696938932" datatype="html">
         <source>Account</source>
+        <target>Аккаунт</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Modules/mainContent/mainContent.component.html</context>
           <context context-type="linenumber">10</context>
         </context-group>
         <note priority="1" from="description">user data</note>
+      </trans-unit>
+      <trans-unit id="3457706259390201259" datatype="html">
+        <source> Scale points </source>
+        <target> Точки масштабу </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">84,85</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">84,85</context>
+        </context-group>
+        <note priority="1" from="description">scale point label</note>
       </trans-unit>
     </body>
   </file>

@@ -517,7 +517,7 @@
         </context-group>
         <note priority="1" from="description">building id</note>
       </trans-unit>
-      <trans-unit id="5802426684694130637" datatype="html">
+      <trans-unit id="buildingAddress" datatype="html">
         <source>Address: <x id="START_TAG_DIV" ctype="x-div" equiv-text="&lt;div&gt;"/><x id="INTERPOLATION" equiv-text="{{item.address}}"/><x id="CLOSE_TAG_DIV" ctype="x-div" equiv-text="&lt;/div&gt;"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Buildings/Buildings.component.html</context>
@@ -525,7 +525,7 @@
         </context-group>
         <note priority="1" from="description">building address</note>
       </trans-unit>
-      <trans-unit id="1006817910944306780" datatype="html">
+      <trans-unit id="buildingInfo" datatype="html">
         <source>Info: <x id="START_TAG_DIV" ctype="x-div" equiv-text="&lt;div&gt;"/><x id="INTERPOLATION" equiv-text="{{item.info}}"/><x id="CLOSE_TAG_DIV" ctype="x-div" equiv-text="&lt;/div&gt;"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Buildings/Buildings.component.html</context>
@@ -683,6 +683,18 @@
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
           <context context-type="linenumber">187</context>
         </context-group>
+      </trans-unit>
+      <trans-unit id="3457706259390201259" datatype="html">
+        <source> Scale points </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">84,85</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">84,85</context>
+        </context-group>
+        <note priority="1" from="description">scale point label</note>
       </trans-unit>
       <trans-unit id="769303368838622881" datatype="html">
         <source>No points</source>
@@ -1327,7 +1339,8 @@
         <note priority="1" from="description">floor number taken</note>
       </trans-unit>
       <trans-unit id="7942796041132188427" datatype="html">
-        <source> Work is done by Alexandr Lohvinov PZPI-19-3</source>
+        <source> Work is done by Alexandr Lohvinov PZPI-19-3
+</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/footer/footer.component.html</context>
           <context context-type="linenumber">2,3</context>
