@@ -215,6 +215,7 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
             const userMarker = this.placeMarker(convertedUserWorldPosToMapPos.latitude,
               convertedUserWorldPosToMapPos.longtitude,
               this.userPointColor);
+              userMarker.bindPopup(`${user.name} ${user.surname} ${user.telephoneNumber}`)
             this.userMarker.set(user.id, userMarker);
           });
         }
