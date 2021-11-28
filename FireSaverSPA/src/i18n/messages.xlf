@@ -336,6 +336,36 @@
         </context-group>
         <note priority="1" from="description">cancel button</note>
       </trans-unit>
+      <trans-unit id="8968462574853017280" datatype="html">
+        <source>BACKUP DATABSE</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/AdminPanel/AdminPanel.component.html</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+        <note priority="1" from="description">back up btn</note>
+      </trans-unit>
+      <trans-unit id="3782576061518966764" datatype="html">
+        <source>RESTORE DATABASE</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/AdminPanel/AdminPanel.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+        <note priority="1" from="description">restore db btn</note>
+      </trans-unit>
+      <trans-unit id="1154736286578151108" datatype="html">
+        <source>Db is updated</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/AdminPanel/AdminPanel.component.ts</context>
+          <context context-type="linenumber">24</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7033849379356353257" datatype="html">
+        <source>Db is restored</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/AdminPanel/AdminPanel.component.ts</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="6197309191668201384" datatype="html">
         <source>Chnage Info</source>
         <context-group purpose="location">
@@ -398,35 +428,35 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">99</context>
+          <context context-type="linenumber">105</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">99</context>
+          <context context-type="linenumber">105</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">137</context>
+          <context context-type="linenumber">143</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">137</context>
+          <context context-type="linenumber">143</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">175</context>
+          <context context-type="linenumber">183</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">175</context>
+          <context context-type="linenumber">183</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">210</context>
+          <context context-type="linenumber">218</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">210</context>
+          <context context-type="linenumber">218</context>
         </context-group>
       </trans-unit>
       <trans-unit id="viewbtn" datatype="html">
@@ -441,11 +471,11 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">212</context>
+          <context context-type="linenumber">220</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">212</context>
+          <context context-type="linenumber">220</context>
         </context-group>
       </trans-unit>
       <trans-unit id="editBtn" datatype="html">
@@ -468,11 +498,11 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">214</context>
+          <context context-type="linenumber">222</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">214</context>
+          <context context-type="linenumber">222</context>
         </context-group>
       </trans-unit>
       <trans-unit id="2183885649538557204" datatype="html">
@@ -614,85 +644,97 @@
         </context-group>
         <note priority="1" from="description">get qr code for buidling</note>
       </trans-unit>
+      <trans-unit id="7581314977725718347" datatype="html">
+        <source> Update user positions </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">66,67</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
+          <context context-type="linenumber">66,67</context>
+        </context-group>
+        <note priority="1" from="description">update user positions on map</note>
+      </trans-unit>
       <trans-unit id="loadMapBtn" datatype="html">
         <source>Load map <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span *ngIf=&quot;uploadingValue &gt; 0&quot;&gt;"/><x id="INTERPOLATION" equiv-text="{{uploadingValue}}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">69,70</context>
+          <context context-type="linenumber">74,75</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">69,70</context>
+          <context context-type="linenumber">74,75</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">107,108</context>
+          <context context-type="linenumber">113,114</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">107,108</context>
+          <context context-type="linenumber">113,114</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">145,146</context>
+          <context context-type="linenumber">151,152</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">145,146</context>
+          <context context-type="linenumber">151,152</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">184,185</context>
+          <context context-type="linenumber">192,193</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">184,185</context>
+          <context context-type="linenumber">192,193</context>
         </context-group>
       </trans-unit>
       <trans-unit id="chooseFilePlaceholder" datatype="html">
         <source>Choose file</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">72</context>
+          <context context-type="linenumber">77</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">72</context>
+          <context context-type="linenumber">77</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">110</context>
+          <context context-type="linenumber">116</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">110</context>
+          <context context-type="linenumber">116</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">148</context>
+          <context context-type="linenumber">154</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">148</context>
+          <context context-type="linenumber">154</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">187</context>
+          <context context-type="linenumber">195</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">187</context>
+          <context context-type="linenumber">195</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3457706259390201259" datatype="html">
         <source> Scale points </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">84,85</context>
+          <context context-type="linenumber">89,90</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">84,85</context>
+          <context context-type="linenumber">89,90</context>
         </context-group>
         <note priority="1" from="description">scale point label</note>
       </trans-unit>
@@ -700,11 +742,11 @@
         <source>No points</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">91</context>
+          <context context-type="linenumber">96,97</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">91</context>
+          <context context-type="linenumber">96,97</context>
         </context-group>
         <note priority="1" from="description">compartment page</note>
         <note priority="1" from="meaning">no points label</note>
@@ -713,30 +755,30 @@
         <source>Select</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">97</context>
+          <context context-type="linenumber">103</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">97</context>
+          <context context-type="linenumber">103</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">135</context>
+          <context context-type="linenumber">141</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">135</context>
+          <context context-type="linenumber">141</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1284028467561965375" datatype="html">
         <source>Add scale point</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">103</context>
+          <context context-type="linenumber">109</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">103</context>
+          <context context-type="linenumber">109</context>
         </context-group>
         <note priority="1" from="description">add scale point</note>
       </trans-unit>
@@ -744,11 +786,11 @@
         <source> Route points </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">122,123</context>
+          <context context-type="linenumber">128,129</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">122,123</context>
+          <context context-type="linenumber">128,129</context>
         </context-group>
         <note priority="1" from="description">add route point</note>
       </trans-unit>
@@ -756,11 +798,11 @@
         <source> Iots </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">160,161</context>
+          <context context-type="linenumber">166,167</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">160,161</context>
+          <context context-type="linenumber">166,167</context>
         </context-group>
         <note priority="1" from="description">compartment page</note>
         <note priority="1" from="meaning">iot label</note>
@@ -769,11 +811,11 @@
         <source>No iots</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">167</context>
+          <context context-type="linenumber">174</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">167</context>
+          <context context-type="linenumber">174</context>
         </context-group>
         <note priority="1" from="description">compartment page</note>
         <note priority="1" from="meaning">no iot found label</note>
@@ -782,11 +824,11 @@
         <source>Print qr iot info</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">172</context>
+          <context context-type="linenumber">179,180</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">172</context>
+          <context context-type="linenumber">179,180</context>
         </context-group>
         <note priority="1" from="description">print iot qr</note>
       </trans-unit>
@@ -794,11 +836,11 @@
         <source> Add iot</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">180</context>
+          <context context-type="linenumber">188</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">180</context>
+          <context context-type="linenumber">188</context>
         </context-group>
         <note priority="1" from="description">add iot to compartment</note>
       </trans-unit>
@@ -806,11 +848,11 @@
         <source> Rooms </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">200,201</context>
+          <context context-type="linenumber">208,209</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">200,201</context>
+          <context context-type="linenumber">208,209</context>
         </context-group>
         <note priority="1" from="description">rooms header label</note>
       </trans-unit>
@@ -818,11 +860,11 @@
         <source>Add new room</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">216,217</context>
+          <context context-type="linenumber">224,225</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">216,217</context>
+          <context context-type="linenumber">224,225</context>
         </context-group>
         <note priority="1" from="description">floor page</note>
         <note priority="1" from="meaning">add new room</note>
@@ -831,11 +873,11 @@
         <source>Add test</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">225,226</context>
+          <context context-type="linenumber">233,234</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">225,226</context>
+          <context context-type="linenumber">233,234</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/test-dialog/test-dialog.component.html</context>
@@ -847,11 +889,11 @@
         <source>View test</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">228</context>
+          <context context-type="linenumber">236</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">228</context>
+          <context context-type="linenumber">236</context>
         </context-group>
         <note priority="1" from="description">view test</note>
       </trans-unit>
@@ -859,11 +901,11 @@
         <source>Delete test</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">229,230</context>
+          <context context-type="linenumber">237,238</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
-          <context context-type="linenumber">229,230</context>
+          <context context-type="linenumber">237,238</context>
         </context-group>
         <note priority="1" from="description">delete test</note>
       </trans-unit>

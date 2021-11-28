@@ -2,7 +2,8 @@
   <div class="topnav">
     <div *ngIf="reponsibleBuilding || isAdmin" routerLinkActive="active" routerLink={{buildingLink}} i18n="building_s">Building(s)</div>
     <div *ngIf="isAdmin" routerLinkActive="active" (click)="addIotToDb()" i18n="add_iot">Add IoT</div>
-    <div *ngIf="reponsibleBuilding" i18n="add_resp_user">Add responsible user</div>
+    <div *ngIf="reponsibleBuilding" i18n="add_resp_user" (click)="addResponsibleUserToBuilding()">Add responsible user</div>
+    <div *ngIf="isAdmin" i18n="admin panel label" routerLinkActive="active" routerLink="adminPanel">Admin panel</div>
     <div class="logo" style="margin: 0 auto;">FireSaver</div>
     <div (click)="changeToEnglish()" i18n="EngLable|language change">Eng</div>
     <div (click)="changeToUkraine()" i18n="UkrLable|language change">Uk</div>

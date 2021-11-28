@@ -1,13 +1,30 @@
 import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from "@angular/router";
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
+import { ToastrService } from "ngx-toastr";
 import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
+import { AdminService } from "../Services/Admin.service";
 
 @Injectable({
     providedIn: 'root'
 })
-export class AdminGuard implements CanActivate{
+export class AdminGuard implements CanActivate {
+
+    constructor(private adminService: AdminService,
+        private router: Router,
+        private toastr: ToastrService) { }
+
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
-        //TODO:Chek if we have admin rights 
-        throw new Error("Method not implemented.");
+
+        return this.adminService.checkAdminRights().pipe(map((data: any) => {
+            if (data.message) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }))
+
+
     }
 }

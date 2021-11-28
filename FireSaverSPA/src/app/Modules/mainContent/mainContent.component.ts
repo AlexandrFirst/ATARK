@@ -3,7 +3,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AddIotDialogComponent } from 'src/app/Components/add-iot-dialog/add-iot-dialog.component';
+import { ResponsibleUserAddDialogComponent } from 'src/app/Components/responsible-user-add-dialog/responsible-user-add-dialog.component';
 import { BaseHttpService } from 'src/app/Services/baseHttp.service';
+import { HttpBuildingService } from 'src/app/Services/httpBuilding.service';
 import { HttpIotService } from 'src/app/Services/httpIot.service';
 
 @Component({
@@ -23,6 +25,7 @@ export class MainContentComponent implements OnInit {
 
   constructor(private httpBaseService: BaseHttpService,
     private iotService: HttpIotService,
+    private buildingService: HttpBuildingService,
     private matDialog: MatDialog,
     private toastr: ToastrService,
     private router: Router) { }
@@ -66,5 +69,19 @@ export class MainContentComponent implements OnInit {
   changeToEnglish() {
     const currentUrl = this.router.url;
     window.location.href = 'https://localhost:4200' + currentUrl
+  }
+
+  addResponsibleUserToBuilding() {
+    var authData = this.httpBaseService.readAuthResponse();
+    const dialofRef = this.matDialog.open(ResponsibleUserAddDialogComponent)
+    dialofRef.afterClosed().subscribe(data => {
+      if (data) {
+        this.buildingService.setResponsibleUserForBuilding(authData.responsibleBuildingId, data.mail).subscribe(success => {
+          this.toastr.success("Responsible user added is added to db");
+        }, error => {
+          this.toastr.success("Try again");
+        })
+      }
+    })
   }
 }

@@ -8,17 +8,18 @@ import { AccountComponent } from 'src/app/Components/Account/Account.component';
 import { RoomComponent } from 'src/app/Components/Room/Room.component';
 import { FloorComponent } from 'src/app/Components/Floor/Floor.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {MatDialogModule} from '@angular/material/dialog';
-import {NgxPaginationModule} from 'ngx-pagination';
-import {MatPaginatorModule} from '@angular/material/paginator';
-import {MatProgressBarModule} from '@angular/material/progress-bar'; 
+import { MatDialogModule } from '@angular/material/dialog';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { AdminPanelComponent } from 'src/app/Components/AdminPanel/AdminPanel.component';
+import { AdminGuard } from 'src/app/route-guards/admin.guard';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-
     NgxPaginationModule,
     MatPaginatorModule,
     MatProgressBarModule,
@@ -28,11 +29,13 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
       { path: 'account', component: AccountComponent },
       { path: 'buildings', component: BuildingsComponent },
       { path: 'buildings/:buildingId', component: BuildingComponent },
-      {path: '',  redirectTo: 'account', pathMatch: 'full'},
-      {path: '**',  redirectTo: 'account', pathMatch: 'full'}
+      { path: 'adminPanel', component: AdminPanelComponent, canActivate: [AdminGuard] },
+      { path: '', redirectTo: 'account', pathMatch: 'full' },
+      { path: '**', redirectTo: 'account', pathMatch: 'full' }
     ])
   ],
   declarations: [
+    AdminPanelComponent,
     MainContentComponent,
     RoomComponent,
     FloorComponent,
@@ -40,9 +43,9 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
     BuildingsComponent,
     BuildingComponent
   ],
-  providers:[
+  providers: [
     DatePipe
   ],
-  schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class MainContentModule { }
