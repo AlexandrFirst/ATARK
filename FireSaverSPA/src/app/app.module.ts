@@ -36,7 +36,7 @@ import { registerLocaleData } from '@angular/common';
 import localeUk from '@angular/common/locales/uk'
 import { AppRouterModule } from './Routers/appRouter/appRouter.module';
 import { LoaderComponent } from './Modules/mainContent/Loader/Loader.component';
-import { FooterComponent } from './Components/footer/footer.component';
+import { FooterComponent } from './Components/Footer/footer.component';
 import { BuildingDialogComponent } from './Modules/mainContent/building-dialog/building-dialog.component';
 import { CompartmentAddDialogComponent } from './Modules/mainContent/compartment-add-dialog/compartment-add-dialog.component';
 import { ResponsibleUserAddDialogComponent } from './Modules/mainContent/responsible-user-add-dialog/responsible-user-add-dialog.component';

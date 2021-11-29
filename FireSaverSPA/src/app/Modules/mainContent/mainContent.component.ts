@@ -11,7 +11,7 @@ import { ResponsibleUserAddDialogComponent } from './responsible-user-add-dialog
 
 @Component({
   selector: 'app-mainContent',
-  templateUrl: './mainContent.component.html',
+  templateUrl: './mainContent-header.component.html',
   styleUrls: ['./mainContent.component.scss']
 })
 export class MainContentComponent implements OnInit {
