@@ -13,28 +13,37 @@ import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ToastrModule } from 'ngx-toastr';
-import { LoaderComponent } from './Components/Loader/Loader.component';
-import { FooterComponent } from './Components/footer/footer.component';
+
+
 import { RouterModule } from '@angular/router';
 import { AddHeaderInterceptor } from './Interceptors/addHeadersInterceptor';
 import { LoginGuard } from './route-guards/login.guard';
 import { MainContentGuard } from './route-guards/mainContent.guard';
 import { MainContentComponent } from './Modules/mainContent/mainContent.component';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { BuildingDialogComponent } from './Components/building-dialog/building-dialog.component';
-import { CompartmentAddDialogComponent } from './Components/compartment-add-dialog/compartment-add-dialog.component';
-import { ResponsibleUserAddDialogComponent } from './Components/responsible-user-add-dialog/responsible-user-add-dialog.component';
-import { PositionInputDialogComponent } from './Components/position-input-dialog/position-input-dialog.component';
-import { FloorAddDialogComponent } from './Components/floor-add-dialog/floor-add-dialog.component';
+
+
+
+
+
 import { NgxQRCodeModule } from '@techiediaries/ngx-qrcode';
-import { QrCodeDialogComponent } from './Components/qr-code-dialog/qr-code-dialog.component';
+
 import {NgxPrintModule} from 'ngx-print';
-import { TestDialogComponent } from './Components/test-dialog/test-dialog.component';
-import { AddIotDialogComponent } from './Components/add-iot-dialog/add-iot-dialog.component';
+import { TestDialogComponent } from './Modules/mainContent/test-dialog/test-dialog.component';
+
 import { MatDialogModule } from '@angular/material/dialog';
 import { registerLocaleData } from '@angular/common';
 import localeUk from '@angular/common/locales/uk'
 import { AppRouterModule } from './Routers/appRouter/appRouter.module';
+import { LoaderComponent } from './Modules/mainContent/Loader/Loader.component';
+import { FooterComponent } from './Components/footer/footer.component';
+import { BuildingDialogComponent } from './Modules/mainContent/building-dialog/building-dialog.component';
+import { CompartmentAddDialogComponent } from './Modules/mainContent/compartment-add-dialog/compartment-add-dialog.component';
+import { ResponsibleUserAddDialogComponent } from './Modules/mainContent/responsible-user-add-dialog/responsible-user-add-dialog.component';
+import { PositionInputDialogComponent } from './Modules/mainContent/position-input-dialog/position-input-dialog.component';
+import { FloorAddDialogComponent } from './Modules/mainContent/floor-add-dialog/floor-add-dialog.component';
+import { QrCodeDialogComponent } from './Modules/mainContent/qr-code-dialog/qr-code-dialog.component';
+import { AddIotDialogComponent } from './Modules/mainContent/add-iot-dialog/add-iot-dialog.component';
 
 registerLocaleData(localeUk, 'uk')
 

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CompartmentDto } from 'src/app/Models/Compartment/compartmentDto';
 import { HttpRoomService } from 'src/app/Services/httpRoom.service';
-import { BaseCompartmentComponent, InitCallback } from '../BaseCompartment/BaseCompartment.component';
+
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -9,9 +9,11 @@ import { HttpEvacuationPlanService } from 'src/app/Services/httpEvacuationPlan.s
 import { MatDialog } from '@angular/material/dialog';
 import { HttpPointService } from 'src/app/Services/httpPoint.service';
 import { HttpTestService } from 'src/app/Services/httpTest.service';
-import { CompartmentAddDialogComponent } from '../compartment-add-dialog/compartment-add-dialog.component';
+
 import { HttpIotService } from 'src/app/Services/httpIot.service';
 import * as $ from 'jquery';
+import { BaseCompartmentComponent, InitCallback } from '../BaseCompartment/BaseCompartment.component';
+import { CompartmentAddDialogComponent } from '../compartment-add-dialog/compartment-add-dialog.component';
 
 @Component({
   selector: 'app-Room',

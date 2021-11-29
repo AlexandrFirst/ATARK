@@ -1,11 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { AccountComponent } from 'src/app/Components/Account/Account.component';
-import { AdminPanelComponent } from 'src/app/Components/AdminPanel/AdminPanel.component';
-import { BuildingComponent } from 'src/app/Components/Building/Building.component';
-import { BuildingsComponent } from 'src/app/Components/Buildings/Buildings.component';
-import { FloorComponent } from 'src/app/Components/Floor/Floor.component';
-import { RoomComponent } from 'src/app/Components/Room/Room.component';
+import { AccountComponent } from 'src/app/Modules/mainContent/Account/Account.component';
+import { AdminPanelComponent } from 'src/app/Modules/mainContent/AdminPanel/AdminPanel.component';
+import { BuildingComponent } from 'src/app/Modules/mainContent/Building/Building.component';
+import { BuildingsComponent } from 'src/app/Modules/mainContent/Buildings/Buildings.component';
+import { FloorComponent } from 'src/app/Modules/mainContent/Floor/Floor.component';
+
+import { RoomComponent } from 'src/app/Modules/mainContent/Room/Room.component';
 import { AdminGuard } from 'src/app/route-guards/admin.guard';
 
 @NgModule({

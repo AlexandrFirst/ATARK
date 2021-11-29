@@ -18,7 +18,7 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
 import { CompartmentDto } from 'src/app/Models/Compartment/compartmentDto';
 import { QrCodeDialogComponent } from '../qr-code-dialog/qr-code-dialog.component';
 import { TestInput } from 'src/app/Models/TestModels/testInput';
-import { TestDialogComponent } from '../test-dialog/test-dialog.component';
+import { TestDialogComponent } from '../../../Modules/mainContent/test-dialog/test-dialog.component';
 import { HttpTestService } from 'src/app/Services/httpTest.service';
 import { HttpIotService } from 'src/app/Services/httpIot.service';
 import { AddIotDialogComponent } from '../add-iot-dialog/add-iot-dialog.component';

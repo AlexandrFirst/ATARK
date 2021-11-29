@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { AddIotDialogComponent } from 'src/app/Components/add-iot-dialog/add-iot-dialog.component';
-import { ResponsibleUserAddDialogComponent } from 'src/app/Components/responsible-user-add-dialog/responsible-user-add-dialog.component';
 import { BaseHttpService } from 'src/app/Services/baseHttp.service';
 import { HttpBuildingService } from 'src/app/Services/httpBuilding.service';
 import { HttpIotService } from 'src/app/Services/httpIot.service';
 import { SignalRServiceService } from 'src/app/Services/SignalRService.service';
+import { AddIotDialogComponent } from './add-iot-dialog/add-iot-dialog.component';
+import { ResponsibleUserAddDialogComponent } from './responsible-user-add-dialog/responsible-user-add-dialog.component';
 
 @Component({
   selector: 'app-mainContent',
