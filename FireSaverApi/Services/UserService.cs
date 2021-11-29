@@ -325,6 +325,19 @@ namespace FireSaverApi.Services
             }
         }
 
+        public async Task SwitchOffAlaramForBuilding(int userId)
+        {
+            var user = await GetUserById(userId);
+            if (user.ResponsibleForBuilding != null)
+            {
+                await socketService.SwitchOffAlarmForBuilding(user.ResponsibleForBuilding.Id);
+            }
+            else
+            {
+                throw new Exception("Illegal action");
+            }
+        }
+
         public async Task<UserInfoDto> SetWorldPostion(int userId, PositionDto worldUserPostion)
         {
             var user = await GetUserById(userId);
@@ -400,5 +413,7 @@ namespace FireSaverApi.Services
             var mappedWorldPostion = await locationService.WorldToImgPostion(worldPostion, compartmentId);
             return mappedWorldPostion;
         }
+
+
     }
 }

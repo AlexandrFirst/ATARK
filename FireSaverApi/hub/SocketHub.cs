@@ -34,19 +34,20 @@ namespace FireSaverApi.hub
         public async override Task OnConnectedAsync()
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, userContextService.GetUserContext().Id.ToString());
+            Console.WriteLine($"Connection is established with user: {userContextService.GetUserContext().Id} " + DateTime.Now);
             await base.OnConnectedAsync();
         }
 
         public async override Task OnDisconnectedAsync(Exception exception)
         {
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, userContextService.GetUserContext().Id.ToString());
-            System.Console.WriteLine("Connection is close");
+            Console.WriteLine($"Connection is closed with user: {userContextService.GetUserContext().Id} " + DateTime.Now);
             await base.OnDisconnectedAsync(exception);
         }
 
         public async Task RecieveMessage(int fromUserId, string message)
         {
-            var compartmentId = (await userHelper.GetUserById(fromUserId)).Id;
+            var compartmentId = (await userHelper.GetUserById(fromUserId)).CurrentCompartment.Id;
             var buildingId = await iotService.FindBuildingWithCompartmentId(compartmentId);
 
             var building = await databaseContext.Buildings.Include(b => b.ResponsibleUsers).FirstOrDefaultAsync(b => b.Id == buildingId);

@@ -7,6 +7,7 @@ import { ResponsibleUserAddDialogComponent } from 'src/app/Components/responsibl
 import { BaseHttpService } from 'src/app/Services/baseHttp.service';
 import { HttpBuildingService } from 'src/app/Services/httpBuilding.service';
 import { HttpIotService } from 'src/app/Services/httpIot.service';
+import { SignalRServiceService } from 'src/app/Services/SignalRService.service';
 
 @Component({
   selector: 'app-mainContent',
@@ -20,6 +21,7 @@ export class MainContentComponent implements OnInit {
   isAdmin: boolean = false;
   isAuthUser: boolean = false;
   isGuest: boolean = false;
+  isAlarmOn: boolean = false;
 
   reponsibleBuilding: number = null;
 
@@ -28,7 +30,8 @@ export class MainContentComponent implements OnInit {
     private buildingService: HttpBuildingService,
     private matDialog: MatDialog,
     private toastr: ToastrService,
-    private router: Router) { }
+    private router: Router,
+    private signalRService: SignalRServiceService) { }
 
   ngOnInit() {
     var authData = this.httpBaseService.readAuthResponse();
@@ -41,10 +44,40 @@ export class MainContentComponent implements OnInit {
       this.isAuthUser = true;
       if (respBuildId != -1) {
         this.reponsibleBuilding = respBuildId;
-        this.buildingLink = this.buildingLink.concat('buildings/' + this.reponsibleBuilding);
+        this.buildingLink = this.buildingLink.concat('/buildings/' + this.reponsibleBuilding);
       }
     } else {
       this.isGuest = true;
+    }
+
+    this.signalRService.connectToHub();
+
+    if (this.signalRService.IsConnected) {
+      console.log("Connected to service")
+      this.signalRService.getAlarm().subscribe(data => {
+        console.log("in component alaram")
+        this.isAlarmOn = true;
+      })
+
+      this.signalRService.AlarmOff().subscribe(data => {
+        this.isAlarmOn = false;
+      })
+    }
+  }
+
+  swithOffAlarm() {
+    if (this.isAlarmOn == true) {
+      this.signalRService.switchOffAlaram().subscribe(response => {
+        this.isAlarmOn = false;
+      })
+    }
+  }
+
+  switchOnAlaram() {
+    if (this.isAlarmOn == false) {
+      this.signalRService.setAlaram().subscribe(response => {
+        this.isAlarmOn = true;
+      })
     }
   }
 

@@ -144,12 +144,21 @@ namespace FireSaverApi.Controllers
         }
 
         [Authorize]
-        [HttpGet("alarm")]
+        [HttpGet("alarm")]  
         public async Task<IActionResult> SetAlarm()
         {
             var userId = userContextService.GetUserContext().Id;
             await userService.SetAlaramForBuilding(userId);
             return Ok(new ServerResponse() { Message = "Alarm is set" });
+        }
+
+        [Authorize]
+        [HttpGet("alarmoff")]
+        public async Task<IActionResult> SwitchOffAlarm()
+        {
+            var userId = userContextService.GetUserContext().Id;
+            await userService.SwitchOffAlaramForBuilding(userId);
+            return Ok(new ServerResponse() { Message = "Alarm is off" });
         }
 
         [HttpGet("isMailUnique/{mail}")]
