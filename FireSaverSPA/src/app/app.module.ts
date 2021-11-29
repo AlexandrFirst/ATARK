@@ -34,6 +34,7 @@ import { AddIotDialogComponent } from './Components/add-iot-dialog/add-iot-dialo
 import { MatDialogModule } from '@angular/material/dialog';
 import { registerLocaleData } from '@angular/common';
 import localeUk from '@angular/common/locales/uk'
+import { AppRouterModule } from './Routers/appRouter/appRouter.module';
 
 registerLocaleData(localeUk, 'uk')
 
@@ -67,20 +68,7 @@ registerLocaleData(localeUk, 'uk')
     NgxPaginationModule,
     NgxQRCodeModule,
     NgxPrintModule,
-    RouterModule.forRoot([
-      {
-        path: 'entrance',
-        component: LoginComponent,
-        canActivate: [MainContentGuard]
-      },
-      {
-        path: 'main', component: MainContentComponent,
-        loadChildren: () => import('./Modules/mainContent/mainContent.module').then(m => m.MainContentModule),
-        canActivateChild: [LoginGuard]
-      },
-      { path: '', redirectTo: '/entrance', pathMatch: 'full' },
-      { path: '**', redirectTo: '/entrance', pathMatch: 'full' },
-    ])
+    AppRouterModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AddHeaderInterceptor, multi: true }
