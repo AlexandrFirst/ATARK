@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.SqlClient;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using FireSaverApi.Contracts;
 using FireSaverApi.DataContext;
@@ -40,7 +42,9 @@ namespace FireSaverApi.Controllers
             string basePath = Directory.GetCurrentDirectory();
 
 
-            var query = @$"BACKUP DATABASE {backupModel.DbName} TO DISK = '{basePath}\Backup\{backupModel.DbName}.bak'";
+            string backupName = string.Format($"{backupModel.DbName}Z{DateTime.Now.Ticks}");
+
+            var query = @$"BACKUP DATABASE {backupModel.DbName} TO DISK = '{basePath}\Backup\{backupName}.bak'";
             string connectionString = GetConnectionString(basePath);
             using (var con = new SqlConnection(connectionString))
             {
@@ -53,12 +57,49 @@ namespace FireSaverApi.Controllers
             return Ok(new ServerResponse() { Message = "Database is backed up" });
         }
 
-        [HttpGet("restore")]
-        public async Task<IActionResult> Restore()
+        [HttpGet("restore/{backupId}")]
+        public async Task<IActionResult> Restore(long backupId)
         {
-            LoadDB(@"FireSaverDbFinalTRefactored1", @"FireSaverDbFinalTRefactored1_log", "tempBD");
+            string backupBaseName = backupModel.DbName;
+            string basePath = Directory.GetCurrentDirectory();
+            string backupName = $"{backupBaseName}Z{backupId}";
 
-            return Ok(new ServerResponse() { Message = "Database is restored" });
+            if (System.IO.File.Exists(@$"{basePath}\Backup\{backupName}.bak"))
+            {
+                // string mdf_name = string.Format($"{backupBaseName}Z{backupId}");
+                // string ldf_name = string.Format($"{backupBaseName}Z{backupId}_log");
+                string mdf_name = "FireSaverDbFinalTRefactored1";
+                string ldf_name = "FireSaverDbFinalTRefactored1_log";
+
+                LoadDB(mdf_name, ldf_name, "tempBD");
+                return Ok(new ServerResponse() { Message = "Database is restored" });
+            }
+            else
+            {
+                return BadRequest(new ServerResponse() { Message = "Backup is not found" });
+            }
+        }
+
+        [HttpGet("allRestorations")]
+        public async Task<IActionResult> GetAllRestorations()
+        {
+            string basePath = Directory.GetCurrentDirectory();
+            List<string> restorationIds = new List<string>();
+            string[] allRestorationFileNames = Directory.GetFiles(@$"{basePath}\Backup", "*.bak");
+            string regexString = "^(.+)Z(.+)\\.bak$";
+            Regex regex = new Regex(regexString);
+            foreach (string filename in allRestorationFileNames)
+            {
+                Match m = regex.Match(filename);
+                if (m.Success)
+                {
+                    Group g = m.Groups[2];
+                    CaptureCollection c = g.Captures;
+                    var id = c[0].ToString();
+                    restorationIds.Add(id);
+                }
+            }
+            return Ok(restorationIds);
         }
 
         [HttpGet("allBuildingsInfo")]
@@ -81,6 +122,21 @@ namespace FireSaverApi.Controllers
             return Ok(new ServerResponse() { Message = "Ok" });
         }
 
+        [HttpDelete("deleteRestoration/{backupId}")]
+        public async Task<IActionResult> DeleteRestoration(string backupId)
+        {
+            string basePath = Directory.GetCurrentDirectory();
+            string backupBaseName = backupModel.DbName;
+            string backupName = @$"{basePath}\Backup\{backupBaseName}Z{backupId}.bak";
+            if (System.IO.File.Exists(backupName))
+            {
+                System.IO.File.Delete(backupName);
+                return Ok(new ServerResponse() { Message = "Backup is deleted" });
+            }
+
+            return BadRequest(new ServerResponse() { Message = "Can't delete the file" });
+        }
+
         private string GetConnectionString(string basePath)
         {
             var builder = new ConfigurationBuilder()
@@ -91,12 +147,7 @@ namespace FireSaverApi.Controllers
             return connectionString;
         }
 
-
-
-        private bool LoadDB(
-    string orig_mdf,
-    string orig_ldf,
-    string new_database_name)
+        private bool LoadDB(string orig_mdf, string orig_ldf, string new_database_name)
         {
             //use RESTORE FILELISTONLY FROM DISK = 'D:\nure\ATARK\FireSaver\FireSaverApi\Backup\FireSaverDbFinalTRefactored1.bak' to see restoring mdf and ldf
 

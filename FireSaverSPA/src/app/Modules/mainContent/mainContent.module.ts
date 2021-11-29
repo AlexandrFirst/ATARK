@@ -15,6 +15,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { AdminPanelComponent } from 'src/app/Components/AdminPanel/AdminPanel.component';
 import { AdminGuard } from 'src/app/route-guards/admin.guard';
 import { MainContentRouterModule } from 'src/app/Routers/mainContentRouter/mainContentRouter.module';
+import { BackupListComponent } from 'src/app/Components/backup-list/backup-list.component';
 
 @NgModule({
   imports: [
@@ -33,7 +34,8 @@ import { MainContentRouterModule } from 'src/app/Routers/mainContentRouter/mainC
     FloorComponent,
     AccountComponent,
     BuildingsComponent,
-    BuildingComponent
+    BuildingComponent,
+    BackupListComponent
   ],
   providers: [
     DatePipe

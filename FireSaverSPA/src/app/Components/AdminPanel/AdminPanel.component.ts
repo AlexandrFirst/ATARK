@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { AdminService } from 'src/app/Services/Admin.service';
+import { AdminService } from 'src/app/Services/admin.service';
 import { LoaderSignServiceService } from 'src/app/Services/LoaderSignService.service';
 
 @Component({
@@ -10,11 +10,14 @@ import { LoaderSignServiceService } from 'src/app/Services/LoaderSignService.ser
 })
 export class AdminPanelComponent implements OnInit {
 
+  restorationIds: string[] = []
+
   constructor(private adminService: AdminService,
     private toastr: ToastrService,
     private loadingService: LoaderSignServiceService) { }
 
   ngOnInit() {
+    this.GetAllRestorations()
   }
 
   backUpDB() {
@@ -23,19 +26,18 @@ export class AdminPanelComponent implements OnInit {
       this.loadingService.deactivate();
       const message = $localize`Db is updated`
       this.toastr.success(message)
+
+      this.GetAllRestorations();
     }, error => {
       this.loadingService.deactivate();
     })
   }
 
-  restoreDB() {
-    this.loadingService.activate();
-    this.adminService.restoreDatabase().subscribe(success => {
-      this.loadingService.deactivate();
-      const message = $localize`Db is restored`
-      this.toastr.success(message)
+  private GetAllRestorations(){
+    this.adminService.getAllRestorations().subscribe(response => {
+      this.restorationIds = response;
     }, error => {
-      this.loadingService.deactivate();
+      this.toastr.warning("No restorations found");
     })
   }
 

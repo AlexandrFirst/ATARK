@@ -12,8 +12,8 @@ export class AdminService extends BaseHttpService {
     super(client)
   }
 
-  restoreDatabase(): Observable<any> {
-    return this.client.get(this.baseUrl + 'Admin/restore');
+  restoreDatabase(backupId: string): Observable<any> {
+    return this.client.get(this.baseUrl + `Admin/restore/${backupId}`);
   }
 
   backupDatabase(): Observable<any> {
@@ -22,5 +22,13 @@ export class AdminService extends BaseHttpService {
 
   checkAdminRights(): Observable<any> {
     return this.client.get(this.baseUrl + 'Admin/checkRights')
+  }
+
+  getAllRestorations(): Observable<string[]> {
+    return this.client.get<string[]>(this.baseUrl + 'Admin/allRestorations');
+  }
+
+  deleteRestoration(backupId: string): Observable<any> {
+    return this.client.delete(this.baseUrl + `Admin/deleteRestoration/${backupId}`);
   }
 }
