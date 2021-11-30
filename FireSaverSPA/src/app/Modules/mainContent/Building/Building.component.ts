@@ -9,7 +9,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { BuildingDialogComponent } from '../building-dialog/building-dialog.component';
 import { CompartmentAddDialogComponent } from '../compartment-add-dialog/compartment-add-dialog.component';
 import { ResponsibleUserAddDialogComponent } from '../responsible-user-add-dialog/responsible-user-add-dialog.component';
-import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent } from '../../../Components/ConfirmDialog/confirm-dialog.component';
 import { HttpFloorService } from 'src/app/Services/httpFloor.service';
 import { FloorDto } from 'src/app/Models/Compartment/floorDto';
 import { UpdateBuildingDto } from 'src/app/Models/BuildingService/updateBuildingDto';

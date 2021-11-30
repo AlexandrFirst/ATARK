@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { UserInfoDto } from 'src/app/Models/UserService/userInfoDto';
 import { HttpUserService } from 'src/app/Services/httpUser.service';
-import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent } from '../../../Components/ConfirmDialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-Account',
@@ -67,21 +67,21 @@ export class AccountComponent implements OnInit {
   updateUserInfo() {
     console.log(this.updateUserInfoForm.value)
     if (this.updateUserInfoForm.invalid) {
-      this.toastrService.error("Wrong from data. All fields are must")
+      this.toastrService.error($localize`Wrong from data. All fields are must`)
     }
     else {
       this.userService.UpdateUserInfo(this.userrInfo).subscribe(success => {
         this.userrInfo = success;
-        this.toastrService.success("Your data is updated")
+        this.toastrService.success($localize`Your data is updated`)
       }, error => {
-        this.toastrService.error("Something went wrong. Try again");
+        this.toastrService.error($localize`Something went wrong. Try again`);
       })
     }
   }
 
   cancelUpdating() {
     let dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      data: { message: "Are you shure you want to cancel editing?" }
+      data: { message: $localize`Are you shure you want to cancel editing?` }
     });
 
     dialogRef.afterClosed().subscribe(data => {
@@ -93,7 +93,7 @@ export class AccountComponent implements OnInit {
 
   logoutUser() {
     let dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      data: { message: "Are you shure you want to logout?" }
+      data: { message: $localize`Are you shure you want to logout?` }
     });
 
     dialogRef.afterClosed().subscribe(data => {
@@ -115,7 +115,7 @@ export class AccountComponent implements OnInit {
       this.userrInfo = info
       console.log(this.userrInfo)
     }, error => {
-      this.toastrService.error("Troubles while loading user info")
+      this.toastrService.error($localize`Troubles while loading user info`)
     });
   }
 

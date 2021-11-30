@@ -14,10 +14,10 @@ export class AdminGuard implements CanActivate {
         private router: Router,
         private toastr: ToastrService) { }
 
-    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
+    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
 
         return this.adminService.checkAdminRights().pipe(map((data: any) => {
-            if (data.message) {
+            if (data.message == "Ok") {
                 return true;
             }
             else {

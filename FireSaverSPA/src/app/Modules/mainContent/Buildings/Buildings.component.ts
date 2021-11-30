@@ -9,7 +9,7 @@ import { NewBuildingDto } from 'src/app/Models/BuildingService/newBuildingDto';
 import { UpdateBuildingDto } from 'src/app/Models/BuildingService/updateBuildingDto';
 import { HttpBuildingService } from 'src/app/Services/httpBuilding.service';
 import { BuildingDialogComponent } from '../building-dialog/building-dialog.component';
-import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent } from '../../../Components/ConfirmDialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-Buildings',

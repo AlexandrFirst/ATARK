@@ -803,8 +803,14 @@
         <note priority="1" from="meaning">search btn</note>
       </trans-unit>
       <trans-unit id="4058582102721145192" datatype="html">
-        <source> Id: <x id="INTERPOLATION" equiv-text=" {{item.id}"/> </source>
-        <target> Індентифікатор: <x id="INTERPOLATION" equiv-text=" {{item.id}"/> </target>
+        <source>
+          Id:
+          <x id="INTERPOLATION" equiv-text=" {{item.id}" />
+        </source>
+        <target>
+          Індентифікатор:
+          <x id="INTERPOLATION" equiv-text=" {{item.id}" />
+        </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Buildings/Buildings.component.html</context>
           <context context-type="linenumber">16,18</context>
@@ -812,8 +818,18 @@
         <note priority="1" from="description">building id</note>
       </trans-unit>
       <trans-unit id="buildingAddress" datatype="html">
-        <source>Address: <x id="START_TAG_DIV" ctype="x-div" equiv-text="&lt;div&gt;"/><x id="INTERPOLATION" equiv-text="{{item.address}}"/><x id="CLOSE_TAG_DIV" ctype="x-div" equiv-text="&lt;/div&gt;"/></source>
-        <target>Адреса: <x id="START_TAG_DIV" ctype="x-div" equiv-text="&lt;div&gt;"/><x id="INTERPOLATION" equiv-text="{{item.address}}"/><x id="CLOSE_TAG_DIV" ctype="x-div" equiv-text="&lt;/div&gt;"/></target>
+        <source>
+          Address:
+          <x id="START_TAG_DIV" ctype="x-div" equiv-text="&lt;div&gt;" />
+          <x id="INTERPOLATION" equiv-text="{{item.address}}" />
+          <x id="CLOSE_TAG_DIV" ctype="x-div" equiv-text="&lt;/div&gt;" />
+        </source>
+        <target>
+          Адреса:
+          <x id="START_TAG_DIV" ctype="x-div" equiv-text="&lt;div&gt;" />
+          <x id="INTERPOLATION" equiv-text="{{item.address}}" />
+          <x id="CLOSE_TAG_DIV" ctype="x-div" equiv-text="&lt;/div&gt;" />
+        </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Buildings/Buildings.component.html</context>
           <context context-type="linenumber">19,20</context>
@@ -821,8 +837,18 @@
         <note priority="1" from="description">building address</note>
       </trans-unit>
       <trans-unit id="buildingInfo" datatype="html">
-        <source>Info: <x id="START_TAG_DIV" ctype="x-div" equiv-text="&lt;div&gt;"/><x id="INTERPOLATION" equiv-text="{{item.info}}"/><x id="CLOSE_TAG_DIV" ctype="x-div" equiv-text="&lt;/div&gt;"/></source>
-        <target>Інформація: <x id="START_TAG_DIV" ctype="x-div" equiv-text="&lt;div&gt;"/><x id="INTERPOLATION" equiv-text="{{item.info}}"/><x id="CLOSE_TAG_DIV" ctype="x-div" equiv-text="&lt;/div&gt;"/></target>
+        <source>
+          Info:
+          <x id="START_TAG_DIV" ctype="x-div" equiv-text="&lt;div&gt;" />
+          <x id="INTERPOLATION" equiv-text="{{item.info}}" />
+          <x id="CLOSE_TAG_DIV" ctype="x-div" equiv-text="&lt;/div&gt;" />
+        </source>
+        <target>
+          Інформація:
+          <x id="START_TAG_DIV" ctype="x-div" equiv-text="&lt;div&gt;" />
+          <x id="INTERPOLATION" equiv-text="{{item.info}}" />
+          <x id="CLOSE_TAG_DIV" ctype="x-div" equiv-text="&lt;/div&gt;" />
+        </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Buildings/Buildings.component.html</context>
           <context context-type="linenumber">22,23</context>
@@ -918,8 +944,18 @@
         <note priority="1" from="description">get qr code for buidling</note>
       </trans-unit>
       <trans-unit id="loadMapBtn" datatype="html">
-        <source>Load map <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span *ngIf=&quot;uploadingValue &gt; 0&quot;&gt;"/><x id="INTERPOLATION" equiv-text="{{uploadingValue}}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></source>
-        <target>Завантажити карту <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span *ngIf=&quot;uploadingValue &gt; 0&quot;&gt;"/><x id="INTERPOLATION" equiv-text="{{uploadingValue}}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></target>
+        <source>
+          Load map
+          <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span *ngIf=&quot;uploadingValue &gt; 0&quot;&gt;" />
+          <x id="INTERPOLATION" equiv-text="{{uploadingValue}}" />
+          <x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;" />
+        </source>
+        <target>
+          Завантажити карту
+          <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span *ngIf=&quot;uploadingValue &gt; 0&quot;&gt;" />
+          <x id="INTERPOLATION" equiv-text="{{uploadingValue}}" />
+          <x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;" />
+        </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/Floor/Floor.component.html</context>
           <context context-type="linenumber">69,70</context>
@@ -1537,8 +1573,14 @@
         <note priority="1" from="description">test try count placeholder</note>
       </trans-unit>
       <trans-unit id="7827407208749809032" datatype="html">
-        <source>Question #<x id="INTERPOLATION" equiv-text="{{questionIndex + 1}}"/></source>
-        <target>Питання #<x id="INTERPOLATION" equiv-text="{{questionIndex + 1}}"/></target>
+        <source>
+          Question #
+          <x id="INTERPOLATION" equiv-text="{{questionIndex + 1}}" />
+        </source>
+        <target>
+          Питання #
+          <x id="INTERPOLATION" equiv-text="{{questionIndex + 1}}" />
+        </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/test-dialog/test-dialog.component.html</context>
           <context context-type="linenumber">15</context>
@@ -1564,8 +1606,14 @@
         <note priority="1" from="description">question placeholder</note>
       </trans-unit>
       <trans-unit id="2171197756533579819" datatype="html">
-        <source>Answer #<x id="INTERPOLATION" equiv-text="{{answerIndex + 1}}"/></source>
-        <target>Відповідь #<x id="INTERPOLATION" equiv-text="{{answerIndex + 1}}"/></target>
+        <source>
+          Answer #
+          <x id="INTERPOLATION" equiv-text="{{answerIndex + 1}}" />
+        </source>
+        <target>
+          Відповідь #
+          <x id="INTERPOLATION" equiv-text="{{answerIndex + 1}}" />
+        </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/Components/test-dialog/test-dialog.component.html</context>
           <context context-type="linenumber">31</context>
@@ -1732,6 +1780,66 @@
           <context context-type="sourcefile">src/app/Components/AdminPanel/AdminPanel.component.ts</context>
           <context context-type="linenumber">35</context>
         </context-group>
+      </trans-unit>
+      <trans-unit id="1184293648722951697" datatype="html">
+        <source> Building(s)</source>
+        <target>Будівля(лі)</target>
+      </trans-unit>
+      <trans-unit id="4945429766726416980" datatype="html">
+        <source> Add responsible user </source>
+        <target>Додати відповідальну людину</target>
+      </trans-unit>
+      <trans-unit id="8960323688105722794" datatype="html">
+        <source>Admin panel </source>
+        <target>Панель адміністратора</target>
+      </trans-unit>
+      <trans-unit id="5466712186977221648" datatype="html">
+        <source>Db is deleted</source>
+        <target>Збережена бд видалена</target>
+      </trans-unit>
+      <trans-unit id="1320076044172367008" datatype="html">
+        <source>Wrong from data. All fields are must</source>
+        <target>Невірні дані форми. Усі поля повинні бути заповнені</target>
+      </trans-unit>
+      <trans-unit id="1253799304093958034" datatype="html">
+        <source>Your data is updated</source>
+        <target>Ваші дані оновлені</target>
+      </trans-unit>
+      <trans-unit id="7325820285461614910" datatype="html">
+        <source>Something went wrong. Try again</source>
+        <target>щось пійшло не так. Спробуйте ще раз</target>
+      </trans-unit>
+      <trans-unit id="8575706332653112681" datatype="html">
+        <source>Are you shure you want to cancel editing?</source>
+        <target>Ви впевнені, що хочете відмінити редагування</target>
+      </trans-unit>
+      <trans-unit id="286720031488800983" datatype="html">
+        <source>Are you shure you want to logout?</source>
+        <target>Ви впевнені, що хочете вийти</target>
+      </trans-unit>
+      <trans-unit id="2979504859023627498" datatype="html">
+        <source>Troubles while loading user info</source>
+        <target>Помилка під час загрузки даних</target>
+      </trans-unit>
+      <trans-unit id="ErrorToastr" datatype="html">
+        <source>Something went wrong! Try again</source>
+        <target>Щось пійшло не так, спробуйте ще раз</target>
+      </trans-unit>
+      <trans-unit id="7233843635548926894" datatype="html">
+        <source>Plan is uploaded</source>
+        <target>План завантажен</target>
+      </trans-unit>
+      <trans-unit id="929979110577263472" datatype="html">
+        <source>Unknown compartment id</source>
+        <target>невизначена будівля</target>
+      </trans-unit>
+      <trans-unit id="2351792778022223153" datatype="html">
+        <source>Can't get evacuation plan info</source>
+        <target>Плана евакуації нема</target>
+      </trans-unit>
+      <trans-unit id="5098271043057687951" datatype="html">
+        <source>Are you sure you want to delete scale point with id: {$PH}</source>
+        <target>Видалити точку масштабу: {$PH}</target>
       </trans-unit>
     </body>
   </file>

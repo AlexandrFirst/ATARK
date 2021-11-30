@@ -6,8 +6,9 @@ export class AddHeaderInterceptor implements HttpInterceptor {
         const bearerToken = localStorage.getItem('token');
         console.log(req);
         if (bearerToken) {
-            const clonedRequest = req.clone({ headers: req.headers.append('Authorization', 'Bearer ' + bearerToken) });
-
+            const clonedRequest = req.clone({ 
+                headers: req.headers.append('Authorization', 'Bearer ' + bearerToken) 
+            });
             return next.handle(clonedRequest);
         }
         else {

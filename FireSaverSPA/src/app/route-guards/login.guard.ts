@@ -13,7 +13,7 @@ export class LoginGuard implements CanActivateChild {
         private toastrService: ToastrService,
         private router: Router) { }
 
-    canActivateChild(childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
+    canActivateChild(childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
 
         var authData = this.baseHttpService.readAuthResponse();
         if (authData.userId == -1) {

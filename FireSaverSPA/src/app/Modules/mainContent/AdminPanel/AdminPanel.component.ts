@@ -37,7 +37,7 @@ export class AdminPanelComponent implements OnInit {
     this.adminService.getAllRestorations().subscribe(response => {
       this.restorationIds = response;
     }, error => {
-      this.toastr.warning("No restorations found");
+      this.toastr.warning($localize`No restorations found`);
     })
   }
 

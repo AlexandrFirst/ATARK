@@ -14,7 +14,7 @@ import { InputRoutePoint, Postion as Position, Postion, RoutePoint, ScalePointDt
 import { MatDialog } from '@angular/material/dialog';
 import { PositionInputDialogComponent } from '../position-input-dialog/position-input-dialog.component';
 import { HttpPointService } from 'src/app/Services/httpPoint.service';
-import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent } from '../../../Components/ConfirmDialog/confirm-dialog.component';
 import { CompartmentDto } from 'src/app/Models/Compartment/compartmentDto';
 import { QrCodeDialogComponent } from '../qr-code-dialog/qr-code-dialog.component';
 import { TestInput } from 'src/app/Models/TestModels/testInput';
@@ -115,7 +115,7 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
         this.initCompartmentInfo(() => { this.initUserPostions(); });
         this.initEvacuationPlanInfo();
       } else {
-        this.toastrService.error("Unknown compartment id")
+        this.toastrService.error($localize`Unknown compartment id`)
       }
     })
   }
@@ -138,7 +138,7 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
           this.uploadingValue = Math.round(100 * event.loaded / event.total);
         }
         else if (event.type === HttpEventType.Response) {
-          this.toastrService.success("Plan is uploaded")
+          this.toastrService.success($localize`Plan is uploaded`)
           this.evacPlanInfo = event.body;
           this.uploadingValue = 0;
           this.initMap();
@@ -146,7 +146,7 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
       },
       error => {
         this.uploadingValue = 0;
-        this.toastrService.error("Something went wrong! Try again")
+        this.toastrService.error($localize`:@@ErrorToastr:Something went wrong! Try again`)
       }
     )
   }
@@ -193,7 +193,7 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
         this.initMapPoints();
 
       }, error => {
-        this.toastrService.error("Can't get evacuation plan info")
+        this.toastrService.error($localize`Can't get evacuation plan info`)
       })
     }
   }
@@ -215,7 +215,7 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
             const userMarker = this.placeMarker(convertedUserWorldPosToMapPos.latitude,
               convertedUserWorldPosToMapPos.longtitude,
               this.userPointColor);
-              userMarker.bindPopup(`${user.name} ${user.surname} ${user.telephoneNumber}`)
+            userMarker.bindPopup(`${user.name} ${user.surname} ${user.telephoneNumber}`)
             this.userMarker.set(user.id, userMarker);
           });
         }
@@ -329,7 +329,7 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
   removeScalePointMarker(pointId: number) {
 
     var dilaogRef = this.matDialog.open(ConfirmDialogComponent, {
-      data: { message: `Are you sure you want to delete scale point with id: ${pointId}` }
+      data: { message: $localize`Are you sure you want to delete scale point with id: ${pointId}` }
     })
 
     dilaogRef.afterClosed().subscribe(data => {
@@ -342,7 +342,7 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
           }
 
           this.map.removeLayer(marker);
-          this.toastrService.success("Scale point with id: " + pointId + " deleted");
+          this.toastrService.success($localize`Scale point with id: ${pointId} deleted`);
           this.scalePointMarkers.delete(pointId);
 
         }, error => {
@@ -360,7 +360,7 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
             this.scalePointMarkers.delete(pointId);
 
           } else {
-            this.toastrService.error("Something went wrong. Try again");
+            this.toastrService.error($localize`:@@ErrorToastr:Something went wrong. Try again`);
           }
 
         })
@@ -407,7 +407,7 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
         this.toastrService.warning(error.error?.Message);
       }
       else {
-        this.toastrService.error("Something went wrong")
+        this.toastrService.error($localize`:@@ErrorToastr:Something went wrong`)
       }
     })
   }
@@ -424,7 +424,7 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
           })
         }
         else {
-          this.toastrService.warning("Select route point to add a new one")
+          this.toastrService.warning($localize`Select route point to add a new one`)
         }
       } else {
         this.pointService.addRouteToEvacuationPlan({
@@ -594,9 +594,9 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
       if (data) {
         this.testService.addTestToCompartment(this.compartmentId, data).subscribe(success => {
           this.compartmentInfo.compartmentTest = success
-          this.toastrService.success("Test is added to compartment")
+          this.toastrService.success($localize`Test is added to compartment`)
         }, error => {
-          this.toastrService.success("Something went wrong! Try again")
+          this.toastrService.success($localize`:@@ErrorToastr:Something went wrong! Try again`)
         });
       }
     })
@@ -610,7 +610,7 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
       if (data) {
         this.testService.updateCompartmentTest(this.compartmentInfo.id, data).subscribe(success => {
           this.compartmentInfo.compartmentTest = success
-          this.toastrService.success("Test is successfully updated")
+          this.toastrService.success($localize`Test is successfully updated`)
         })
       }
     })
@@ -618,16 +618,16 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
 
   deleteTest() {
     const dialogRef = this.matDialog.open(ConfirmDialogComponent, {
-      data: { message: `Are you sure you wnat to delete test for compartment with id: ${this.compartmentId}` }
+      data: { message: $localize`Are you sure you wnat to delete test for compartment with id: ${this.compartmentId}` }
     });
 
     dialogRef.afterClosed().subscribe(data => {
       if (data) {
         this.testService.deleteTestFromCompartment(this.compartmentId).subscribe(success => {
           this.compartmentInfo.compartmentTest = null
-          this.toastrService.success("Test removed successfully")
+          this.toastrService.success($localize`Test removed successfully`)
         }, error => {
-          this.toastrService.error("Something went wrong! Try again")
+          this.toastrService.error($localize`:@@ErrorToastr:Something went wrong! Try again`)
         });
       }
     })
@@ -660,7 +660,7 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
         const iotPos = this.selectedMapPosition;
         this.iotService.addIotToCompartment(this.compartmentId, identifier).subscribe(success => {
           this.iotService.updateIotPos(identifier, iotPos).subscribe(data => {
-            this.toastrService.success("New iot is added");
+            this.toastrService.success($localize`New iot is added`);
             this.initCompartmentInfo(() => {
               this.displayIots();
             });
@@ -684,10 +684,10 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
       this.iotService.removeIotFromCompartment(this.compartmentId, iot.iotIdentifier).subscribe(data => {
         const iotMarker = this.iotPos.get(iot.iotIdentifier);
         this.map.removeLayer(iotMarker);
-        this.toastrService.success("Iot is removed")
+        this.toastrService.success($localize`Iot is removed`)
         this.initCompartmentInfo(() => { });
       }, error => {
-        this.toastrService.error("Something went wrong! Try again");
+        this.toastrService.error($localize`:@@ErrorToastr:Something went wrong! Try again`);
       })
     }
   }

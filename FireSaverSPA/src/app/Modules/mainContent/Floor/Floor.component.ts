@@ -14,7 +14,7 @@ import { InputRoutePoint, Postion as Position, Postion, RoutePoint, ScalePointDt
 import { MatDialog } from '@angular/material/dialog';
 import { PositionInputDialogComponent } from '../position-input-dialog/position-input-dialog.component';
 import { HttpPointService } from 'src/app/Services/httpPoint.service';
-import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent } from '../../../Components/ConfirmDialog/confirm-dialog.component';
 import { BaseCompartmentComponent, InitCallback } from '../BaseCompartment/BaseCompartment.component';
 import { HttpRoomService } from 'src/app/Services/httpRoom.service';
 import { CompartmentAddDialogComponent } from '../compartment-add-dialog/compartment-add-dialog.component';
