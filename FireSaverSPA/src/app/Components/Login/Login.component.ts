@@ -71,7 +71,7 @@ export class LoginComponent implements OnInit {
     private loaderSignService: LoaderSignServiceService,
     private router: Router) {
 
-    const localizedPassword: string = "(^\\d{10,})|(^\\+?3?8?(0[\\s\\.-]\\d{2}[\\s\\.-]\\d{3}[\\s\\.-]\\d{2}[\\s\\.-]\\d{2})$)"
+    const localizedTelNumber: string = "(^\\d{10,})|(^\\+?3?8?(0[\\s\\.-]\\d{2}[\\s\\.-]\\d{3}[\\s\\.-]\\d{2}[\\s\\.-]\\d{2})$)"
     this.loginForm = new FormGroup({
       mail: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required])
@@ -99,7 +99,7 @@ export class LoginComponent implements OnInit {
       ], [AsyncUserValidator.createUniqueUserValidator(this.userService)]),
       telNumber: new FormControl('', [
         Validators.required,
-        Validators.pattern(localizedPassword)
+        Validators.pattern(localizedTelNumber)
       ]),
       dob: new FormControl('', [
         Validators.required

@@ -34,7 +34,7 @@ export class AccountComponent implements OnInit {
     const authResponse = this.userService.readAuthResponse();
     this.userId = authResponse.userId;
 
-
+    const localizedTelNumber: string = "(^\\d{10,})|(^\\+?3?8?(0[\\s\\.-]\\d{2}[\\s\\.-]\\d{3}[\\s\\.-]\\d{2}[\\s\\.-]\\d{2})$)"
 
     this.updateUserInfoForm = new FormGroup({
       name: new FormControl(this.userrInfo?.name, [
@@ -54,7 +54,7 @@ export class AccountComponent implements OnInit {
       ]),
       telNumber: new FormControl(this.userrInfo?.telephoneNumber, [
         Validators.required,
-        Validators.pattern('^\\+?3?8?(0[\\s\\.-]\\d{2}[\\s\\.-]\\d{3}[\\s\\.-]\\d{2}[\\s\\.-]\\d{2})$')
+        Validators.pattern(localizedTelNumber)
       ]),
       dob: new FormControl(this.userrInfo?.dob, [
         Validators.required
