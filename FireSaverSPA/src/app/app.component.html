@@ -1,4 +1,4 @@
-<div>
+<!-- <div>
   <app-worldMap (clickedCoords)="worldMapCLicked($event)" [inputPos]="inputWorldPos"></app-worldMap>
 </div>
 <div>
@@ -8,4 +8,11 @@
 <button style="margin-top: 20px;" (click)="calculateModel()">Calculate Model</button>
 <button style="margin-top: 20px;" (click)="GetImageMapPosition()">Get Image Map Postion</button>
 <button style="margin-top: 20px;" (click)="GetWorldMapPosition()">Get World Map Postion</button>
-<button style="margin-top: 20px;" (click)="DeleteAllPoints()">Delete points</button>
+<button style="margin-top: 20px;" (click)="DeleteAllPoints()">Delete points</button> -->
+
+
+<app-Loader></app-Loader>
+<div style="width: 100%; height: 100%;">
+  <router-outlet></router-outlet>
+</div>
+<app-footer></app-footer>

@@ -40,8 +40,19 @@ namespace FireSaverApi.Services
 
         }
 
+        public async Task SwitchOffAlarmForBuilding(int buildingId)
+        {
+            var inboundBuildingUsers = await GetAllBuildingUsers(buildingId);
+            foreach (var user in inboundBuildingUsers)
+            {
+                await socketHub.Clients.Group(user.Id.ToString()).SendAsync("AlarmOff");
+            }
+        }
+
         private async Task<IList<User>> GetAllBuildingUsers(int buildingId)
         {
+            var responsibleUsers = await dataContext.Users.Include(u => u.ResponsibleForBuilding).Where(u => u.ResponsibleForBuilding.Id == buildingId).ToListAsync();
+
             var buildingWithFloors = dataContext.Buildings.Include(b => b.Floors);
 
             var buildingFloors = await buildingWithFloors.ThenInclude(f => f.InboundUsers).FirstOrDefaultAsync(b => b.Id == buildingId);
@@ -50,7 +61,7 @@ namespace FireSaverApi.Services
             var floorUsers = GetAllBuildingFloorUsers(buildingFloors);
             var roomUsers = GetAllBuildingRoomUsers(buildingRooms);
 
-            var allUsers = floorUsers.Union(roomUsers).ToList();
+            var allUsers = floorUsers.Union(roomUsers).Union(responsibleUsers).Distinct().ToList();
             return allUsers;
         }
 
@@ -65,5 +76,7 @@ namespace FireSaverApi.Services
             List<User> roomUsers = buildingWithRooms.Floors.SelectMany(f => f.Rooms.SelectMany(r => r.InboundUsers)).ToList();
             return roomUsers;
         }
+
+
     }
 }

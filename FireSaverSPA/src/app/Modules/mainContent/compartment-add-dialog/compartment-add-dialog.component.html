@@ -1,0 +1,34 @@
+<form [formGroup]="addCompartmentForm">
+  <div class="form-group" style="margin-bottom: 20px;">
+    <label i18n="@@floorName">Name: </label>
+    <input type="text" class="form-control" aria-describedby="emailHelp" i18n i18n-placeholder placeholder="Enter floor name"
+      formControlName="name">
+    <div *ngIf="formName.invalid && (formName.touched || formName.dirty)">
+      <small style="color: red !important;" *ngIf="formName.errors?.required " class="form-text" i18n="floor name emty">This field should not
+        be emty
+      </small>
+    </div>
+  </div>
+  <div class="form-group" style="margin-bottom: 20px;">
+    <label i18n="floor describtion">Description: </label>
+    <textarea class="form-control" aria-describedby="Compartment Description" i18n i18n-placeholder="floor describtion placeholder" placeholder="Enter floor describtion"
+      formControlName="description"></textarea>
+    <div *ngIf="formDescription.invalid && (formDescription.touched || formDescription.dirty)">
+      <small style="color: red !important;" *ngIf="formDescription.errors?.required " class="form-text" i18n="floor description emty">This field
+        should not be emty
+      </small>
+    </div>
+  </div>
+  <div class="form-group" style="margin-bottom: 20px;">
+    <label i18n="floor safety rules">Safety rules: </label>
+    <textarea class="form-control" aria-describedby="Safety rules" i18n i18n-placeholder="floor rules placeholder" placeholder="Enter safety rules"
+      formControlName="safetyRules"></textarea>
+    <div *ngIf="formSafetyRules.invalid && (formSafetyRules.touched || formSafetyRules.dirty)">
+      <small style="color: red !important;" *ngIf="formSafetyRules.errors?.required" class="form-text" i18n="floor safety rules empty">This field should
+        not be emty
+      </small>
+    </div>
+  </div>
+  <button type="button" class="btn btn-primary" [disabled]="validatingForm.invalid" (click)="submitForm()" i18n="@@submitBtn">Add</button>
+  <button type="button" class="btn btn-danger" (click)="closeForm()" i18n="@@cancelBtn">Cancel</button>
+</form>

@@ -49,6 +49,5 @@ namespace FireSaverApi.Controllers
             else
                 return Ok(new ServerResponse() { Message = "Test is not passed" });
         }
-
     }
 }

@@ -33,7 +33,9 @@ namespace FireSaverApi.Profiles
                                                                         .ToList<string>()));
 
 
-            CreateMap<Test, TestInputDto>().ReverseMap();
+            CreateMap<Test, TestInputDto>();
+            CreateMap<TestInputDto, Test>().ForMember(t => t.Id, memeberOptions => memeberOptions.Ignore());
+
             CreateMap<Test, TestOutputDto>().ReverseMap();
 
         }

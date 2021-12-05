@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import * as L from 'leaflet'
 import { Subject } from 'rxjs';
-import { Postion } from 'src/app/Models/Dtos';
+import { Postion } from 'src/app/Models/PointService/pointDtos';
 
 @Component({
   selector: 'app-worldMap',

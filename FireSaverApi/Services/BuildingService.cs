@@ -7,6 +7,7 @@ using FireSaverApi.DataContext;
 using FireSaverApi.Dtos.BuildingDtos;
 using FireSaverApi.Helpers;
 using FireSaverApi.Helpers.ExceptionHandler.CustomExceptions;
+using FireSaverApi.Helpers.Pagination;
 using Microsoft.EntityFrameworkCore;
 
 namespace FireSaverApi.Services
@@ -94,9 +95,9 @@ namespace FireSaverApi.Services
         public async Task<BuildingInfoDto> UpdateBuildingCenter(int buildingId, BuildingCenterDto buildingCenter)
         {
             var updatedBuilding = await GetBuildingById(buildingId);
-            
+
             mapper.Map(buildingCenter, updatedBuilding);
-            
+
             context.Buildings.Update(updatedBuilding);
             await context.SaveChangesAsync();
 
@@ -130,6 +131,25 @@ namespace FireSaverApi.Services
                 throw new System.Exception("Building is not found by id");
 
             return building;
+        }
+
+        public async Task<PagedList<BuildingInfoDto>> GetAllBuildings(BuildingFilterParams buildingFilter)
+        {
+            var allBuildings = await context.Buildings.ToListAsync();
+            if (buildingFilter.BuildingId > 0)
+            {
+                allBuildings = allBuildings.Where(b => b.Id == buildingFilter.BuildingId).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(buildingFilter.Address))
+            {
+                allBuildings = allBuildings.Where(b => b.Address.ToLower().Contains(buildingFilter.Address)).ToList();
+            }
+
+            var allBuildingsDto = mapper.Map<List<BuildingInfoDto>>(allBuildings);
+
+
+            return PagedList<BuildingInfoDto>.CreateAsync(allBuildingsDto, buildingFilter.PageNumber, buildingFilter.PageSize);
         }
     }
 

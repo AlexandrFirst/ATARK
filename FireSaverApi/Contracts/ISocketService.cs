@@ -6,6 +6,7 @@ namespace FireSaverApi.Contracts
     {
          Task OpenDoorWithIot(int iotId);
          Task SetAlarmForBuilding(int buildingId);
+         Task SwitchOffAlarmForBuilding(int buildingId);
          Task LogoutUser(int userId);
     }
 }

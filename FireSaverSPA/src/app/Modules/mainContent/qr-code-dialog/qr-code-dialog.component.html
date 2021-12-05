@@ -1,0 +1,8 @@
+<div id="print-section">
+  <ngx-qrcode [elementType]="elementType" [value]="value" width=400 cssClass="aclass" errorCorrectionLevel="L">
+  </ngx-qrcode>
+</div>
+<div style="display: flex; justify-content: center; margin-top: 20px;">
+  <button printSectionId="print-section" ngxPrint class="btn btn-primary"><i class="fa fa-print"
+      style="display: block; font-size: xx-large; text-align: center;"></i></button>
+</div>

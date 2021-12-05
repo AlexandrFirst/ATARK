@@ -12,6 +12,7 @@ using FireSaverApi.DataContext;
 using FireSaverApi.Dtos;
 using FireSaverApi.Dtos.IoTDtos;
 using FireSaverApi.Dtos.TestDtos;
+using FireSaverApi.Dtos.UserDtos;
 using FireSaverApi.Helpers;
 using FireSaverApi.Helpers.ExceptionHandler.CustomExceptions;
 using FireSaverApi.hub;
@@ -108,7 +109,9 @@ namespace FireSaverApi.Services
 
         public async Task<AuthResponseDto> AuthUser(AuthUserDto userAuth)
         {
-            var user = await context.Users.FirstOrDefaultAsync(u => u.Mail == userAuth.Mail);
+            var user = await context.Users.Include(b => b.ResponsibleForBuilding)
+                                            .Include(r => r.RolesList)
+                                            .FirstOrDefaultAsync(u => u.Mail == userAuth.Mail);
             if (user == null)
             {
                 throw new UserNotFoundException();
@@ -116,14 +119,22 @@ namespace FireSaverApi.Services
 
             if (compareInputAndUserPasswords(userAuth.Password, user.Password))
             {
-                var userRoles = string.Join(',', user.RolesList.Select(r => r.Name).ToList());
+                var userRoleList = user.RolesList.Select(r => r.Name).ToList();
+
+                var userRoles = string.Join(',', userRoleList);
                 var authToken = TokenGenerator.generateJwtToken(user.Id, TokenGenerator.UserJWTType, userRoles, appSettings.Secret);
 
-                return new AuthResponseDto()
+                var userAuthResponse = new AuthResponseDto()
                 {
                     Token = authToken,
-                    UserId = user.Id
+                    UserId = user.Id,
+                    Roles = userRoleList
                 };
+
+                if (user.ResponsibleForBuilding != null)
+                    userAuthResponse.ResponsibleBuildingId = user.ResponsibleForBuilding.Id;
+
+                return userAuthResponse;
             }
             else
             {
@@ -221,9 +232,9 @@ namespace FireSaverApi.Services
                                                           p.RoutePointType == RoutePointType.ADDITIONAL_EXIT).ToList();
             if (exitPoints.Count == 0)
             {
-                return new List<RoutePointDto>() 
-                { 
-                    mapper.Map<RoutePointDto>(await routebuilderService.GetAllRoute(rootPointFotCurrentRoutePoint.Id)) 
+                return new List<RoutePointDto>()
+                {
+                    mapper.Map<RoutePointDto>(await routebuilderService.GetAllRoute(rootPointFotCurrentRoutePoint.Id))
                 };
             }
             else
@@ -314,6 +325,19 @@ namespace FireSaverApi.Services
             }
         }
 
+        public async Task SwitchOffAlaramForBuilding(int userId)
+        {
+            var user = await GetUserById(userId);
+            if (user.ResponsibleForBuilding != null)
+            {
+                await socketService.SwitchOffAlarmForBuilding(user.ResponsibleForBuilding.Id);
+            }
+            else
+            {
+                throw new Exception("Illegal action");
+            }
+        }
+
         public async Task<UserInfoDto> SetWorldPostion(int userId, PositionDto worldUserPostion)
         {
             var user = await GetUserById(userId);
@@ -330,6 +354,66 @@ namespace FireSaverApi.Services
             var hashedInputPassword = CalcHelper.ComputeSha256Hash(inputPassword);
             return hashedInputPassword == userPassword;
         }
+
+        public async Task<UserUniqueMailResponse> CheckUserMailOnUniqueness(string mail)
+        {
+            Task<UserUniqueMailResponse> completedTask = Task<UserUniqueMailResponse>.Factory.StartNew(() => checkOnUniqueness(mail));
+            return await completedTask;
+        }
+
+        private UserUniqueMailResponse checkOnUniqueness(string mail)
+        {
+            if (context.Users.Any(u => u.Mail.Equals(mail)))
+            {
+                return new UserUniqueMailResponse()
+                {
+                    IsUnique = false
+                };
+            }
+            else
+            {
+                return new UserUniqueMailResponse()
+                {
+                    IsUnique = true
+                };
+            }
+        }
+
+        public async Task<User> GetUserByMail(string mail)
+        {
+            var foundUser = await context.Users.Include(b => b.ResponsibleForBuilding)
+                                               .Include(c => c.CurrentCompartment)
+                                               .Include(r => r.RolesList)
+                                               .FirstOrDefaultAsync(u => u.Mail == mail);
+            if (foundUser == null)
+            {
+                throw new UserNotFoundException();
+            }
+
+            return foundUser;
+        }
+
+        public async Task<bool> CheckIfUserCanBeResponsible(string userMail)
+        {
+            try
+            {
+                var user = await GetUserByMail(userMail);
+                if (user.ResponsibleForBuilding != null)
+                    return false;
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<PositionDto> TransformWorldPostionToMap(PositionDto worldPostion, int compartmentId)
+        {
+            var mappedWorldPostion = await locationService.WorldToImgPostion(worldPostion, compartmentId);
+            return mappedWorldPostion;
+        }
+
 
     }
 }

@@ -1,0 +1,78 @@
+<div class="back-btn" (click)="backBtnClick()">
+  Back
+</div>
+<div class="wrapper">
+  <div class="info-wrapper">
+    <div class="info-text">
+      <section style="margin-top: 10px; display: flex;">
+        <div style="width: 100px">Address:</div>
+        <div style="width: 700px">{{buildingInfo?.address}}</div>
+      </section>
+      <section style="margin-top: 10px; display: flex;">
+        <div style="width: 100px">Info: </div>
+        <div style="width: 700px">{{buildingInfo?.info}} </div>
+      </section>
+      <button class="btn btn-warning edit-btn" (click)="editBuilding()" i18n="change info btn|building page">Chnage
+        Info</button>
+    </div>
+  </div>
+  <div class="info-wrapper" style="margin-top: 20px;">
+    <div class="accordion" id="accordionExample" style="width: 800px;">
+      <div class="card b">
+        <div class="card-header" id="headingOne">
+          <h5 class="mb-0">
+            <button class="btn" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
+              aria-controls="collapseOne" i18n>
+              Responsible users
+            </button>
+          </h5>
+        </div>
+        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+          <div class="card-body">
+            <div *ngFor="let responsibleUsers of buildingInfo?.responsibleUsers"
+              style="display: flex; justify-content: center; height: 40px; margin-top: 10px;">
+              <div style="line-height: 40px;">{{responsibleUsers.mail}}</div>
+              <button class="btn btn-danger" style="margin-left: 50px;"
+                (click)="removeResponsibleUser(responsibleUsers.id)" i18n="delete btn|building page">Delete</button>
+            </div>
+            <div *ngIf="buildingInfo?.responsibleUsers.length == 0" i18n="no responsible user label">
+              No responsible users yet
+            </div>
+            <button class="btn btn-primary" style="margin-top: 30px;" (click)="addResponsibleUser()"
+              i18n="add responsible user|building page">Add responsible
+              user</button>
+          </div>
+        </div>
+      </div>
+      <div class="card b">
+        <div class="card-header" id="headingTwo">
+          <h5 class="mb-0">
+            <button class="btn" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false"
+              aria-controls="collapseTwo" i18n="floor label">
+              Floors
+            </button>
+          </h5>
+        </div>
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+          <div class="card-body">
+            <div *ngFor="let floor of buildingInfo?.floors"
+              style="display: flex; justify-content: center; height: 40px; margin-top: 10px;">
+              <div style="line-height: 40px;">{{floor.level}} ( {{floor.name}} )</div>
+              <button class="btn btn-danger" style="margin-left: 50px;" (click)="deleteFloor(floor.id)"
+                i18n="@@deletebtn">Delete</button>
+              <button class="btn btn-info" style="margin-left: 50px;" (click)="goToFloorPage(floor.id)"
+                i18n="@@viewbtn">View</button>
+              <button class="btn btn-warning" style="margin-left: 50px;" (click)="changeFloor(floor.id)"
+                i18n="@@editBtn">Change</button>
+            </div>
+            <div *ngIf="buildingInfo?.floors.length == 0" i18n="no floor added message">
+              No floors added
+            </div>
+            <button class="btn btn-primary" style="margin-top: 30px;" (click)="addFloor()"
+              i18n="add floor|building page">Add floor</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

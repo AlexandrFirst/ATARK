@@ -16,5 +16,6 @@ namespace FireSaverApi.Contracts
         Task<RoutePoint> UpdateRoutePointPos(RoutePointDto updatingRoutePoint);
         Task<RoutePoint> GetRouteBetweenPoints(int pointid1, int pointid2);
         Task<RoutePoint> GetRootPointForRoutePoint(int routePointId);
+        Task<RoutePoint> GetAllRoutForCompartment(int compartmentId);
     }
 }

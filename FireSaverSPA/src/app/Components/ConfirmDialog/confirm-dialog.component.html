@@ -1,0 +1,9 @@
+<div style="width: 200px; height: 150px;">
+  <div style="text-align: center; font-size: large; padding-top: 50px;">
+    {{data.message}}
+  </div>
+  <div style="margin-top: 20px; display: flex; justify-content: end;">
+    <button class="btn btn-primary" (click)="onCancel(true)" i18n="@@submitBtn">Yes</button>
+    <button class="btn btn-danger" (click)="onCancel(false)" i18n="@@cancelBtn">No</button>
+  </div>
+</div>

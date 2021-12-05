@@ -53,6 +53,9 @@ namespace FireSaverApi.Services
         {
             var compartmentForCurrentPoint = await compartmentHelper.GetCompartmentById(compartmentId);
 
+            if (compartmentForCurrentPoint.RoutePoints.Count() > 1)
+                throw new System.Exception("Only one rooute available for the plan");
+
             if (routePoint.ParentRoutePointId != null)
                 throw new System.Exception("Root of the path can't have a parent");
 
@@ -182,18 +185,17 @@ namespace FireSaverApi.Services
 
         public async Task<RoutePoint> UpdateRoutePointPos(RoutePointDto updatingRoutePoint)
         {
-            var pointToUpdate = await context.RoutePoints.Include(p => p.MapPosition)
-                                                        .FirstOrDefaultAsync(d => d.Id == updatingRoutePoint.Id);
+            var pointToUpdate = await context.RoutePoints.FirstOrDefaultAsync(d => d.Id == updatingRoutePoint.Id);
 
             if (pointToUpdate == null)
             {
                 throw new System.Exception("Can't find route point");
             }
 
-            mapper.Map(updatingRoutePoint.MapPosition, pointToUpdate.MapPosition);
+            //mapper.Map(pointToUpdate, updatingRoutePoint);
 
-            // pointToUpdate.MapPosition = mapper.Map<Position>(updatingRoutePoint.PointPostion);
-            context.Update(pointToUpdate.MapPosition);
+            pointToUpdate.MapPosition = mapper.Map<string>(updatingRoutePoint.MapPosition);
+            context.Update(pointToUpdate);
 
             pointToUpdate.RoutePointType = updatingRoutePoint.RoutePointType;
 
@@ -201,6 +203,16 @@ namespace FireSaverApi.Services
             await context.SaveChangesAsync();
 
             return pointToUpdate;
+        }
+
+        public async Task<RoutePoint> GetAllRoutForCompartment(int compartmentId)
+        {
+            var compartment = await compartmentHelper.GetCompartmentById(compartmentId);
+
+            if (compartment.RoutePoints.Count > 0)
+                return await GetAllRoute(compartment.RoutePoints[0].Id);
+            else
+                throw new System.Exception("No route for compartment found");
         }
 
         public async Task<RoutePoint> GetRouteBetweenPoints(int pointid1, int pointid2)

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using FireSaverApi.DataContext;
 using FireSaverApi.Dtos.BuildingDtos;
+using FireSaverApi.Helpers.Pagination;
 
 namespace FireSaverApi.Contracts
 {
@@ -14,5 +15,6 @@ namespace FireSaverApi.Contracts
 
         Task<BuildingInfoDto> UpdateBuildingCenter(int buildingId, BuildingCenterDto buildingCenter);
         Task DeleteBuilding(int buildingId);
+        Task<PagedList<BuildingInfoDto>> GetAllBuildings(BuildingFilterParams buildingFilter);
     }
 }

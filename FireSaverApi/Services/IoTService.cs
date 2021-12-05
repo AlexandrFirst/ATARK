@@ -61,7 +61,7 @@ namespace FireSaverApi.Services
 
         public async Task<IoT> GetIoTById(string IotIdentifier)
         {
-            var iot = await dataContext.IoTs.Include(p => p.MapPosition).Include(c => c.Compartment).FirstOrDefaultAsync(i => i.IotIdentifier == IotIdentifier);
+            var iot = await dataContext.IoTs.Include(c => c.Compartment).FirstOrDefaultAsync(i => i.IotIdentifier == IotIdentifier);
             if (iot == null)
             {
                 throw new System.Exception("iot is not found");
@@ -91,14 +91,14 @@ namespace FireSaverApi.Services
             await dataContext.SaveChangesAsync();
         }
 
-        public async Task<IoT> UpdateIoTPostion(string IotIdentifier, PositionDto newPos)
+        public async Task<IotNewPositionDto> UpdateIoTPostion(string IotIdentifier, PositionDto newPos)
         {
             var iot = await GetIoTById(IotIdentifier);
             var pos = mapper.Map<string>(newPos);
             iot.MapPosition = pos;
             dataContext.Update(iot);
             await dataContext.SaveChangesAsync();
-            return iot;
+            return mapper.Map<IotNewPositionDto>(iot);
         }
 
         public async Task<AuthResponseDto> LoginIot(LoginIoTDto loginIoTDto)

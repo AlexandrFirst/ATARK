@@ -1,0 +1,43 @@
+.main-content {
+    width: 100%;
+    height: 100%;
+}
+
+.topnav {
+    background-color: #e3813b;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+}
+
+.topnav div {
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+.topnav div:first-child {
+    margin-left: 100px;
+}
+
+.topnav div:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+.topnav div.logo:hover{
+    background-color: #e3813b;
+    color: #04aa6d;
+}
+
+/* Add a color to the active/current link */
+.topnav div.active {
+    background-color: #04aa6d;
+    color: white;
+}
+
+.logo-content {
+    position: relative;
+    display: inline;
+}

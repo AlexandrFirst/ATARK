@@ -22,6 +22,7 @@ namespace FireSaverApi
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    //   "applicationUrl": "https://localhost:5001;http://localhost:5000",
                     webBuilder.ConfigureKestrel(opt =>
                     {
                         opt.ListenAnyIP(5001, listenOpt =>
@@ -32,7 +33,7 @@ namespace FireSaverApi
                         });
                         opt.ListenAnyIP(5000);
                     });
-                    
+
                     webBuilder.UseStartup<Startup>();
                 })
                  .ConfigureServices((context, services) =>

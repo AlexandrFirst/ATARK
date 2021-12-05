@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using FireSaverApi.DataContext;
+using FireSaverApi.Dtos.CompartmentDtos;
 
 namespace FireSaverApi.Dtos.BuildingDtos
 {
@@ -7,6 +8,7 @@ namespace FireSaverApi.Dtos.BuildingDtos
     {
         public int Id { get; set; }
         public IList<UserInfoDto> ResponsibleUsers { get; set; }
+        public IList<FloorDto> Floors { get; set; }
         public string Address { get; set; }
         public string Info { get; set; }
         public string BuildingCenterPosition { get; set; }

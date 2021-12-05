@@ -14,7 +14,7 @@ namespace FireSaverApi.Contracts
         Task AddIoTToCompartment(int compartmentId, string IotIdentifier);
         Task RemoveIoTFromCompartment(int compartmentId, string IotIdentifier);
         
-        Task<IoT> UpdateIoTPostion(string IotIdentifier, PositionDto newPos);
+        Task<IotNewPositionDto> UpdateIoTPostion(string IotIdentifier, PositionDto newPos);
         Task<MyHttpContext> GetIotContext(int iotId);
         Task<AuthResponseDto> LoginIot(LoginIoTDto loginIoTDto);
 

@@ -15,5 +15,6 @@ namespace FireSaverApi.Dtos
         public string TelephoneNumber { get; set; }
         public BuildingInfoDto ResponsibleForBuilding { get; set; }
         public DateTime DOB { get; set; }
+        public PositionDto LastSeenBuildingPosition { get; set; }
     }
 }

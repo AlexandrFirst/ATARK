@@ -11,7 +11,6 @@ namespace FireSaverApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-
     public class RoomController : ControllerBase
     {
         private readonly ICompartmentService<RoomDto, Room> roomService;

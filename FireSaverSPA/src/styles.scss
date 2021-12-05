@@ -1,1 +1,46 @@
+@import "../node_modules/font-awesome/scss/font-awesome.scss";
+$fa-font-path: "../node_modules/font-awesome/fonts";
 
+html,
+body {
+    margin: 0px;
+    height: 100%;
+    width: 100%;
+    font-family: Roboto, -apple-system, "Helvetica Neue", "Segoe UI", Arial, sans-serif;
+}
+
+html,
+body {
+    height: 100%;
+}
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.mat-dialog-container {
+    box-shadow: 0px 11px 15px -7px rgba(0, 0, 0, 0.2), 0px 24px 38px 3px rgba(0, 0, 0, 0.14),
+        0px 9px 46px 8px rgba(0, 0, 0, 0.12);
+    background: #ffa700;
+    color: #fff;
+}
+
+.mat-paginator-container {
+    display: flex;
+    align-items: center;
+    justify-content: center !important;
+    padding: 0 8px;
+    flex-wrap: wrap-reverse;
+    width: 100%;
+}
+
+.mat-button-wrapper {
+    color: black;
+}
+
+.dialog-container-custom .mat-dialog-container {
+    box-shadow: 0px 11px 15px -7px rgba(0, 0, 0, 0.2), 0px 24px 38px 3px rgba(0, 0, 0, 0.14),
+        0px 9px 46px 8px rgba(0, 0, 0, 0.12);
+    background: #ffa700;
+    color: #fff;
+}

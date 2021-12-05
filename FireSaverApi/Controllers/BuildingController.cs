@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using AutoMapper;
 using FireSaverApi.Contracts;
 using FireSaverApi.DataContext;
 using FireSaverApi.Dtos.BuildingDtos;
@@ -14,16 +15,22 @@ namespace FireSaverApi.Controllers
     public class BuildingController : ControllerBase
     {
         private readonly IBuildingService buildingService;
+        private readonly IBuildingHelper buildingHelper;
         private readonly IUserContextService userContextService;
         private readonly IUserHelper userHelper;
+        private readonly IMapper mapper;
 
         public BuildingController(IBuildingService buildingService,
+                                  IBuildingHelper buildingHelper,
                                   IUserContextService userContextService,
-                                  IUserHelper userHelper)
+                                  IUserHelper userHelper,
+                                  IMapper mapper)
         {
             this.userContextService = userContextService;
             this.userHelper = userHelper;
+            this.mapper = mapper;
             this.buildingService = buildingService;
+            this.buildingHelper = buildingHelper;
         }
 
         [Authorize(Roles = new string[] { UserRoleName.ADMIN })]
@@ -44,21 +51,30 @@ namespace FireSaverApi.Controllers
             return Ok(new ServerResponse() { Message = "Building is deleted successfully" });
         }
 
-        [HttpGet("adduser/{userId}/{buildingId}")]
+        [HttpGet("info/{buildingId}")]
         [Authorize(Roles = new string[] { UserRoleName.ADMIN, UserRoleName.AUTHORIZED_USER })]
-        public async Task<IActionResult> AddResponsibleUser(int userId, int buildingId)
+        public async Task<IActionResult> GetBuildingInfoById(int buildingId)
+        {
+            var buildingInfo = await buildingHelper.GetBuildingById(buildingId);
+            var buildingInfoDto = mapper.Map<BuildingInfoDto>(buildingInfo);
+
+            return Ok(buildingInfoDto);
+        }
+
+        [HttpGet("adduser/{userMail}/{buildingId}")]
+        [Authorize(Roles = new string[] { UserRoleName.ADMIN, UserRoleName.AUTHORIZED_USER })]
+        public async Task<IActionResult> AddResponsibleUser(string userMail, int buildingId)
         {
             var userContext = userContextService.GetUserContext();
 
             if (await BuildingCRUDHelper.isUserResponsobleForBuildingOrAdmin(userHelper, userContext, buildingId))
             {
-                var alteredBuilding = await buildingService.AddResponsibleUser(userId, buildingId);
+                var user = await userHelper.GetUserByMail(userMail);
+                var alteredBuilding = await buildingService.AddResponsibleUser(user.Id, buildingId);
                 return Ok(alteredBuilding);
             }
 
             return BadRequest(new ServerResponse() { Message = "Only responsible users can add new responsible users" });
-
-
         }
 
         [HttpDelete("removeuser/{userId}")]

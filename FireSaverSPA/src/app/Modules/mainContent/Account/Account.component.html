@@ -1,0 +1,33 @@
+<form class="form-wrapper" [formGroup]="updateUserInfoForm">
+  <div class="input-block">
+    <label i18n="@@name">Name</label>
+    <input style="display: block;" type="text" formControlName='name' [(ngModel)]="userrInfo.name">
+  </div>
+  <div class="input-block">
+    <label i18n="@@surname">Surname</label>
+    <input style="display: block;" type="text" formControlName='surname' [(ngModel)]="userrInfo.surname">
+  </div>
+  <div class="input-block">
+    <label i18n="@@patron">Patronymic</label>
+    <input style="display: block;" type="text" formControlName='patronymic' [(ngModel)]="userrInfo.patronymic">
+  </div>
+  <div class="input-block">
+    <label i18n="@@phone">Tel number</label>
+    <input style="display: block;" type="text" formControlName='telNumber'
+      i18n i18n-placeholder="@@phonePlaceholder" placeholder="Enter 10 digits or more" [(ngModel)]="userrInfo.telephoneNumber">
+    <div *ngIf="updatePhoneNumber.invalid && (updatePhoneNumber.dirty || updatePhoneNumber.touched)"
+      style="font-size: small;">
+      Wrong telephone format
+    </div>
+  </div>
+  <div class="input-block">
+    <label i18n="@@dob">Date of birth</label>
+    <input style="display: block;" type="datetime-local" placeholder="dd-mm-yyyy" formControlName='dob'
+      [(ngModel)]="userrInfo.dob">
+  </div>
+  <div class="form-btn-wrapper">
+    <button class="form-btn" style="background-color: green;" (click)="updateUserInfo()" i18n="save button@@btnSave">Save</button>
+    <button class="form-btn" style="background-color: red;" (click)="cancelUpdating()" i18n="cancel button@@btnCancel">Cancel</button>
+  </div>
+  <button class="form-btn" style="margin-top: 30px; width: 200px; background-color: rgb(255, 153, 0);" (click)="logoutUser()" i18n="cancel button@@btnLogout">Logout</button>
+</form>

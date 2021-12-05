@@ -3,14 +3,15 @@ export class Postion {
     latitude: number;
 }
 
-export class Point {
+export class ScalePointDto {
+    id: number;
     mapPosition: Postion;
     worldPosition: Postion;
 }
 
 export class RoutePoint {
     id: number;
-    pointPostion: Postion;
+    mapPosition: Postion;
     childrenPoints: RoutePoint[];
     parentPoint: RoutePoint;
 }

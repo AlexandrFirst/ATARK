@@ -40,7 +40,13 @@ namespace FireSaverApi.Controllers
             var authResponse = await authService.AuthUser(authUserInfo);
 
             return Ok(authResponse);
+        }
 
+        [HttpPost("GetTransformedPostions/{compartmentId}")]
+        public async Task<IActionResult> GetTransformedPostions(int compartmentId, [FromBody] PositionDto worldPostion)
+        {
+            var transformedPostion = await userService.TransformWorldPostionToMap(worldPostion, compartmentId);
+            return Ok(transformedPostion);
         }
 
         [HttpGet("guestAuth")]
@@ -138,12 +144,48 @@ namespace FireSaverApi.Controllers
         }
 
         [Authorize]
-        [HttpGet("alarm")]
+        [HttpGet("alarm")]  
         public async Task<IActionResult> SetAlarm()
         {
             var userId = userContextService.GetUserContext().Id;
             await userService.SetAlaramForBuilding(userId);
             return Ok(new ServerResponse() { Message = "Alarm is set" });
+        }
+
+        [Authorize]
+        [HttpGet("alarmoff")]
+        public async Task<IActionResult> SwitchOffAlarm()
+        {
+            var userId = userContextService.GetUserContext().Id;
+            await userService.SwitchOffAlaramForBuilding(userId);
+            return Ok(new ServerResponse() { Message = "Alarm is off" });
+        }
+
+        [HttpGet("isMailUnique/{mail}")]
+        public async Task<IActionResult> CheckIfMailIsUnique(string mail)
+        {
+            return Ok(await authService.CheckUserMailOnUniqueness(mail));
+        }
+
+        [Authorize]
+        [HttpGet("canUserBeResponsible/{userMail}")]
+        public async Task<IActionResult> CheckIfUserCanBeResponsible(string userMail)
+        {
+            var result = await userService.CheckIfUserCanBeResponsible(userMail);
+            return Ok(new
+            {
+                CanBeResponsible = result
+            });
+        }
+
+        [Authorize]
+        [HttpGet("tokenValid")]
+        public async Task<IActionResult> CheckTokenValidity()
+        {
+            return Ok(new ServerResponse()
+            {
+                Message = "Token is valid"
+            });
         }
     }
 }
