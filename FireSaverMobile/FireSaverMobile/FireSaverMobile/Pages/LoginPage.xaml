@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:input="clr-namespace:Plugin.InputKit.Shared.Controls;assembly=Plugin.InputKit"
+             x:Class="FireSaverMobile.MainPage">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+
+        <Label HorizontalOptions="Center" 
+               VerticalOptions="Center"
+               FontSize="40">Fire saver</Label>
+
+     
+        
+        <StackLayout Padding="10,10,10,0" Grid.Row="1">
+            <input:FormView IsValidated="False">
+                <input:AdvancedEntry
+                Annotation="Email"
+                Title="Enetr your mail"
+                Placeholder="mail@domain.com"
+                AnnotationColor="OrangeRed"
+                ValidationMessage="Incorrect email format"
+                TextColor="Black"
+                Text="{Binding AuthInput.Mail, Mode=TwoWay}"/>
+                <input:AdvancedEntry x:Name="passwordField"
+                Annotation="Password"
+                IsPassword="True"
+                Title="Enetr your pass"
+                Placeholder="*******"
+                AnnotationColor="OrangeRed"
+                ValidationMessage="Incorrect email format"
+                TextColor="Black"
+                Text="{Binding  AuthInput.Password, Mode=TwoWay}"/>
+                <input:CheckBox Text="Show password" x:Name="showPassword" IsChecked="False" CheckChanged="showPassword_CheckChanged"/>
+            </input:FormView>
+        </StackLayout>
+        <StackLayout Grid.Row="2" VerticalOptions="Start" Margin="0,20,0,0">
+            <Button Text="Login" Margin="20,0,20,0" CornerRadius="20" Command="{Binding AuthCommand}" CommandParameter="{Binding AuthInput}"/>
+            <Button Text="Enter as guest" Margin="20,0,20,0" CornerRadius="20"  Command="{Binding AuthGuestCommand}"/>
+        </StackLayout>
+        <ActivityIndicator HeightRequest="100" WidthRequest="100" IsRunning="{Binding IsBusy}" VerticalOptions="Center" HorizontalOptions="Center" Grid.RowSpan="3" />
+    </Grid>
+</ContentPage>

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using FireSaverMobile.DI;
+using FireSaverMobile.Helpers;
+using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -10,7 +12,11 @@ namespace FireSaverMobile
         {
             InitializeComponent();
 
+            TinyIOC.InitContainer();
+
+
             MainPage = new MainPage();
+            NavigationDispetcher.Instance.Initialize(MainPage.Navigation);
         }
 
         protected override void OnStart()
