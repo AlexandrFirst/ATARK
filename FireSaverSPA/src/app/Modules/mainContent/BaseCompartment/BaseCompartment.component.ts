@@ -504,6 +504,7 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
     const newlySelectedPoint = this.routePointMarkers.get(routePointId);
     this.selectedRoutePoint = this.routePoints.find(elem => elem.id == routePointId);
     this.selectPoint(newlySelectedPoint);
+    console.log(this.selectedRoutePoint, " - current route point")
     return newlySelectedPoint
   }
 
