@@ -1,4 +1,5 @@
-﻿using FireSaverMobile.ViewModels;
+﻿using FireSaverMobile.Helpers;
+using FireSaverMobile.ViewModels;
 using Plugin.InputKit.Shared.Controls;
 using System;
 using System.Collections.Generic;
@@ -10,13 +11,12 @@ using Xamarin.Forms;
 
 namespace FireSaverMobile
 {
-    public partial class MainPage : ContentPage
+    public partial class LoginPage : ContentPage
     {
-        public MainPage()
+        public LoginPage()
         {
             InitializeComponent();
             this.BindingContext = new LoginPageViewModel();
-            
         }
 
         private void showPassword_CheckChanged(object sender, EventArgs e)

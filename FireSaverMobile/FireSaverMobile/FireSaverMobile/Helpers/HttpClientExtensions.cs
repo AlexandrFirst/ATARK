@@ -56,7 +56,14 @@ namespace FireSaverMobile.Helpers
             {
                 string content = await response.Content.ReadAsStringAsync();
 
-                output = JsonConvert.DeserializeObject<T>(content);
+                try
+                {
+                    output = JsonConvert.DeserializeObject<T>(content);
+                }
+                catch (Exception e) 
+                {
+                    Console.WriteLine(e.Message);
+                }
             }
 
             return output;

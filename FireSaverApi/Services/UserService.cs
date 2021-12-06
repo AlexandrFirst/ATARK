@@ -147,7 +147,7 @@ namespace FireSaverApi.Services
             var guestUser = new RegisterUserDto()
             {
                 DOB = DateTime.Now,
-                Mail = "",
+                Mail = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
                 Password = Guid.NewGuid().ToString(),
                 Patronymic = "",
@@ -162,7 +162,8 @@ namespace FireSaverApi.Services
             return new AuthResponseDto()
             {
                 Token = token,
-                UserId = response.Id
+                UserId = response.Id,
+                Roles = response.RolesList
             };
         }
 

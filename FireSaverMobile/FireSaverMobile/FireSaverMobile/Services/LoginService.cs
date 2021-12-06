@@ -15,6 +15,8 @@ namespace FireSaverMobile.Services
         
         public async Task<AuthentificationResponse> AuthUser(AuthentificationInput authInput)
         {
+            if (authInput == null)
+                return null;
             var userLoginInput = authInput;
             HttpResponseMessage response = await userLoginInput.PostRequest(client, $"http://{serverAddr}/User/auth");
             var authResponse = await transformHttpResponse<AuthentificationResponse>(response);
@@ -47,6 +49,16 @@ namespace FireSaverMobile.Services
         public void ClearStorage()
         {
             deleteAuthValues();
+        }
+
+        public async Task Logout()
+        {
+            var userInfo = await ReadDataFromStorage();
+            if (userInfo.Roles.Contains("Guest")) 
+            {
+                await client.DeleteRequest<ServerResponse>($"http://{serverAddr}/User/guestLogout/{userInfo.UserId}");
+            }
+            ClearStorage();
         }
 
         public LoginService():base()

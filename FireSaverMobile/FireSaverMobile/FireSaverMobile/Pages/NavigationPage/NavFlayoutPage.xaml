@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FireSaverMobile.Pages.NavFlayoutPage"
+             xmlns:input="clr-namespace:Plugin.InputKit.Shared.Controls;assembly=Plugin.InputKit"
+             Title="Nav bar">
+    <StackLayout>
+        <ListView ItemsSource="{Binding NavElements, Mode=TwoWay}" x:Name="listView" x:FieldModifier="public">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0" Source="{Binding ImageSource}" WidthRequest="10"  Aspect="AspectFit"/>
+                            <Label Grid.Column="1" FontSize="Large" Text="{Binding PageName}" 
+                                   HorizontalOptions="CenterAndExpand" 
+                                   VerticalOptions="Center"/>
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <ActivityIndicator x:Name="activityIndicator"/>
+
+        <Grid ColumnDefinitions="100,*, 10" RowDefinitions="*,*" HeightRequest="200">
+            <Label Text="Language" FontSize="Medium" HorizontalOptions="Center" VerticalOptions="Center"/>
+            <Picker Grid.Column="1" x:Name="languageInterface" Title="Choose language" VerticalOptions="Center"/>
+            <Button Text="Logout" Grid.Row="1" Grid.ColumnSpan="3" Margin="10, 10" CornerRadius="20" Clicked="LogoutBtnClicked"/>
+        </Grid>
+        
+    </StackLayout>
+</ContentPage>

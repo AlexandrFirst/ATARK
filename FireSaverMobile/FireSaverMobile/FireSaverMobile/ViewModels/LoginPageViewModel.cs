@@ -2,6 +2,7 @@
 using FireSaverMobile.DI;
 using FireSaverMobile.Helpers;
 using FireSaverMobile.Models;
+using FireSaverMobile.Pages;
 using FireSaverMobile.Popups.PopupNotification;
 using Rg.Plugins.Popup.Services;
 using System;
@@ -52,7 +53,7 @@ namespace FireSaverMobile.ViewModels
             {
                 return authInput;
             }
-            set 
+            set
             {
                 SetValue(ref authInput, value);
             }
@@ -108,8 +109,13 @@ namespace FireSaverMobile.ViewModels
         {
             if (authResponse != null)
             {
-                // await NavigationDispetcher.Instance.Navigation.PushAsync(null); //TODO: push main page with navigation
-                await PopupNavigation.Instance.PushAsync(new PopupNotificationView("Registration is done", MessageType.Notification));
+                Device.BeginInvokeOnMainThread(async () =>
+                  {
+                      await NavigationDispetcher.Instance.Navigation.PushModalAsync(new MainNavPage());
+                  });
+
+                //TODO: push main page with navigation
+                //await PopupNavigation.Instance.PushAsync(new PopupNotificationView("Registration is done", MessageType.Notification));
             }
             else
             {

@@ -12,6 +12,7 @@ namespace FireSaverMobile.Contracts
         Task<AuthentificationResponse> AuthGuest();
         Task<AuthentificationResponse> ReadDataFromStorage();
         Task<bool> CheckTokenValidity();
+        Task Logout();
         void ClearStorage();
 
     }

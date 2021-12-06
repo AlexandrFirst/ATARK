@@ -23,6 +23,7 @@ namespace FireSaverMobile.DI
         public static void InitContainer() 
         {
             Container.Register<ILoginService, LoginService>().AsSingleton();
+            Container.Register<IUserService, UserService>().AsSingleton();
         }
     }
 }
