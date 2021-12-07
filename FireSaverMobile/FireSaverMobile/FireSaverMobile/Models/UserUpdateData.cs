@@ -16,6 +16,7 @@ namespace FireSaverMobile.Models
             this.surname = surname;
             this.patronymic = patronymic;
             this.telNumber = telNumber;
+            this.dob = dob;
         }
 
         private string name = "";

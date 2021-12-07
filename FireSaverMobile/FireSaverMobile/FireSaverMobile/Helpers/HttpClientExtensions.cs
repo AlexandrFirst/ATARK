@@ -35,9 +35,17 @@ namespace FireSaverMobile.Helpers
 
         public static async Task<T> GetRequest<T>(this HttpClient client, string url)
         {
-            HttpResponseMessage response = await client.GetAsync(url);
+            try
+            {
+                HttpResponseMessage response = await client.GetAsync(url);
 
-            return await postGetDeleteRequestWord<T>(response);
+                return await postGetDeleteRequestWord<T>(response);
+            }
+            catch (Exception e) 
+            {
+                Console.WriteLine(e.Message);
+                return default(T);
+            }
         }
 
         public static async Task<T> DeleteRequest<T>(this HttpClient client, string url)

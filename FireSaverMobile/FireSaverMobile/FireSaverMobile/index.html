@@ -1,0 +1,117 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>LeafletMap</title>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <script src="JS/leaflet.js"></script>
+    <link rel="stylesheet" href="CSS/leaflet.css" />
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        #map {
+            width: 600px;
+            height: 400px;
+        }
+    </style>
+
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+
+        #map {
+            height: 100%;
+            width: 100vw;
+        }
+    </style>
+
+</head>
+<body>
+    <div id='map'></div>
+
+    <script type="text/javascript">
+
+        var routePoints = {};
+
+        var bounds = [[0, 0], [1000, 1000]];
+
+        var myMap;
+        var selectedPoint;
+
+        function initMap(evacPlanUrl) {
+            myMap = L.map('map', {
+                crs: L.CRS.Simple,
+                maxZoom: 5,
+                minZoom: -2,
+            });
+
+            var image = L.imageOverlay(evacPlanUrl, bounds).addTo(myMap);
+
+            setTimeout(() => {
+                centerMap();
+            }, 1000)
+        }
+
+        function centerMap() {
+            if (myMap) {
+                myMap.fitBounds(bounds);
+            }
+        }
+
+        function placeMarker(lat, lng, id) {
+            const newRoutePoint = L.circleMarker([lat, lng], {
+                radius: 8,
+                fillColor: '#ff7800',
+                color: '#ff7800',
+                weight: 1,
+                opacity: 1,
+                fillOpacity: 0.8
+            }).addTo(myMap);
+            routePoints[id] = newRoutePoint;
+        }
+
+        function selectPoint(pointId) {
+
+            const newSelectedPoint = routePoints[pointId];
+
+            if (selectedPoint) {
+                selectedPoint.setStyle({ fillColor: '#ff7800' })
+                selectedPoint = newSelectedPoint;
+                selectedPoint.setStyle({ fillColor: '#ff0000' })
+            } else {
+                selectedPoint = newSelectedPoint;
+                selectedPoint.setStyle({ fillColor: '#ff0000' })
+            }
+        }
+
+
+        function newLine(latFrom, lonFrom, latTo, lonTo, color) {
+            var From = new L.latlng(latFrom, lonFrom);
+            var To = new L.latlng(latTo, lonTo);
+            var FromTo = [From, To];
+            var Line = new L.polyline(FromTo, { color: color, weight: 3, opacity: 0.5, smoothFactor: 1, noClip: false });
+            markerGroup.addLayer(Line);
+        }
+
+
+        function newCircle(lat, lon, color, fillColor, fillOpacity, radius) {
+            var circle = L.circle([lat, lon], { color: color, fillColor: fillColor, fillOpacity: fillOpacity, radius: radius });
+            markerGroup.addLayer(circle);
+        }
+
+        function centerMapToPoint(lat, lon) {
+            map.panTo(new L.LatLng(lat, lon));
+        }
+
+
+    </script>
+</body>
+</html>

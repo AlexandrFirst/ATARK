@@ -58,6 +58,15 @@ namespace FireSaverApi.Controllers
 
             return Ok(new ServerResponse { Message = "Point is deleted" });
         }
+        
+        [HttpPut("points/singlePoint/{scalePointId}")]
+        public async Task<IActionResult> UpdateScalePoint(int scalePointId, [FromBody] PositionDto newWorldPostion)
+        {
+            await CheckIsResponsible();
+            await scalePointService.UpdateWorldPosition(scalePointId, newWorldPostion);
+
+            return Ok(new ServerResponse { Message = "Point is updated" });
+        }
 
         async Task CheckIsResponsible()
         {

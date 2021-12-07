@@ -11,6 +11,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="index.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="index.html" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="Nancy" Version="2.0.0" />
     <PackageReference Include="Rg.Plugins.Popup" Version="2.0.0.14" />
@@ -24,6 +32,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Pages\CompartmentInfosPage.xaml.cs">
+      <DependentUpon>CompartmentInfosPage.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Pages\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
@@ -36,7 +47,10 @@
     <EmbeddedResource Update="Pages\AccountPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Pages\BuildingInfoPage.xaml">
+    <EmbeddedResource Update="Pages\CompartmentScalePoints.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Pages\CompartmentInfosPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Pages\NavigationPage\HomePage.xaml">

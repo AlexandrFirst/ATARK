@@ -50,14 +50,7 @@ namespace FireSaverMobile.ViewModels
 
                 try
                 {
-                    //UserInfo = userInfoDto;
-                    //OnPropertyChanged("UserInfo");
-                    UserInfo = new UserInfo(userInfoDto.Id, userInfoDto.Mail,
-                        userInfoDto.LastSeenBuildingPosition, userInfoDto.Name, userInfoDto.Surname,
-                        userInfoDto.Patronymic, userInfoDto.TelephoneNumber, userInfoDto.DOB);
-
-                    //UserInfo = userMap.Map<UserInfo>(userInfoDto);
-                    //UserInfo.Name = userInfoDto.Name;
+                    UserInfo = userMap.Map<UserInfo>(userInfoDto);
                 }
                 catch (Exception e)
                 {
@@ -76,12 +69,11 @@ namespace FireSaverMobile.ViewModels
                 var updatedUser = await userService.UpdateUserInfo(userInfo);
                 if (updatedUser != null)
                 {
-                    UserInfo = new UserInfo(updatedUser.Id, updatedUser.Mail,
-                       updatedUser.LastSeenBuildingPosition, updatedUser.Name, updatedUser.Surname,
-                       updatedUser.Patronymic, updatedUser.TelephoneNumber, updatedUser.DOB);
+
+                    UserInfo = userMap.Map<UserInfo>(updatedUser);
                     await PopupNavigation.Instance.PushAsync(new PopupNotificationView("User data is updated", MessageType.Notification));
                 }
-                else 
+                else
                 {
                     await PopupNavigation.Instance.PushAsync(new PopupNotificationView("Something went wromg! Try again", MessageType.Error));
                 }

@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:map="clr-namespace:FireSaverMobile.MapRenderer"
+             x:Class="FireSaverMobile.Pages.CompartmentScalePoints">
+    <ContentPage.Content>
+        <StackLayout>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1.5*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <map:IWebViewCustom Grid.Row="0" x:Name="webView" HorizontalOptions="Center"/>
+                <Grid Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0.3*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Column="0" Grid.Row="0" Text="Center map" Margin="10,0,0,0" CornerRadius="20" Clicked="CenterMapBtn_Cliked"/>
+                    <Button Grid.Column="1" Grid.Row="0" Text="Update selected pos" Margin="0,0,10,0" CornerRadius="20" Clicked="UpdateSelectedPoint"/>
+                    <ListView Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" ItemsSource="{Binding ScalePoints}" HasUnevenRows="True">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <FlexLayout Direction="Row" AlignItems="Center" JustifyContent="SpaceBetween" Margin="10, 10">
+                                        <Label Text="{Binding Id, StringFormat='Point with id # {0}'}"/>
+                                        <Button Text="Select" CommandParameter="{Binding Id}" 
+                                                WidthRequest="150" 
+                                                CornerRadius="20"
+                                                Clicked="SelectPointClick_btn"/>
+                                    </FlexLayout>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+                <ActivityIndicator Grid.Row="0" Scale="0.2" IsRunning="True" x:Name="loadingIndicator"/>
+            </Grid>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

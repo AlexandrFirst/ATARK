@@ -57,7 +57,7 @@ namespace FireSaverMobile.Pages
                     {
                         PageName = "Building data",
                         ImageSource = "",
-                        DetailPage = new BuildingInfoPage(userInfo.ResponsibleBuildingId.Value)
+                        DetailPage = new CompartmentInfosPage(userInfo.ResponsibleBuildingId.Value, Models.CompartmentType.Floor)
                     });
                 }
             });
