@@ -16,12 +16,15 @@ namespace FireSaverApi.Controllers
         private readonly IUserService userService;
         private readonly IAuthUserService authService;
         private readonly IUserContextService userContextService;
+        private readonly IBuildingService buildingService;
 
         public UserController(IUserService userService,
                             IAuthUserService authService,
-                            IUserContextService userContextService)
+                            IUserContextService userContextService,
+                            IBuildingService buildingService)
         {
             this.userContextService = userContextService;
+            this.buildingService = buildingService;
             this.authService = authService;
             this.userService = userService;
         }
@@ -158,6 +161,11 @@ namespace FireSaverApi.Controllers
         {
             var userId = userContextService.GetUserContext().Id;
             await userService.SwitchOffAlaramForBuilding(userId);
+
+            var user = await userService.GetUserInfoById(userId);
+
+            await this.buildingService.ReleaseAllBlockedPoints(user.ResponsibleForBuilding.Id);
+            
             return Ok(new ServerResponse() { Message = "Alarm is off" });
         }
 

@@ -16,5 +16,6 @@ namespace FireSaverApi.Contracts
         Task<BuildingInfoDto> UpdateBuildingCenter(int buildingId, BuildingCenterDto buildingCenter);
         Task DeleteBuilding(int buildingId);
         Task<PagedList<BuildingInfoDto>> GetAllBuildings(BuildingFilterParams buildingFilter);
+        Task ReleaseAllBlockedPoints(int buildingId);
     }
 }

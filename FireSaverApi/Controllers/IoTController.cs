@@ -12,7 +12,6 @@ namespace FireSaverApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-
     public class IoTController : ControllerBase
     {
         private readonly IIoTService iotService;

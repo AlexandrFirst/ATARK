@@ -1,8 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FireSaverApi.Contracts;
 using FireSaverApi.DataContext;
+using FireSaverApi.Dtos;
+using FireSaverApi.Dtos.MessageDtos;
 using FireSaverApi.hub;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -77,6 +80,22 @@ namespace FireSaverApi.Services
             return roomUsers;
         }
 
+        public async Task SendMessage(UserInfoDto fromUser, int toUserId, MessageType messageType, int messageId, string placeDescription)
+        {
+            await socketHub.Clients.Group(toUserId.ToString()).SendAsync("MessageRecieved", new MessageDto
+            {
+                Id = messageId,
+                MessageType = messageType,
+                SendTime = DateTime.Now,
+                User = fromUser,
+                PlaceDescription = placeDescription
+            });
+        }
 
+        public async Task DeleteMessage(int userIdMeesageToDeleteOn, int messageId)
+        {
+            await socketHub.Clients.Group(userIdMeesageToDeleteOn.ToString()).SendAsync("DeleteMessage", 
+                new { MessageId = messageId });
+        }
     }
 }

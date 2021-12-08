@@ -268,20 +268,29 @@ namespace FireSaverApi.Services
             else if (currentPoint.ChildrenPoints.Count > (fromChildId == -1 ? 0 : 1))//have we come from child -> 1; not -> -1
             {
                 //TODO: make map tp hoave more than one route.
+
+                RoutePoint backed_point = null;
+
                 foreach (var point in currentPoint.ChildrenPoints)
                 {
                     if (fromChildId > -1 && fromChildId == point.Id)
                         continue;
+                    
                     var observedPoint = await BuildRoute(point.Id, toId);
                     if (observedPoint != null)
                     {
                         currentPoint.ChildrenPoints = new List<RoutePoint>(){
                             observedPoint
                         };
+
+                        backed_point = observedPoint;
+                        if(backed_point.IsBlocked)
+                            continue;
+
                         return currentPoint;
                     }
                 }
-                return null;
+                return backed_point;
             }
             else if (currentPoint.ParentPoint != null)
             {

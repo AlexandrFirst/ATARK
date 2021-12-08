@@ -4,14 +4,16 @@ using FireSaverApi.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FireSaverApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20211208181357_Message entity added")]
+    partial class Messageentityadded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -167,9 +169,6 @@ namespace FireSaverApi.Migrations
 
                     b.Property<int>("MessageType")
                         .HasColumnType("int");
-
-                    b.Property<string>("PlaceDescription")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("SendTime")
                         .HasColumnType("datetime2");

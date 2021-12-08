@@ -151,6 +151,62 @@ namespace FireSaverApi.Services
 
             return PagedList<BuildingInfoDto>.CreateAsync(allBuildingsDto, buildingFilter.PageNumber, buildingFilter.PageSize);
         }
+
+        public async Task ReleaseAllBlockedPoints(int buildingId)
+        {
+            var buildingCompartments = await GetAllBuildingCompartment(buildingId);
+
+            var compartmentsId = buildingCompartments.Select(c => c.Id);
+
+            var compartmentRoutePoints = await context.RoutePoints.Include(c => c.Compartment)
+                .Where(p => compartmentsId.Contains(p.Compartment.Id)).ToListAsync();
+
+            foreach (var point in compartmentRoutePoints)
+            {
+                point.IsBlocked = false;
+            }
+            context.RoutePoints.UpdateRange(compartmentRoutePoints);
+            await context.SaveChangesAsync();
+        }
+
+        private async Task<List<Compartment>> GetAllBuildingCompartment(int buildingId)
+        {
+            var buidling = await GetBuildingById(buildingId);
+            List<Compartment> allCompartments = new List<Compartment>();
+
+            foreach (var floor in buidling.Floors)
+            {
+                allCompartments.Add(floor);
+                foreach (var room in floor.Rooms)
+                {
+                    allCompartments.Add(room);
+                }
+            }
+            return allCompartments;
+        }
+
+        public async Task<Building> GetBuildingByCompartment(int compartmentId)
+        {
+            var compartment = await context.Compartment.FirstOrDefaultAsync(c => c.Id == compartmentId);
+            if (typeof(Compartment) == typeof(Floor))
+            {
+                var f_compartment = await context.Floors.Include(b => b.BuildingWithThisFloor).ThenInclude(u => u.ResponsibleUsers)
+                    .FirstOrDefaultAsync(c => c.Id == compartmentId);
+
+               return f_compartment.BuildingWithThisFloor; 
+            }
+            else if(typeof(Compartment) == typeof(Room))
+            {
+                var r_compartment = await context.Rooms.Include(f => f.RoomFloor).ThenInclude(b => b.BuildingWithThisFloor).ThenInclude(u => u.ResponsibleUsers)
+                    .FirstOrDefaultAsync(r => r.Id == compartmentId);
+                return r_compartment.RoomFloor.BuildingWithThisFloor;
+            }
+            else
+            {
+                throw new System.Exception("Can't determine building");                
+            }
+
+        }
     }
 
 }

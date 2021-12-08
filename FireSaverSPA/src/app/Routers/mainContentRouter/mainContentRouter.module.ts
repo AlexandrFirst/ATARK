@@ -7,6 +7,7 @@ import { BuildingsComponent } from 'src/app/Modules/mainContent/Buildings/Buildi
 import { FloorComponent } from 'src/app/Modules/mainContent/Floor/Floor.component';
 
 import { RoomComponent } from 'src/app/Modules/mainContent/Room/Room.component';
+import { UserNotificaionsComponent } from 'src/app/Modules/mainContent/UserMessages/UserNotificaions.component';
 import { AdminGuard } from 'src/app/route-guards/admin.guard';
 
 @NgModule({
@@ -18,6 +19,7 @@ import { AdminGuard } from 'src/app/route-guards/admin.guard';
       { path: 'buildings', component: BuildingsComponent },
       { path: 'buildings/:buildingId', component: BuildingComponent },
       { path: 'adminPanel', component: AdminPanelComponent, canActivate: [AdminGuard] },
+      { path: 'notifications', component: UserNotificaionsComponent },
       { path: '', redirectTo: 'account', pathMatch: 'full' },
       { path: '**', redirectTo: 'account', pathMatch: 'full' }
     ])

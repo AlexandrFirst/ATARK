@@ -109,6 +109,7 @@ namespace FireSaverMobile.ViewModels
         {
             if (authResponse != null)
             {
+                SignalRConnectionHelper.InitConnection();
                 Device.BeginInvokeOnMainThread(async () =>
                   {
                       await NavigationDispetcher.Instance.Navigation.PushModalAsync(new MainNavPage());

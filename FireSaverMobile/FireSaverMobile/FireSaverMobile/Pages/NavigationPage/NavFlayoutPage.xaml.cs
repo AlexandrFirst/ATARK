@@ -51,6 +51,7 @@ namespace FireSaverMobile.Pages
             Task.Run(async () =>
             {
                 var userInfo = await loginService.ReadDataFromStorage();
+                Console.WriteLine(userInfo);
                 if (userInfo.ResponsibleBuildingId.HasValue && userInfo.ResponsibleBuildingId > -1)
                 {
                     NavElements.Add(new FlayoutItemModel()
