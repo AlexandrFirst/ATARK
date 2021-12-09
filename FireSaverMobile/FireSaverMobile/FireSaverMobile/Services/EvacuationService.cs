@@ -1,8 +1,10 @@
 ﻿using FireSaverMobile.Contracts;
 using FireSaverMobile.Helpers;
 using FireSaverMobile.Models;
+using FireSaverMobile.Models.PointModels;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,6 +17,8 @@ namespace FireSaverMobile.Services
             var evacPlan = await client.GetRequest<EvacuationPlanDto>($"http://{serverAddr}/EvacuationPlan/{compartmentId}");
             return evacPlan;
         }
+
+      
 
         public async Task<List<CompartmentDto>> GetFloorsByBuildingId(int buildingId)
         {
@@ -35,6 +39,25 @@ namespace FireSaverMobile.Services
 
             List<CompartmentDto> roomsOnFloor = floorInfo.Rooms;
             return roomsOnFloor;
+        }
+
+        public async Task<List<EvacuationPlanDto>> GetEvacuationPlansFromCompartment()
+        {
+            var evacuationPlans = await client.GetRequest<List<EvacuationPlanDto>>($"http://{serverAddr}/EvacuationPlan/evacuationplans");
+            return evacuationPlans;
+        }
+
+        public async Task<RoutePointDto> BuildCompartmentEvacRouteForUser()
+        {
+            var evacuationRoute = await client.GetRequest<List<RoutePointDto>>($"http://{serverAddr}/User/evacuate");
+            if (evacuationRoute == null)
+            {
+                return null;
+            }
+            else 
+            {
+                return evacuationRoute.First();
+            }
         }
     }
 }

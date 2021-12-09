@@ -15,5 +15,6 @@ namespace FireSaverMobile.Models
         public string TelephoneNumber { get; set; }
         public DateTime DOB { get; set; }
         public Position LastSeenBuildingPosition { get; set; }
+        public CompartmentCommonInfo CurrentCompartment { get; set; }
     }
 }

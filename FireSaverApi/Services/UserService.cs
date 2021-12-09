@@ -10,6 +10,7 @@ using AutoMapper;
 using FireSaverApi.Contracts;
 using FireSaverApi.DataContext;
 using FireSaverApi.Dtos;
+using FireSaverApi.Dtos.CompartmentDtos;
 using FireSaverApi.Dtos.IoTDtos;
 using FireSaverApi.Dtos.TestDtos;
 using FireSaverApi.Dtos.UserDtos;
@@ -415,6 +416,19 @@ namespace FireSaverApi.Services
             return mappedWorldPostion;
         }
 
+        public async Task<CompartmentCommonInfo> SetCompartment(int userId, int compartmentId)
+        {
+            var compartment = await context.Compartment
+                        .Include(t => t.CompartmentTest)
+                        .ThenInclude(q => q.Questions)
+                        .FirstOrDefaultAsync(c => c.Id == compartmentId);
 
+            var user = await GetUserById(userId);
+            user.CurrentCompartment = compartment;
+            context.Users.Update(user);
+            await context.SaveChangesAsync();
+
+            return mapper.Map<CompartmentCommonInfo>(compartment);
+        }
     }
 }

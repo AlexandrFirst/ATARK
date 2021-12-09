@@ -40,6 +40,8 @@
     <script type="text/javascript">
 
         var routePoints = {};
+        var routeLines = {};
+        var imageMap = null;
 
         var bounds = [[0, 0], [1000, 1000]];
 
@@ -53,11 +55,50 @@
                 minZoom: -2,
             });
 
-            var image = L.imageOverlay(evacPlanUrl, bounds).addTo(myMap);
+            imageMap = L.imageOverlay(evacPlanUrl, bounds).addTo(myMap);
 
             setTimeout(() => {
                 centerMap();
             }, 1000)
+        }
+
+        function clearMap() {
+            if (imageMap) {
+                myMap.removeLayer(imageMap);
+                imageMap = null;
+            }
+        }
+
+        function setMap(evacPlanUrl) {
+            if (!imageMap) {
+                imageMap = L.imageOverlay(evacPlanUrl, bounds).addTo(myMap);
+
+                setTimeout(() => {
+                    centerMap();
+                }, 1000)
+            }
+        }
+
+        function removePoint(pointId) {
+            var point = routePoints[pointId];
+            if (point)
+                myMap.removeLayer(point);
+        }
+
+        function removeLine(lineId) {
+            var line = routeLines[lineId];
+            if (line)
+                myMap.removeLayer(line);
+        }
+
+        function changePointPosition(pointId, newLat, newLng) {
+
+            var point = routePoints[pointId];
+            if (!point)
+                return;
+
+            var newLatLng = new L.LatLng(newLat, newLng);
+            point.setLatLng(newLatLng); 
         }
 
         function centerMap() {
@@ -66,11 +107,11 @@
             }
         }
 
-        function placeMarker(lat, lng, id) {
+        function placeMarker(lat, lng, id, color ='#ff7800') {
             const newRoutePoint = L.circleMarker([lat, lng], {
                 radius: 8,
-                fillColor: '#ff7800',
-                color: '#ff7800',
+                fillColor: color,
+                color: color,
                 weight: 1,
                 opacity: 1,
                 fillOpacity: 0.8
@@ -93,12 +134,13 @@
         }
 
 
-        function newLine(latFrom, lonFrom, latTo, lonTo, color) {
+        function newLine(latFrom, lonFrom, latTo, lonTo, color, id) {
             var From = new L.latlng(latFrom, lonFrom);
             var To = new L.latlng(latTo, lonTo);
             var FromTo = [From, To];
             var Line = new L.polyline(FromTo, { color: color, weight: 3, opacity: 0.5, smoothFactor: 1, noClip: false });
-            markerGroup.addLayer(Line);
+            Line.addTo(myMap);
+            routeLines[id] = Line;
         }
 
 
@@ -108,9 +150,13 @@
         }
 
         function centerMapToPoint(lat, lon) {
-            map.panTo(new L.LatLng(lat, lon));
+            myMap.panTo(new L.LatLng(lat, lon));
         }
 
+        function deletePoint(pointId) {
+            var point = routePoints[pointId];
+            myMap.removeLayer(point);
+        }
 
     </script>
 </body>

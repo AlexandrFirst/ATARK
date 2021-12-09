@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Xamarin.Essentials;
+using FireSaverMobile.Helpers;
 
 namespace FireSaverMobile.Pages
 {
@@ -75,40 +76,6 @@ namespace FireSaverMobile.Pages
         }
 
 
-        async Task<Location> GetCurrentLocation()
-        {
-            try
-            {
-                var request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
-                cts = new CancellationTokenSource();
-                var location = await Geolocation.GetLocationAsync(request, cts.Token);
-
-                if (location != null)
-                {
-                    return location;
-                }
-                return null;
-            }
-            catch (FeatureNotSupportedException fnsEx)
-            {
-                await PopupNavigation.Instance.PushAsync(new PopupNotificationView("Not supported on device", MessageType.Warning));
-
-            }
-            catch (FeatureNotEnabledException fneEx)
-            {
-                await PopupNavigation.Instance.PushAsync(new PopupNotificationView("Not enabled on device", MessageType.Warning));
-            }
-            catch (PermissionException pEx)
-            {
-                await PopupNavigation.Instance.PushAsync(new PopupNotificationView("No permission on device", MessageType.Warning));
-            }
-            catch (Exception ex)
-            {
-                await PopupNavigation.Instance.PushAsync(new PopupNotificationView("Can't get location", MessageType.Error));
-            }
-            return null;
-        }
-
         protected override void OnDisappearing()
         {
             if (cts != null && !cts.IsCancellationRequested)
@@ -139,8 +106,8 @@ namespace FireSaverMobile.Pages
             }
 
             loadingIndicator.IsRunning = true;
-
-            var userLocation = await GetCurrentLocation();
+            cts = new CancellationTokenSource();
+            var userLocation = await LocationSyncer.GetCurrentLocation(cts);
             var result = await scalePointService.UpdateScalepointWorldPosition(
                 new Position() 
                 {

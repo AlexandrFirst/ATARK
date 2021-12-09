@@ -22,6 +22,7 @@ import { TestDialogComponent } from '../../../Modules/mainContent/test-dialog/te
 import { HttpTestService } from 'src/app/Services/httpTest.service';
 import { HttpIotService } from 'src/app/Services/httpIot.service';
 import { AddIotDialogComponent } from '../add-iot-dialog/add-iot-dialog.component';
+import { QRCodeFormat } from 'src/app/Models/QRCodeFormat/QRCodeFormat';
 
 enum MapType {
   ScalePoints,
@@ -495,7 +496,7 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
 
   getCompartmentQrCode() {
     const dialogRef = this.matDialog.open(QrCodeDialogComponent, {
-      data: { info: JSON.stringify({ compartmentId: this.compartmentId }) }
+      data: { info: JSON.stringify({ compatrmentId: this.compartmentId } as QRCodeFormat) }
     })
   }
 
@@ -694,8 +695,8 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
   }
 
   printQrCode(identifier: string) {
-    this.matDialog.open(QrCodeDialogComponent, {
-      data: { info: JSON.stringify({ compartmentId: this.compartmentId, iotId: identifier }) }
+    const dialofRef =this.matDialog.open(QrCodeDialogComponent, {
+      data: { info: JSON.stringify({ compatrmentId: this.compartmentId, IOTId: identifier } as QRCodeFormat) }
     })
   }
 }

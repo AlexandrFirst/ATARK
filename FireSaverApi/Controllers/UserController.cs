@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using FireSaverApi.Contracts;
 using FireSaverApi.DataContext;
 using FireSaverApi.Dtos;
+using FireSaverApi.Dtos.CompartmentDtos;
 using FireSaverApi.Helpers;
 using FireSaverApi.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -147,7 +148,7 @@ namespace FireSaverApi.Controllers
         }
 
         [Authorize]
-        [HttpGet("alarm")]  
+        [HttpGet("alarm")]
         public async Task<IActionResult> SetAlarm()
         {
             var userId = userContextService.GetUserContext().Id;
@@ -165,7 +166,7 @@ namespace FireSaverApi.Controllers
             var user = await userService.GetUserInfoById(userId);
 
             await this.buildingService.ReleaseAllBlockedPoints(user.ResponsibleForBuilding.Id);
-            
+
             return Ok(new ServerResponse() { Message = "Alarm is off" });
         }
 
@@ -194,6 +195,14 @@ namespace FireSaverApi.Controllers
             {
                 Message = "Token is valid"
             });
+        }
+
+        [Authorize]
+        [HttpPost("setUserCompartment")]
+        public async Task<IActionResult> SetUserCompartment([FromBody] UserCompartmentDto newUserCompartment)
+        {
+            var newCompartment = await userService.SetCompartment(newUserCompartment.UserId, newUserCompartment.CompartmentId);
+            return Ok(newCompartment);
         }
     }
 }

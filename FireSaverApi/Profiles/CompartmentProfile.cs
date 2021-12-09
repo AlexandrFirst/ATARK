@@ -19,6 +19,8 @@ namespace FireSaverApi.Profiles
                                         .ForMember(r => r.Id, memberOptions => memberOptions.Ignore());
 
             CreateMap<Room, RoomDto>().ForMember(dest => dest.Id, opt => opt.Condition(src => src.Id >= 0));
+
+            CreateMap<Compartment, CompartmentCommonInfo>();
         }
     }
 }

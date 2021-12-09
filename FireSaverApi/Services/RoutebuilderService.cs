@@ -275,7 +275,7 @@ namespace FireSaverApi.Services
                 {
                     if (fromChildId > -1 && fromChildId == point.Id)
                         continue;
-                    
+
                     var observedPoint = await BuildRoute(point.Id, toId);
                     if (observedPoint != null)
                     {
@@ -284,7 +284,7 @@ namespace FireSaverApi.Services
                         };
 
                         backed_point = observedPoint;
-                        if(backed_point.IsBlocked)
+                        if (backed_point.IsBlocked)
                             continue;
 
                         return currentPoint;
@@ -303,6 +303,19 @@ namespace FireSaverApi.Services
             return currentPoint;
         }
 
-
+        public async Task BlockRoutePoint(int pointId)
+        {
+            var point = await context.RoutePoints.FirstOrDefaultAsync(p => p.Id == pointId);
+            if (point != null)
+            {
+                point.IsBlocked = true;
+                context.Update(point);
+                await context.SaveChangesAsync();
+            }
+            else
+            {
+                throw new System.Exception("Route point is not found");
+            }
+        }
     }
 }

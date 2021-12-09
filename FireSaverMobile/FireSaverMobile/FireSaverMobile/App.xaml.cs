@@ -16,7 +16,7 @@ namespace FireSaverMobile
             TinyIOC.InitContainer();
 
 
-            MainPage = new EvacuationPlanPage();
+            MainPage = new LoginPage();
             NavigationDispetcher.Instance.Initialize(MainPage.Navigation);
         }
 

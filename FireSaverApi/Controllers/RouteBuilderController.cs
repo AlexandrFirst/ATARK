@@ -5,6 +5,7 @@ using AutoMapper;
 using FireSaverApi.Contracts;
 using FireSaverApi.DataContext;
 using FireSaverApi.Dtos;
+using FireSaverApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -43,6 +44,13 @@ namespace FireSaverApi.Controllers
         {
             var deletePointOutputDto = await routeBuilder.DeletePoint(routePointId);
             return Ok(deletePointOutputDto);
+        }
+
+        [HttpDelete("routepoint/block/{routePointId}")]
+        public async Task<IActionResult> BlockRoutePoint(int routePointId)
+        {
+            await routeBuilder.BlockRoutePoint(routePointId);
+            return Ok(new ServerResponse() { Message = "point is blocked" });
         }
 
         [HttpGet("routepoint/{routePointId}")]
