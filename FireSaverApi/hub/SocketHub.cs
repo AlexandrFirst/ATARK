@@ -62,6 +62,17 @@ namespace FireSaverApi.hub
             }
         }
 
+        public async Task DeleteMessage(int messageId, int deleterUserId)
+        {
+            var compartmentId = (await userHelper.GetUserById(deleterUserId)).CurrentCompartment.Id;
+            var buildingId = await iotService.FindBuildingWithCompartmentId(compartmentId);
+            var building = await databaseContext.Buildings.Include(b => b.ResponsibleUsers).FirstOrDefaultAsync(b => b.Id == buildingId);
+            foreach (var user in building.ResponsibleUsers)
+            {
+                await Clients.Group(user.Id.ToString()).SendAsync("MessageDelete", new { MessageId = messageId });
+            }
+        }
+
         public async Task RecieveIotInfo(string id, IoTDataInfo dataInfo)
         {
             await iotService.AnalizeIoTDataInfo(id, dataInfo);

@@ -4,7 +4,7 @@
              x:Class="FireSaverMobile.Pages.HomePage">
     <ContentPage.Content>
         <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
+            <Label Text="FIRE SAVER" FontSize="60"
                 VerticalOptions="CenterAndExpand" 
                 HorizontalOptions="CenterAndExpand" />
         </StackLayout>

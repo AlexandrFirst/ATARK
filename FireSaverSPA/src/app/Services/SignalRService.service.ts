@@ -65,6 +65,7 @@ export class SignalRServiceService extends BaseHttpService {
   MessageRecieved(): Observable<RecievedMessageDto>{
     return new Observable<RecievedMessageDto>(observer => {
       this.hubConnection.on("MessageRecieved", (message: RecievedMessageDto) => {
+        console.log("Message about: ", message)
         observer.next(message);
       })
     });
@@ -72,7 +73,8 @@ export class SignalRServiceService extends BaseHttpService {
 
   MessageDelete(): Observable<DeleteMessageDto>{
     return new Observable<DeleteMessageDto>(observer => {
-      this.hubConnection.on("MessageRecieved", (delMessageInfo: DeleteMessageDto) => {
+      this.hubConnection.on("DeleteMessage", (delMessageInfo: DeleteMessageDto) => {
+        console.log("Message to delete: ", delMessageInfo)
         observer.next(delMessageInfo);
       })
     });

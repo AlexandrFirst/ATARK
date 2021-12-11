@@ -6,6 +6,7 @@ using FireSaverMobile.Models.PointModels;
 using FireSaverMobile.Models.QRModel;
 using FireSaverMobile.Popups.PopupNotification;
 using FireSaverMobile.Popups.QRCodePopUp;
+using FireSaverMobile.Popups.qrScannerProxy;
 using FireSaverMobile.Services;
 using KinderMobile.PopupYesNo;
 using Newtonsoft.Json;
@@ -57,6 +58,8 @@ namespace FireSaverMobile.ViewModels
         public ICommand QrCodeClick { get; set; }
         public ICommand BlockSelectedPoint { get; set; }
 
+        public bool IsUserReachedExit { get; set; } = false;
+
         public EvacuationPlanViewModel()
         {
             userService = TinyIOC.Container.Resolve<IUserService>();
@@ -81,9 +84,20 @@ namespace FireSaverMobile.ViewModels
             NextCompartment = new Command(async () =>
             {
                 IsBusy = true;
-                evacuationPlanIndex++;
-                var userInfoData = await loginService.ReadDataFromStorage();
-                await InitEvacPlan(userInfoData.UserId);
+                if (evacuationPlanIndex < EvacuationsPlans.Count - 1)
+                {
+                    var userInfoData = await loginService.ReadDataFromStorage();
+                    await InitEvacPlan(userInfoData.UserId);
+                }
+                else
+                {
+                    IsUserReachedExit = true;
+                    await PopupNavigation.Instance.PushAsync(new PopupYesActionView(async () =>
+                    {
+                        await NavigationDispetcher.Instance.Navigation.PopModalAsync();
+                    }, "You have reached the exit. Return to main page?", true));
+
+                }
                 IsBusy = false;
             });
 
@@ -116,31 +130,32 @@ namespace FireSaverMobile.ViewModels
                 await userService.BlockPoint(pointId);
             });
 
-            Task.Run(async () =>
+        }
+
+
+        public async Task InitEvacPlans()
+        {
+            IsBusy = true;
+            var userInfoData = await loginService.ReadDataFromStorage();
+
+            if (userInfoData == null)
             {
-                IsBusy = true;
-                var userInfoData = await loginService.ReadDataFromStorage();
+                return;
+            }
 
-                if (userInfoData == null)
-                {
-                    return;
-                }
+            var userId = userInfoData.UserId;
+            var userFullData = await userService.GetUserInfoById(userId);
+            this.currentCompartment = userFullData.CurrentCompartment;
 
-                var userId = userInfoData.UserId;
-                var userFullData = await userService.GetUserInfoById(userId);
-                this.currentCompartment = userFullData.CurrentCompartment;
+            if (this.currentCompartment == null)
+            {
+                await RequestQrCode(userId);
+                return;
+            }
 
-                if (this.currentCompartment == null)
-                {
-                    RequestQrCode(userId);
-                    return;
-                }
+            await InitEvacuationInfo(userId);
 
-                await InitEvacuationInfo(userId);
-
-                IsBusy = false;
-            });
-
+            IsBusy = false;
         }
 
         private async Task InitEvacuationInfo(int userId)
@@ -156,10 +171,12 @@ namespace FireSaverMobile.ViewModels
 
         private async Task InitEvacPlan(int userId)
         {
+            
             await userService.SetUserCompartment(userId, EvacuationsPlans[evacuationPlanIndex].Id);
             var evacCompartmentRoutePoints = await evacuationService.BuildCompartmentEvacRouteForUser();
 
             OnEvacuationPlanInit(EvacuationsPlans[evacuationPlanIndex], evacCompartmentRoutePoints);
+            evacuationPlanIndex++;
         }
 
         private async Task SyncPosHandler()
@@ -174,38 +191,65 @@ namespace FireSaverMobile.ViewModels
             };
 
             var updatedWorldUserPos = await userService.UpdateUserWorldPosition(newPos);
-            var mappedUserPos = await userService.GetTransformedWorldPosition(
-                EvacuationsPlans[evacuationPlanIndex].Id,
-                updatedWorldUserPos);
+            try
+            {
+                var mappedUserPos = await userService.GetTransformedWorldPosition(
+                    EvacuationsPlans[evacuationPlanIndex].Id,
+                    updatedWorldUserPos);
 
-            CurrentUserPostion = mappedUserPos;
+                if (mappedUserPos != null)
+                    CurrentUserPostion = mappedUserPos;
+                else
+                    await PopupNavigation.Instance.PushAsync(new PopupNotificationView("Can't sync position. Map scale is not set", MessageType.Error));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
 
-        private void RequestQrCode(int userId)
+        private async Task RequestQrCode(int userId)
         {
             var yesActionView = new PopupYesActionView(async () =>
             {
-                var scanner = DependencyService.Get<IQrScaninngService>();
-                var result = await scanner.ScanAsync();
+                //var scanner = DependencyService.Get<IQrScaninngService>();
+                //var result = await scanner.ScanAsync();
+                //QrModel scannedQrModel = JsonConvert.DeserializeObject<QrModel>(result);
 
-                QrModel scannedQrModel = JsonConvert.DeserializeObject<QrModel>(result);
-
-                if (scannedQrModel.CompatrmentId.HasValue)
+                await PopupNavigation.Instance.PushAsync(new InputPopUp(async (InputResult result) =>
                 {
-                    RequestQrCode(userId);
-                }
-                else
-                {
+                    QrModel scannedQrModel = new QrModel()
+                    {
+                        CompatrmentId = result.CompartmentId,
+                    };
                     await userService.SetUserCompartment(userId, scannedQrModel.CompatrmentId.Value);
-
                     var userFullData = await userService.GetUserInfoById(userId);
                     this.currentCompartment = userFullData.CurrentCompartment;
 
                     await InitEvacuationInfo(userId);
-                }
+
+                    while (PopupNavigation.Instance.PopupStack.Count > 0)
+                        await PopupNavigation.Instance.PopAsync(true);
+                }));
+
+
+                //if (scannedQrModel.CompatrmentId.HasValue)
+                //{
+                //    await RequestQrCode(userId);
+                //}
+                //else
+                //{
+                //    await userService.SetUserCompartment(userId, scannedQrModel.CompatrmentId.Value);
+
+                //    var userFullData = await userService.GetUserInfoById(userId);
+                //    this.currentCompartment = userFullData.CurrentCompartment;
+
+                //    await InitEvacuationInfo(userId);
+                //}
 
             },
-            "Scan qr code to get current compartment info");
+            "Scan qr code to get current compartment info", false);
+            await PopupNavigation.Instance.PushAsync(yesActionView);
 
         }
 

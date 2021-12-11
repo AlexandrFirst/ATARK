@@ -188,23 +188,25 @@ namespace FireSaverApi.Services
         public async Task<Building> GetBuildingByCompartment(int compartmentId)
         {
             var compartment = await context.Compartment.FirstOrDefaultAsync(c => c.Id == compartmentId);
-            if (typeof(Compartment) == typeof(Floor))
+            if (compartment == null)
+                throw new System.Exception("Can't determine building");
+
+            if ((compartment as Floor).BuildingWithThisFloor != null)
             {
                 var f_compartment = await context.Floors.Include(b => b.BuildingWithThisFloor).ThenInclude(u => u.ResponsibleUsers)
                     .FirstOrDefaultAsync(c => c.Id == compartmentId);
 
-               return f_compartment.BuildingWithThisFloor; 
+                return f_compartment.BuildingWithThisFloor;
             }
-            else if(typeof(Compartment) == typeof(Room))
+            else
             {
                 var r_compartment = await context.Rooms.Include(f => f.RoomFloor).ThenInclude(b => b.BuildingWithThisFloor).ThenInclude(u => u.ResponsibleUsers)
                     .FirstOrDefaultAsync(r => r.Id == compartmentId);
                 return r_compartment.RoomFloor.BuildingWithThisFloor;
             }
-            else
-            {
-                throw new System.Exception("Can't determine building");                
-            }
+
+
+
 
         }
     }

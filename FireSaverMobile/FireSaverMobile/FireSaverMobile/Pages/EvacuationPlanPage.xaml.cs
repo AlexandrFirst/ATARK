@@ -1,9 +1,12 @@
-﻿using FireSaverMobile.Models;
+﻿using FireSaverMobile.MapRenderer;
+using FireSaverMobile.Models;
 using FireSaverMobile.Models.PointModels;
 using FireSaverMobile.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,15 +35,22 @@ namespace FireSaverMobile.Pages
         {
             InitializeComponent();
             evacPlanModel = new EvacuationPlanViewModel();
+            this.BindingContext = evacPlanModel;
+
 
             evacPlanModel.OnEvacuationPlanInit += (EvacuationPlanDto evacPlanDto, RoutePointDto startPoint) =>
             {
                 ClearAllPoints();
                 ClearAllLines();
                 if (!isMapInited)
+                {
                     InitMap(evacPlanDto.Url);
+                    isMapInited = true;
+                }
                 else
+                {
                     ChangeMap(evacPlanDto.Url);
+                }
 
                 InitEvacPoints(startPoint);
 
@@ -62,12 +72,29 @@ namespace FireSaverMobile.Pages
 
                 userPosition = newUserPos;
             };
-
-
-            this.BindingContext = evacPlanModel;
         }
 
+        protected override async void OnAppearing()
+        {
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                await Create();
+                Thread.Sleep(1000);
+            });
 
+            var bindingContext = this.BindingContext as EvacuationPlanViewModel;
+            if (bindingContext != null)
+                await bindingContext.InitEvacPlans();
+
+            base.OnAppearing();
+
+        }
+
+        protected override bool OnBackButtonPressed()
+        {
+            var evacViewModel = BindingContext as EvacuationPlanViewModel;
+            return evacPlanModel.IsUserReachedExit;
+        }
 
         private void InitEvacPoints(RoutePointDto rootPoint)
         {
@@ -78,16 +105,19 @@ namespace FireSaverMobile.Pages
                 if (point.RoutePointType == RoutePointType.EXIT)
                     hasExit = true;
                 InitEvacPoints(point);
-                PlaceLine(rootPoint.MapPosition, point.MapPosition, point.Id);
+                PlaceLine(rootPoint.Id, point.Id, point.Id);
                 linesBetweenPoints.Add(point.Id);
             }
 
             return;
         }
 
-        private void InitMap(string mapUrl)
+
+        private async void InitMap(string imageUrl)
         {
-            webView.Eval($"initMap('{mapUrl}')");
+
+            var res = await webView.EvaluateJavaScriptAsync(string.Format($"initMap('{imageUrl}')"));
+            Console.WriteLine(res);
         }
 
         private void PlacePoint(int pointId, Position pointPos, string color = "#ff7800")
@@ -95,9 +125,9 @@ namespace FireSaverMobile.Pages
             webView.Eval($"placeMarker({pointPos.Latitude}, {pointPos.Longtitude}, {pointId}, '{color}')");
         }
 
-        private void PlaceLine(Position from, Position to, int lineId)
+        private void PlaceLine(int fromId, int toId, int lineId)
         {
-            webView.Eval($"newLine({from.Latitude},{from.Longtitude}, {to.Latitude}, {to.Longtitude}, '#DC143C', {lineId})");
+            webView.Eval($"newLine({fromId},{toId},'#DC143C', {lineId})");
         }
 
         private void ClearAllPoints()
@@ -153,6 +183,35 @@ namespace FireSaverMobile.Pages
         private void BlockPointBtnClicked(object sender, EventArgs e)
         {
             evacPlanModel.BlockSelectedPoint.Execute(routePointIds[currentSelectedPoint]);
+        }
+
+        private async Task Create()
+        {
+            var source = new HtmlWebViewSource();
+            source.BaseUrl = DependencyService.Get<IBaseUrl>().Get();
+            var assembly = typeof(App).GetTypeInfo().Assembly;
+            var stream = assembly.GetManifestResourceStream("FireSaverMobile.index.html");
+            StreamReader reader = null;
+            if (stream != null)
+            {
+                try
+                {
+                    reader = new StreamReader(stream);
+                    source.Html = reader.ReadToEnd();
+                }
+                finally
+                {
+                    if (reader != null)
+                    {
+                        reader.Dispose();
+                    }
+                }
+                webView.Source = source;
+            }
+            else
+            {
+                await DisplayAlert("Map error", "Try again", "Ok");
+            }
         }
     }
 }

@@ -4,13 +4,13 @@
       style="border: 1px solid black; display: grid; grid-template-columns: auto 100px;">
       <div style="align-self: center;">{{message.user.name}} {{message.user.surname}}</div>
       <div style="align-self: center;">{{message.user.telephoneNumber}}</div>
-      <div style="align-self: center;">at {{message.user.sendTime}}</div>
+      <div style="align-self: center;">at {{message.sendTime | date}}</div>
       <div style="align-self: center;">send message of 
-        <span *ngIf="message.messageType == MessageType.FIRE; else otherMessage">Fire</span>
+        <span *ngIf="checkType(message.messageType); else otherMessage">Fire</span>
         <ng-template #otherMessage>Help</ng-template>
       </div>
       <div>He is at {{message.placeDescription}}</div>
-      <button class="btn btn-danger">Delete</button>
+      <button class="btn btn-danger" (click)="deleteMessagedBtnClicked(message.id)">Delete</button> 
     </div>
   </div>
 </div>

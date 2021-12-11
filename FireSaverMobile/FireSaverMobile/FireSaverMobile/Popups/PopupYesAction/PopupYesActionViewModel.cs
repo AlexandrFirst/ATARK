@@ -25,14 +25,16 @@ namespace KinderMobile.PopupYesNo
         public string Message { get; set; }
 
         private readonly Action PositiveResponse;
+        private readonly bool automaticPopUpClose;
 
-        public PopupYesActionViewModel(Action PositiveAction, string message)
+        public PopupYesActionViewModel(Action PositiveAction, string message, bool automaticPopUpClose = false)
         {
             ActionCommand = new Command<object>( async (param) => await Action(param));
 
             this.PositiveResponse = PositiveAction;
 
             Message = message;
+            this.automaticPopUpClose = automaticPopUpClose;
         }
 
 
@@ -48,8 +50,8 @@ namespace KinderMobile.PopupYesNo
                 default:
                     break;
             }
-
-            await PopupNavigation.Instance.PopAsync(true);
+            if(automaticPopUpClose)
+                await PopupNavigation.Instance.PopAsync(true);
         }
 
         protected void OnPropertyChanged(string propName)

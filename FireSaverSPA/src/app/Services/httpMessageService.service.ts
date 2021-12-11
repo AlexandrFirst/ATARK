@@ -1,6 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { RecievedMessageDto } from '../Models/MessageModels/MessageRecievedDto';
 import { BaseHttpService } from './baseHttp.service';
 
 @Injectable({
@@ -13,6 +14,10 @@ export class HttpMessageServiceService extends BaseHttpService {
   }
 
   deleteMessage(messageId: number): Observable<any> {
-    return this.client.delete(this.baseUrl + `Message/DeleteMessage/${messageId}`);
+       return this.client.delete(this.baseUrl + `Message/DeleteMessage/${messageId}`);
+  }
+
+  getAllMessages(): Observable<RecievedMessageDto[]>{
+    return this.client.get<RecievedMessageDto[]>(this.baseUrl + `Message/allMessages`);
   }
 }

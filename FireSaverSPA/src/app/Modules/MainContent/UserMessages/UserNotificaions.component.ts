@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DeleteMessageDto } from 'src/app/Models/MessageModels/DeleteMessageDto';
-import { RecievedMessageDto } from 'src/app/Models/MessageModels/MessageRecievedDto';
+import { MessageType, RecievedMessageDto } from 'src/app/Models/MessageModels/MessageRecievedDto';
 import { HttpMessageServiceService } from 'src/app/Services/httpMessageService.service';
 import { SignalRServiceService } from 'src/app/Services/SignalRService.service';
 
@@ -23,6 +23,10 @@ export class UserNotificaionsComponent implements OnInit {
     this.socketService.MessageDelete().subscribe((delMessageInfo: DeleteMessageDto) => {
       this.deleteMessage(delMessageInfo.messageId);
     })
+
+    this.messageService.getAllMessages().subscribe((messages: RecievedMessageDto[]) => {
+      this.messages.push(...messages);
+    })
   }
 
   deleteMessagedBtnClicked(messageId: number) {
@@ -34,7 +38,11 @@ export class UserNotificaionsComponent implements OnInit {
   private deleteMessage(messageId: number) {
     var messageIdToDelete = messageId;
     var messageIndexToDelete = this.messages.findIndex(m => m.id == messageIdToDelete);
-    this.messages.splice(messageIdToDelete, 1);
+    this.messages.splice(messageIndexToDelete, 1);
+  }
+
+  checkType(messageType: MessageType): boolean{
+    return messageType == MessageType.FIRE
   }
 
 }

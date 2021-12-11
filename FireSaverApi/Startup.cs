@@ -181,6 +181,7 @@ namespace FireSaverApi
                 mc.AddProfile(new ScaleModelProfile());
                 mc.AddProfile(new IoTProfile());
                 mc.AddProfile(new TestProfile());
+                mc.AddProfile(new MessageProfile());
 
             });
 

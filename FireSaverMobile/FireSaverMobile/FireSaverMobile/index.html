@@ -57,6 +57,9 @@
 
             imageMap = L.imageOverlay(evacPlanUrl, bounds).addTo(myMap);
 
+            console.log('here');
+            console.log(imageMap);
+
             setTimeout(() => {
                 centerMap();
             }, 1000)
@@ -116,6 +119,7 @@
                 opacity: 1,
                 fillOpacity: 0.8
             }).addTo(myMap);
+
             routePoints[id] = newRoutePoint;
         }
 
@@ -134,11 +138,10 @@
         }
 
 
-        function newLine(latFrom, lonFrom, latTo, lonTo, color, id) {
-            var From = new L.latlng(latFrom, lonFrom);
-            var To = new L.latlng(latTo, lonTo);
-            var FromTo = [From, To];
-            var Line = new L.polyline(FromTo, { color: color, weight: 3, opacity: 0.5, smoothFactor: 1, noClip: false });
+        function newLine(fromPointIndex, toPointIndex, color, id) {
+            var From = routePoints[fromPointIndex];
+            var To = routePoints[toPointIndex];
+            var Line = L.polyline([From.getLatLng(), To.getLatLng()], { color: color, weight: 3, opacity: 0.5, smoothFactor: 1, noClip: false })
             Line.addTo(myMap);
             routeLines[id] = Line;
         }

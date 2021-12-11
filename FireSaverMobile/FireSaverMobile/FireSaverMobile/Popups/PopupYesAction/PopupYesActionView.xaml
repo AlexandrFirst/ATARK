@@ -17,7 +17,7 @@
                HorizontalOptions="Center"
                VerticalOptions="Center"/>
 
-        <Grid ColumnDefinitions="*, *">
+        <Grid ColumnDefinitions="*">
             <Button BackgroundColor="{Binding BackGroundColor}"
                 FontSize="30"
                 Text="OK"

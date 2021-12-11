@@ -33,8 +33,8 @@ namespace FireSaverMobile.Services
         public async Task<Position> UpdateUserWorldPosition(Position newPos)
         {
             var response = await newPos.PostRequest(client, $"http://{serverAddr}/User/setWorldPosition");
-            var updatePos = await transformHttpResponse<Position>(response);
-            return updatePos;
+            var userInfo = await transformHttpResponse<UserInfoDto>(response);
+            return userInfo.LastSeenBuildingPosition;
         }
 
         public async Task<Position> GetTransformedWorldPosition(int compartmentId, Position worldPostion)

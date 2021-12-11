@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<pages:PopupPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FireSaverMobile.Popups.qrScannerProxy.InputPopUp"
+             xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup">
+    <StackLayout Margin="12"
+                 Padding="24, 24, 24, 0"
+                 Spacing="24"
+                 BackgroundColor="Orange"
+                 HorizontalOptions="Center"
+                 VerticalOptions="Center"
+                 WidthRequest="300">
+        <Label Text="CompartmentId"/>
+        <Entry Text="{Binding CompartmentIdText}"/>
+        <Label Text="IoTId"/>
+        <Entry Text="{Binding IoTIdText}"/>
+        <Button Text="Apply" Command="{Binding ApplyInput}"/>
+    </StackLayout>
+</pages:PopupPage>

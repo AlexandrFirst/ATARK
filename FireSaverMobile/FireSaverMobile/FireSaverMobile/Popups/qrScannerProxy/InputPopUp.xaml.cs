@@ -8,15 +8,15 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace KinderMobile.PopupYesNo
+namespace FireSaverMobile.Popups.qrScannerProxy
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class PopupYesActionView : PopupPage
+    public partial class InputPopUp : PopupPage
     {
-        public PopupYesActionView(Action PositiveAction, string message, bool automaticPopUpClose = false)
+        public InputPopUp(Action<InputResult> OnPopupClose)
         {
             InitializeComponent();
-            this.BindingContext = new PopupYesActionViewModel(PositiveAction, message, automaticPopUpClose);
+            BindingContext = new InputPopUpViewModel(OnPopupClose);
         }
     }
 }

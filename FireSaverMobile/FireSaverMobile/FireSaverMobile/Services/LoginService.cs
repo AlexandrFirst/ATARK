@@ -20,8 +20,8 @@ namespace FireSaverMobile.Services
             var userLoginInput = authInput;
             HttpResponseMessage response = await userLoginInput.PostRequest(client, $"http://{serverAddr}/User/auth");
             var authResponse = await transformHttpResponse<AuthentificationResponse>(response);
-
-            await writeAuthValues(authResponse);
+            if(authResponse!=null)
+                await writeAuthValues(authResponse);
 
             return authResponse;
         }

@@ -43,15 +43,20 @@ namespace FireSaverApi.Services
 
             foreach (var user in responsibleUsersForBuilding)
             {
+                if(user.Id == userId)
+                    continue;
                 await socketService.DeleteMessage(user.Id, messageToDelete.Id);
             }
+
+            context.Remove(messageToDelete);
+            await context.SaveChangesAsync();
         }
 
         public async Task<List<MessageDto>> GetAllMessagesForBuilding(int userId)
         {
             var user = await userHelper.GetUserById(userId);
 
-            var messages = await context.Messages.Include(b => b.Building).Where(m => m.Building.Id == user.ResponsibleForBuilding.Id).ToListAsync();
+            List<Message> messages = await context.Messages.Include(b => b.Building).Where(m => m.Building.Id == user.ResponsibleForBuilding.Id).ToListAsync();
             var messagesDto = mapper.Map<List<MessageDto>>(messages);
             return messagesDto;
         }

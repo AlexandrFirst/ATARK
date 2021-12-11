@@ -31,7 +31,7 @@ namespace FireSaverApi.Controllers
 
         [Authorize]
         [HttpDelete("DeleteMessage/{messageId}")]
-        public async Task<IActionResult> DeleteMessage(int messageId, [FromBody] InputMessageDto messageDto)
+        public async Task<IActionResult> DeleteMessage(int messageId)
         {
             var userId = userContext.GetUserContext().Id;
 

@@ -1,5 +1,7 @@
-﻿using FireSaverMobile.Popups.PopupNotification;
+﻿using FireSaverMobile.Pages;
+using FireSaverMobile.Popups.PopupNotification;
 using FireSaverMobile.Services;
+using KinderMobile.PopupYesNo;
 using Microsoft.AspNetCore.SignalR.Client;
 using Rg.Plugins.Popup.Services;
 using System;
@@ -71,6 +73,13 @@ namespace FireSaverMobile.Helpers
                 await Task.Delay(5000);
                 await Connect();
             };
+
+            hubConnection.On("Alarm", async () =>
+            {
+                await PopupNavigation.Instance.PushAsync(new PopupYesActionView(async () => {
+                    await NavigationDispetcher.Instance.Navigation.PushModalAsync(new EvacuationPlanPage());
+                }, "ALARM!!!", true));
+            });
         }
 
 

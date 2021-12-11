@@ -83,6 +83,9 @@
     <EmbeddedResource Update="Popups\QRCodePopUp\QRCodePopup.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Update="Popups\qrScannerProxy\InputPopUp.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>

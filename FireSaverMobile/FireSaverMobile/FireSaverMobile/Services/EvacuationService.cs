@@ -44,7 +44,7 @@ namespace FireSaverMobile.Services
         public async Task<List<EvacuationPlanDto>> GetEvacuationPlansFromCompartment()
         {
             var evacuationPlans = await client.GetRequest<List<EvacuationPlanDto>>($"http://{serverAddr}/EvacuationPlan/evacuationplans");
-            return evacuationPlans;
+            return evacuationPlans.Where(p => p!=null).ToList();
         }
 
         public async Task<RoutePointDto> BuildCompartmentEvacRouteForUser()

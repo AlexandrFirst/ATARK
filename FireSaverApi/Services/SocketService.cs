@@ -87,14 +87,19 @@ namespace FireSaverApi.Services
                 Id = messageId,
                 MessageType = messageType,
                 SendTime = DateTime.Now,
-                User = fromUser,
+                User = new UserInfoDto()
+                {
+                    Name = fromUser.Name,
+                    Surname = fromUser.Surname,
+                    TelephoneNumber = fromUser.TelephoneNumber
+                },
                 PlaceDescription = placeDescription
             });
         }
 
         public async Task DeleteMessage(int userIdMeesageToDeleteOn, int messageId)
         {
-            await socketHub.Clients.Group(userIdMeesageToDeleteOn.ToString()).SendAsync("DeleteMessage", 
+            await socketHub.Clients.Group(userIdMeesageToDeleteOn.ToString()).SendAsync("DeleteMessage",
                 new { MessageId = messageId });
         }
     }
