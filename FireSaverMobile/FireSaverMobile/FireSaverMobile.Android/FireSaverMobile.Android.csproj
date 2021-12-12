@@ -79,6 +79,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExtendedLabel\ExtendedLabelRenderer.cs" />
     <Compile Include="MapRenderer\BaseUrl.cs" />
     <Compile Include="MapRenderer\WebViewCustom.cs" />
     <Compile Include="MainActivity.cs" />

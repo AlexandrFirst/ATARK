@@ -35,6 +35,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Pages\CompartmentTestPage.xaml.cs">
+      <DependentUpon>CompartmentTestPage.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Pages\CompartmentInfosPage.xaml.cs">
       <DependentUpon>CompartmentInfosPage.xaml</DependentUpon>
     </Compile>
@@ -53,10 +56,19 @@
     <EmbeddedResource Update="Pages\AccountPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Update="Pages\CompartmentRulePage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Pages\CompartmentTestPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Pages\CompartmentScalePoints.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Pages\CompartmentInfosPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Pages\CurrentRoomPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Pages\EvacuationPlanPage.xaml">
@@ -71,9 +83,6 @@
     <EmbeddedResource Update="Pages\NavigationPage\MainNavPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Pages\QRScanPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
     <EmbeddedResource Update="Pages\UserDataView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
@@ -86,9 +95,5 @@
     <EmbeddedResource Update="Popups\qrScannerProxy\InputPopUp.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Validators\" />
   </ItemGroup>
 </Project>

@@ -13,6 +13,7 @@ namespace FireSaverApi.Controllers
     public class TestController : ControllerBase
     {
         private readonly ITestService testService;
+        private readonly IUserContextService userContextService;
 
         public TestController(ITestService testService)
         {
@@ -47,7 +48,7 @@ namespace FireSaverApi.Controllers
             if (success)
                 return Ok(new ServerResponse() { Message = "Test is passed" });
             else
-                return Ok(new ServerResponse() { Message = "Test is not passed" });
+                return BadRequest(new ServerResponse() { Message = "Test is not passed" });
         }
     }
 }

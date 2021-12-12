@@ -16,7 +16,7 @@ namespace FireSaverMobile.Models.QRModel
         public int? BuildingId = null;
 
         [JsonProperty("IOTId")]
-        public string IOTId = null;
+        public int? IOTId = null;
 
         [JsonProperty("compatrmentId")]
         public int? CompatrmentId = null;

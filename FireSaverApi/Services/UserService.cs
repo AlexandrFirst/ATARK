@@ -416,6 +416,14 @@ namespace FireSaverApi.Services
             return mappedWorldPostion;
         }
 
+        public async Task<PositionDto> TransformWorldPostionToMapByEvacPlanId(PositionDto worldPostion, int EvacPlanId)
+        {
+            var compartmentByEvacPlan = await context.EvacuationPlans.Include(e => e.Compartment).FirstOrDefaultAsync(e => e.Id == EvacPlanId);
+
+            var mappedWorldPostion = await locationService.WorldToImgPostion(worldPostion, compartmentByEvacPlan.Compartment.Id);
+            return mappedWorldPostion;
+        }
+
         public async Task<CompartmentCommonInfo> SetCompartment(int userId, int compartmentId)
         {
             var compartment = await context.Compartment
@@ -429,6 +437,23 @@ namespace FireSaverApi.Services
             await context.SaveChangesAsync();
 
             return mapper.Map<CompartmentCommonInfo>(compartment);
+        }
+
+
+        public async Task<CompartmentCommonInfo> SetCompartmentByEvacPlan(int userId, int evacPlanId)
+        {
+            var evacPlan = await context.EvacuationPlans
+                        .Include(t => t.Compartment)
+                        .ThenInclude(q => q.CompartmentTest)
+                        .ThenInclude(q => q.Questions)
+                        .FirstOrDefaultAsync(e => e.Id == evacPlanId);
+
+            var user = await GetUserById(userId);
+            user.CurrentCompartment = evacPlan.Compartment;
+            context.Users.Update(user);
+            await context.SaveChangesAsync();
+
+            return mapper.Map<CompartmentCommonInfo>(evacPlan.Compartment);
         }
     }
 }

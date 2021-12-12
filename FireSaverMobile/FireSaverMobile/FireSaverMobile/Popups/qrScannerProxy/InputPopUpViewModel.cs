@@ -12,15 +12,15 @@ namespace FireSaverMobile.Popups.qrScannerProxy
     public class InputResult
     {
         public int CompartmentId { get; set; }
-        public string IotId { get; set; }
+        public int? IotId { get; set; }
     }
 
     public class InputPopUpViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private string compartmentIdText = "";
-        public string CompartmentIdText
+        private int compartmentIdText = 0;
+        public int CompartmentIdText
         {
             get { return compartmentIdText; }
             set
@@ -30,10 +30,10 @@ namespace FireSaverMobile.Popups.qrScannerProxy
             }
         }
 
-        private string ioTIdText = "";
+        private int? ioTIdText = null;
         private readonly Action<InputResult> onPopupClose;
 
-        public string IoTIdText
+        public int? IoTIdText
         {
             get { return ioTIdText; }
             set
@@ -56,8 +56,8 @@ namespace FireSaverMobile.Popups.qrScannerProxy
 
             onPopupClose(new InputResult() 
             {
-                CompartmentId = Convert.ToInt32(compartmentIdText),
-                IotId = compartmentIdText
+                CompartmentId = compartmentIdText,
+                IotId = ioTIdText
             });
 
             while (PopupNavigation.Instance.PopupStack.Count > 0)

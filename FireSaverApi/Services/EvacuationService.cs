@@ -23,7 +23,8 @@ namespace FireSaverApi.Services
                                  IMapper mapper,
                                  ICompartmentHelper compartmentHelper,
                                  IPlanImageUploadService planImageUploadService,
-                                 IEvacuationServiceHelper evacServiceHelper)
+                                 IEvacuationServiceHelper evacServiceHelper,
+                                 IUserHelper userHelper)
         {
             this.dataContext = dataContext;
             this.mapper = mapper;

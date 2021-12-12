@@ -61,6 +61,15 @@ namespace FireSaverApi.Controllers
             return Ok(buildingInfoDto);
         }
 
+        [HttpGet("infoByCompId/{compartmentId}")]
+        public async Task<IActionResult> GetBuildingInfoByCompartmentId(int compartmentId)
+        {
+            var buildingInfo = await buildingHelper.GetBuildingByCompartment(compartmentId);
+            var buildingInfoDto = mapper.Map<BuildingInfoDto>(buildingInfo);
+
+            return Ok(buildingInfoDto);
+        }
+
         [HttpGet("adduser/{userMail}/{buildingId}")]
         [Authorize(Roles = new string[] { UserRoleName.ADMIN, UserRoleName.AUTHORIZED_USER })]
         public async Task<IActionResult> AddResponsibleUser(string userMail, int buildingId)
@@ -135,6 +144,12 @@ namespace FireSaverApi.Controllers
             return BadRequest(new ServerResponse() { Message = "Only responsible users can set building center" });
         }
 
-
+        [HttpGet("compartment/{compartmentId}")]
+        [Authorize]
+        public async Task<IActionResult> GetCompartmentInfo(int compartmentId)
+        {
+            var compartment = await buildingService.GetCompartmentById(compartmentId);
+            return Ok(compartment);
+        }
     }
 }

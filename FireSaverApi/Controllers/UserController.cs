@@ -53,6 +53,13 @@ namespace FireSaverApi.Controllers
             return Ok(transformedPostion);
         }
 
+        [HttpPost("GetTransformedPostionsByEvacPlanId/{evacPlanId}")]
+        public async Task<IActionResult> TransformWorldPostionToMapByEvacPlanId(int evacPlanId, [FromBody] PositionDto worldPostion)
+        {
+            var transformedPostion = await userService.TransformWorldPostionToMapByEvacPlanId(worldPostion, evacPlanId);
+            return Ok(transformedPostion);
+        }
+
         [HttpGet("guestAuth")]
         public async Task<IActionResult> AuthGuestUser()
         {
@@ -130,7 +137,7 @@ namespace FireSaverApi.Controllers
                                                                     enterCompartmentDto.IotId);
             if (testOutput == null)
             {
-                return Ok();
+                return Ok(null);
             }
             else
             {
@@ -202,6 +209,13 @@ namespace FireSaverApi.Controllers
         public async Task<IActionResult> SetUserCompartment([FromBody] UserCompartmentDto newUserCompartment)
         {
             var newCompartment = await userService.SetCompartment(newUserCompartment.UserId, newUserCompartment.CompartmentId);
+            return Ok(newCompartment);
+        }
+        [Authorize]
+        [HttpPost("setUserCompartmentByEvacPlan")]
+        public async Task<IActionResult> setUserCompartmentByEvacPlan([FromBody] UserCompartmentDto newUserCompartment)
+        {
+            var newCompartment = await userService.SetCompartmentByEvacPlan(newUserCompartment.UserId, newUserCompartment.CompartmentId);
             return Ok(newCompartment);
         }
     }

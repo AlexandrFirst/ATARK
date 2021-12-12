@@ -16,11 +16,13 @@ namespace FireSaverApi.Contracts
         Task<List<RoutePointDto>> BuildEvacuationRootForCompartment(int userId);
         Task<TestOutputDto> EnterCompartmentById(int userId, int compartmentId, int? iotId);
         Task<CompartmentCommonInfo> SetCompartment(int userId, int compartmentId);
+        Task<CompartmentCommonInfo> SetCompartmentByEvacPlan(int userId, int evacPlanId);
         Task SetAlaramForBuilding(int userId);
         Task SwitchOffAlaramForBuilding(int userId);
         
         Task<UserInfoDto> SetWorldPostion(int userId, PositionDto worldUserPostion);
         Task<bool> CheckIfUserCanBeResponsible(string userMail);
         Task<PositionDto> TransformWorldPostionToMap(PositionDto worldPostion, int compartmentId);
+        Task<PositionDto> TransformWorldPostionToMapByEvacPlanId(PositionDto worldPostion, int EvacPlanId);
     }
 }

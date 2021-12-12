@@ -32,7 +32,7 @@ namespace FireSaverMobile.Pages
 
             NavElements = new ObservableCollection<FlayoutItemModel>()
             {
-                new FlayoutItemModel(){ PageName = "Scan QR", ImageSource = "", DetailPage=new QRScanPage()},
+                new FlayoutItemModel(){ PageName = "Current room", ImageSource = "", DetailPage=new CurrentRoomPage()},
                 new FlayoutItemModel(){ PageName = "Account", ImageSource = "", DetailPage = new AccountPage()}
             };
 

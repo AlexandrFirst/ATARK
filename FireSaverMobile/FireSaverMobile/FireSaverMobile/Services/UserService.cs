@@ -37,14 +37,14 @@ namespace FireSaverMobile.Services
             return userInfo.LastSeenBuildingPosition;
         }
 
-        public async Task<Position> GetTransformedWorldPosition(int compartmentId, Position worldPostion)
+        public async Task<Position> GetTransformedWorldPosition(int evacPlanId, Position worldPostion)
         {
-            var response = await worldPostion.PostRequest(client, $"http://{serverAddr}/User/GetTransformedPostions/{compartmentId}");
+            var response = await worldPostion.PostRequest(client, $"http://{serverAddr}/User/GetTransformedPostionsByEvacPlanId/{evacPlanId}");
             var mappedPos = await transformHttpResponse<Position>(response);
             return mappedPos;
         }
 
-        public async Task<CompartmentCommonInfo> SetUserCompartment(int userId, int compartmentId)
+        public async Task<CompartmentCommonInfo> SetUserCompartmentByCompartmentId(int userId, int compartmentId)
         {
             var dataToSend = new UserCompartmentDto()
             {
@@ -56,6 +56,21 @@ namespace FireSaverMobile.Services
             var compartmentInfo = await transformHttpResponse<CompartmentCommonInfo>(response);
             return compartmentInfo;
         }
+
+        public async Task<CompartmentCommonInfo> SetUserCompartmentByEvacPlanId(int userId, int evacPlanId)
+        {
+            var dataToSend = new UserCompartmentDto()
+            {
+                CompartmentId = evacPlanId,
+                UserId = userId
+            };
+
+            var response = await dataToSend.PostRequest<UserCompartmentDto>(client, $"http://{serverAddr}/User/setUserCompartmentByEvacPlan");
+            var compartmentInfo = await transformHttpResponse<CompartmentCommonInfo>(response);
+            return compartmentInfo;
+        }
+
+
 
         public async Task SendMessage(MessageDto messageDto)
         {

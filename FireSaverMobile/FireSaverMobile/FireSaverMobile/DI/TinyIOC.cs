@@ -26,6 +26,8 @@ namespace FireSaverMobile.DI
             Container.Register<IUserService, UserService>().AsSingleton();
             Container.Register<IEvacuationService, EvacuationService>().AsSingleton();
             Container.Register<IScalePointService, ScalePointService>().AsSingleton();
+            Container.Register<ICompartmentEnterService, CompartmentEnterService>().AsSingleton();
+            Container.Register<IBuildingService, BuildingService>();
         }
     }
 }

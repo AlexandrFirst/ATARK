@@ -5,6 +5,7 @@ using AutoMapper;
 using FireSaverApi.Contracts;
 using FireSaverApi.DataContext;
 using FireSaverApi.Dtos.BuildingDtos;
+using FireSaverApi.Dtos.CompartmentDtos;
 using FireSaverApi.Helpers;
 using FireSaverApi.Helpers.ExceptionHandler.CustomExceptions;
 using FireSaverApi.Helpers.Pagination;
@@ -18,14 +19,17 @@ namespace FireSaverApi.Services
         private readonly IMapper mapper;
         private readonly IUserHelper userHelper;
         private readonly IUserContextService userContextService;
+        private readonly ICompartmentHelper compartmentHelper;
 
         public BuildingService(DatabaseContext context,
                                 IMapper mapper,
                                 IUserHelper userHelper,
-                                IUserContextService userContextService)
+                                IUserContextService userContextService,
+                                ICompartmentHelper compartmentHelper)
         {
             this.userHelper = userHelper;
             this.userContextService = userContextService;
+            this.compartmentHelper = compartmentHelper;
             this.context = context;
             this.mapper = mapper;
         }
@@ -191,7 +195,10 @@ namespace FireSaverApi.Services
             if (compartment == null)
                 throw new System.Exception("Can't determine building");
 
-            if ((compartment as Floor).BuildingWithThisFloor != null)
+            var compFloor = compartment as Floor;
+            var compRoom = compartment as Room;
+
+            if (compFloor != null)
             {
                 var f_compartment = await context.Floors.Include(b => b.BuildingWithThisFloor).ThenInclude(u => u.ResponsibleUsers)
                     .FirstOrDefaultAsync(c => c.Id == compartmentId);
@@ -208,6 +215,12 @@ namespace FireSaverApi.Services
 
 
 
+        }
+
+        public async Task<CompartmentCommonInfo> GetCompartmentById(int compartmentId)
+        {
+            var compartment = await compartmentHelper.GetCompartmentById(compartmentId);
+            return mapper.Map<CompartmentCommonInfo>(compartment);
         }
     }
 

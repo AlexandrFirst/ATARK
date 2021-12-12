@@ -84,7 +84,7 @@ namespace FireSaverMobile.ViewModels
             NextCompartment = new Command(async () =>
             {
                 IsBusy = true;
-                if (evacuationPlanIndex < EvacuationsPlans.Count - 1)
+                if (evacuationPlanIndex <= EvacuationsPlans.Count - 1)
                 {
                     var userInfoData = await loginService.ReadDataFromStorage();
                     await InitEvacPlan(userInfoData.UserId);
@@ -172,7 +172,7 @@ namespace FireSaverMobile.ViewModels
         private async Task InitEvacPlan(int userId)
         {
             
-            await userService.SetUserCompartment(userId, EvacuationsPlans[evacuationPlanIndex].Id);
+            await userService.SetUserCompartmentByEvacPlanId(userId, EvacuationsPlans[evacuationPlanIndex].Id);
             var evacCompartmentRoutePoints = await evacuationService.BuildCompartmentEvacRouteForUser();
 
             OnEvacuationPlanInit(EvacuationsPlans[evacuationPlanIndex], evacCompartmentRoutePoints);
@@ -222,7 +222,7 @@ namespace FireSaverMobile.ViewModels
                     {
                         CompatrmentId = result.CompartmentId,
                     };
-                    await userService.SetUserCompartment(userId, scannedQrModel.CompatrmentId.Value);
+                    await userService.SetUserCompartmentByCompartmentId(userId, scannedQrModel.CompatrmentId.Value);
                     var userFullData = await userService.GetUserInfoById(userId);
                     this.currentCompartment = userFullData.CurrentCompartment;
 
@@ -233,7 +233,7 @@ namespace FireSaverMobile.ViewModels
                 }));
 
 
-                //if (scannedQrModel.CompatrmentId.HasValue)
+                //if (!scannedQrModel.CompatrmentId.HasValue)
                 //{
                 //    await RequestQrCode(userId);
                 //}

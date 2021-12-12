@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FireSaverMobile.Pages.CompartmentTestPage"
+             xmlns:input="clr-namespace:Plugin.InputKit.Shared.Controls;assembly=Plugin.InputKit" 
+             xmlns:extendedlabelrenderer="clr-namespace:FireSaverMobile.ExtendedLabelRenderer" 
+             xmlns:visibletoolbaritem="clr-namespace:FireSaverMobile.VisibleToolbarItem"
+             Title="{Binding TitleCaption, StringFormat='Test question {0}'}">
+    <ContentPage.ToolbarItems>
+        <visibletoolbaritem:VisibleToolbarItem IsVisible="{Binding IsFinalQuestion}" 
+                                               Text="Finish test"
+                                               Command="{Binding SendAnswers}"/>
+    </ContentPage.ToolbarItems>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="0.3*"/>
+        </Grid.RowDefinitions>
+        <extendedlabelrenderer:ExtendedLabelRenderer Grid.Row="0" Padding="10" FontSize="20" HorizontalOptions="Fill" JustifyText="True"
+                                                         Text="{Binding CurrentQuestion.Content}"/>
+
+        <ListView Grid.Row="1" ItemsSource="{Binding CurrentQuestion.CheckedAnswer}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout Padding="10, 10">
+                            <input:CheckBox Type="Check" 
+                                            CheckChanged="CheckBox_CheckChanged" 
+                                            CommandParameter="{Binding Content}"
+                                            Text="{Binding Content}"
+                                            IsChecked="{Binding IsChecked}"/>
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="0.5*"/>
+                <ColumnDefinition Width="0.5*"/>
+            </Grid.ColumnDefinitions>
+            <input:AdvancedSlider Grid.Row="0" MaxValue="20" 
+                                  MinValue="10" 
+                                  StepValue="0.1" 
+                                  MaxValueSuffix=" ptx" 
+                                  MinValueSuffix=" ptx"
+                                  ValueSuffix=" ptx"
+                                  Title="Text size"
+                                  Padding="10, 0, 10, 0"
+                                  DisplayMinMaxValue="False"/>
+            <Button Grid.Row="0" Grid.Column="1" Text="Prev Question" CornerRadius="50" Command="{Binding PrevQuestion}"/>
+            <Button Grid.Row="0" Grid.Column="2" Text="Next Question" CornerRadius="50" Command="{Binding NextQuestion}"/>
+        </Grid>
+        <ActivityIndicator Grid.Row="0" Grid.RowSpan="2" HorizontalOptions="Center" VerticalOptions="Center"/>
+    </Grid>
+</ContentPage>

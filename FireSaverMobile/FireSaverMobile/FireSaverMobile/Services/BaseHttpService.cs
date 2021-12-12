@@ -88,7 +88,8 @@ namespace FireSaverMobile.Services
             if (response.IsSuccessStatusCode)
             {
                 var body = await response.Content.ReadAsStringAsync();
-                return await JsonConvert.DeserializeObjectAsync<T>(body);
+                if(body!= null)
+                    return await JsonConvert.DeserializeObjectAsync<T>(body);
             }
             return default(T);
         }

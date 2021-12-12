@@ -12,7 +12,8 @@ namespace FireSaverMobile.Contracts
         Task<UserInfoDto> GetUserInfoById(int userId);
         Task<Position> UpdateUserWorldPosition(Position newPos);
         Task<Position> GetTransformedWorldPosition(int compartmentId, Position worldPostion);
-        Task<CompartmentCommonInfo> SetUserCompartment(int userId, int compartmentId);
+        Task<CompartmentCommonInfo> SetUserCompartmentByCompartmentId(int userId, int compartmentId);
+        Task<CompartmentCommonInfo> SetUserCompartmentByEvacPlanId(int userId, int evacPlanId);
         Task SendMessage(MessageDto messageDto);
         Task BlockPoint(int pointId);
     }

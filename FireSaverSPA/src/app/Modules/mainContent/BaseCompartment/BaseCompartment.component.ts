@@ -175,13 +175,13 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
   private initExpandableList() {
     this.cards.forEach((card: ElementRef) => {
       card.nativeElement.addEventListener('click', (e) => {
-        const elem = card.nativeElement.querySelector('.collapse')
+        const elem = card.nativeElement.parentNode.querySelector('.collapse')
         if (elem?.classList.contains('show')) {
           elem?.classList.remove('show')
         } else {
           elem?.classList.add('show')
         }
-      })
+      }, )
     })
   }
 
@@ -694,7 +694,7 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
     }
   }
 
-  printQrCode(identifier: string) {
+  printQrCode(identifier: number) {
     const dialofRef =this.matDialog.open(QrCodeDialogComponent, {
       data: { info: JSON.stringify({ compatrmentId: this.compartmentId, IOTId: identifier } as QRCodeFormat) }
     })
