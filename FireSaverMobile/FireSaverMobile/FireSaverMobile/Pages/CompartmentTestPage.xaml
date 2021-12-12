@@ -5,10 +5,11 @@
              xmlns:input="clr-namespace:Plugin.InputKit.Shared.Controls;assembly=Plugin.InputKit" 
              xmlns:extendedlabelrenderer="clr-namespace:FireSaverMobile.ExtendedLabelRenderer" 
              xmlns:visibletoolbaritem="clr-namespace:FireSaverMobile.VisibleToolbarItem"
-             Title="{Binding TitleCaption, StringFormat='Test question {0}'}">
+              xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+             Title="{Binding TitleCaption}">
     <ContentPage.ToolbarItems>
         <visibletoolbaritem:VisibleToolbarItem IsVisible="{Binding IsFinalQuestion}" 
-                                               Text="Finish test"
+                                               Text="{xct:Translate FinishTest}"
                                                Command="{Binding SendAnswers}"/>
     </ContentPage.ToolbarItems>
     <Grid>
@@ -53,9 +54,9 @@
                                   Title="Text size"
                                   Padding="10, 0, 10, 0"
                                   DisplayMinMaxValue="False"/>
-            <Button Grid.Row="0" Grid.Column="1" Text="Prev Question" CornerRadius="50" Command="{Binding PrevQuestion}"/>
-            <Button Grid.Row="0" Grid.Column="2" Text="Next Question" CornerRadius="50" Command="{Binding NextQuestion}"/>
+            <Button Grid.Row="0" Grid.Column="1" Text="{xct:Translate PrevQuestion}" CornerRadius="50" Command="{Binding PrevQuestion}"/>
+            <Button Grid.Row="0" Grid.Column="2" Text="{xct:Translate Next Question}" CornerRadius="50" Command="{Binding NextQuestion}"/>
         </Grid>
-        <ActivityIndicator Grid.Row="0" Grid.RowSpan="2" HorizontalOptions="Center" VerticalOptions="Center"/>
+        <ActivityIndicator Grid.Row="0" Grid.RowSpan="2" HorizontalOptions="Center" VerticalOptions="Center" IsRunning="{Binding IsBusy}"/>
     </Grid>
 </ContentPage>

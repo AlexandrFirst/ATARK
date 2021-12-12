@@ -3,6 +3,7 @@ using FireSaverMobile.DI;
 using FireSaverMobile.Helpers;
 using FireSaverMobile.Models.QRModel;
 using FireSaverMobile.Models.TestCompartmentModels;
+using FireSaverMobile.Resx;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Xamarin.CommunityToolkit.Helpers;
 using Xamarin.Forms;
 
 namespace FireSaverMobile.ViewModels
@@ -34,6 +36,13 @@ namespace FireSaverMobile.ViewModels
             }
         }
 
+        private bool isBusy = false;
+        public bool IsBusy 
+        {
+            get { return isBusy; }
+            set { SetValue(ref isBusy, value); }
+        }
+
         public bool IsFinalQuestion
         {
             get
@@ -44,13 +53,14 @@ namespace FireSaverMobile.ViewModels
             }
         }
 
-        public string TitleCaption
+        public LocalizedString TitleCaption
         {
             get
             {
                 if (test == null)
-                    return string.Format($"0/0");
-                return string.Format($"{currentQuestionIndex + 1}/{test.Questions.Count}");
+                    return new LocalizedString(() => string.Format($"0/0"));
+
+                return new LocalizedString(() => string.Format(AppResources.TestCaption, currentQuestionIndex + 1, test.Questions.Count));
             }
         }
 
@@ -79,7 +89,9 @@ namespace FireSaverMobile.ViewModels
 
             SendAnswers = new Command(async () =>
             {
+                IsBusy = true;
                 var checkingResult = await compartmentService.SendTestAnswers(testAnswers);
+                IsBusy = false;
                 if (checkingResult != null)
                 {
                     OnCompartmentSuccessEntering?.Invoke(null, null);
@@ -137,12 +149,13 @@ namespace FireSaverMobile.ViewModels
         {
             this.qrModel = qrModel;
 
+            IsBusy = true;
             test = await compartmentService.SendCompartmentData(new UserEnterCompartmentDto()
             {
                 CompartmentId = qrModel.CompatrmentId.Value,
                 IotId = qrModel.IOTId
             });
-
+            isBusy = false;
 
             if (test == null)
             {

@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="FireSaverMobile.Pages.NavFlayoutPage"
              xmlns:input="clr-namespace:Plugin.InputKit.Shared.Controls;assembly=Plugin.InputKit"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
              Title="Nav bar">
     <StackLayout>
         <ListView ItemsSource="{Binding NavElements, Mode=TwoWay}" x:Name="listView" x:FieldModifier="public">
@@ -15,7 +16,7 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Image Grid.Column="0" Source="{Binding ImageSource}" WidthRequest="10"  Aspect="AspectFit"/>
-                            <Label Grid.Column="1" FontSize="Large" Text="{Binding PageName}" 
+                            <Label Grid.Column="1" FontSize="Large" Text="{Binding PageNameLocalized.Localized}" 
                                    HorizontalOptions="CenterAndExpand" 
                                    VerticalOptions="Center"/>
                         </Grid>
@@ -28,9 +29,9 @@
 
         <Grid ColumnDefinitions="100,*, 10" RowDefinitions="*,*" HeightRequest="200">
             <Label Text="Language" FontSize="Medium" HorizontalOptions="Center" VerticalOptions="Center"/>
-            <Picker Grid.Column="1" x:Name="languageInterface" Title="Choose language" VerticalOptions="Center"/>
-            <Button Text="Logout" Grid.Row="1" Grid.ColumnSpan="3" Margin="10, 10" CornerRadius="20" Clicked="LogoutBtnClicked"/>
+            <Button Grid.Column="1" Text="English" Clicked="languageInterface_SelectedIndexChanged" HorizontalOptions="Fill"/>
+            <Button Text="{xct:Translate LogoutBtn}" Grid.Row="1" Grid.ColumnSpan="3" Margin="10, 10" CornerRadius="20" Clicked="LogoutBtnClicked"/>
         </Grid>
-        
+
     </StackLayout>
 </ContentPage>
