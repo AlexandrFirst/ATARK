@@ -26,7 +26,7 @@ namespace FireSaverMobile.Pages
         {
             InitializeComponent();
 
-            viewModel = new CurrentCompartmentViewModel();
+            viewModel = new CurrentCompartmentViewModel(Navigation);
 
 
             viewModel.OnEvacPlanRecieved += (object sender, EvacuationPlanDto evacPlan) =>
@@ -74,8 +74,9 @@ namespace FireSaverMobile.Pages
             if (bindingContext != null)
             {
                 bindingContext.IsBusy = true;
-                await bindingContext.InitInfo();
-                await bindingContext.InitInfo();
+                var isInited = await bindingContext.InitInfo();
+                if(isInited)
+                    await bindingContext.InitInfo();
                 bindingContext.IsBusy = false;
             }
 

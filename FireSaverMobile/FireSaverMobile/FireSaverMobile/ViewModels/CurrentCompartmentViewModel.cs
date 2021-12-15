@@ -58,7 +58,9 @@ namespace FireSaverMobile.ViewModels
 
         private string compartmentRules = "";
 
-        public CurrentCompartmentViewModel()
+        private INavigation navigation;
+
+        public CurrentCompartmentViewModel(INavigation navigation)
         {
             userSerice = TinyIOC.Container.Resolve<IUserService>();
             loginService = TinyIOC.Container.Resolve<ILoginService>();
@@ -66,7 +68,7 @@ namespace FireSaverMobile.ViewModels
             buildingService = TinyIOC.Container.Resolve<IBuildingService>();
             compartmentService = TinyIOC.Container.Resolve<ICompartmentEnterService>();
 
-
+            this.navigation = navigation;
 
             RefreshInfo = new Command(async () =>
             {
@@ -109,7 +111,8 @@ namespace FireSaverMobile.ViewModels
                 await PopupNavigation.Instance.PushAsync(new InputPopUp(async (InputResult result) =>
                 {
 
-                    if (result.CompartmentId == 0) {
+                    if (result.CompartmentId == 0)
+                    {
                         await PopupNavigation.Instance.PushAsync(new PopupNotificationView("Invalid data", MessageType.Error), true);
                         return;
                     }
@@ -122,7 +125,7 @@ namespace FireSaverMobile.ViewModels
 
                     var compInfo = await compartmentService.GetCompartmentById(result.CompartmentId);
 
-                    await nav.PushAsync(new CompartmentRulePage(compartmentRules, scannedQrModel));
+                    await nav.PushAsync(new CompartmentRulePage(compInfo.SafetyRules, scannedQrModel));
 
                     while (PopupNavigation.Instance.PopupStack.Count > 0)
                         await PopupNavigation.Instance.PopAsync(true);
@@ -131,18 +134,15 @@ namespace FireSaverMobile.ViewModels
             });
         }
 
-        public async Task InitInfo()
+        public async Task<bool> InitInfo()
         {
             authUserInfo = await loginService.ReadDataFromStorage();
             var userInfo = await userSerice.GetUserInfoById(authUserInfo.UserId);
             if (userInfo.CurrentCompartment == null)
             {
-                await PopupNavigation.Instance.PushAsync(new PopupYesActionView(async () =>
-                {
-                    await PopupNavigation.Instance.PushAsync(new PopupNotificationView("Enter compartment first", MessageType.Error), true);
-                    return;
-
-                }, "Enter compartment first", true));
+                GoToRulePage.Execute(navigation);
+                
+                return false;
             }
             else
             {
@@ -160,6 +160,7 @@ namespace FireSaverMobile.ViewModels
                 {
                     ResponsibleUsers.Add(user);
                 }
+                return true;
 
             }
         }

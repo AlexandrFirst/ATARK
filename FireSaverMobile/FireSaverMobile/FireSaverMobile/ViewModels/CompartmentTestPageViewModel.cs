@@ -155,7 +155,7 @@ namespace FireSaverMobile.ViewModels
                 CompartmentId = qrModel.CompatrmentId.Value,
                 IotId = qrModel.IOTId
             });
-            isBusy = false;
+            IsBusy = false;
 
             if (test == null)
             {

@@ -49,6 +49,8 @@ namespace FireSaverMobile.ViewModels
         }
 
         private bool isBusy = false;
+        private int userId;
+
         public bool IsBusy { get { return isBusy; } set { SetValue(ref isBusy, value); } }
 
         public ICommand SyncPosBtnClick { get; set; }
@@ -78,6 +80,7 @@ namespace FireSaverMobile.ViewModels
             {
                 IsBusy = true;
                 await SyncPosHandler();
+                await InitEvacPlan(userId);
                 IsBusy = false;
             });
 
@@ -88,6 +91,7 @@ namespace FireSaverMobile.ViewModels
                 {
                     var userInfoData = await loginService.ReadDataFromStorage();
                     await InitEvacPlan(userInfoData.UserId);
+                    evacuationPlanIndex++;
                 }
                 else
                 {
@@ -143,7 +147,7 @@ namespace FireSaverMobile.ViewModels
                 return;
             }
 
-            var userId = userInfoData.UserId;
+            userId = userInfoData.UserId;
             var userFullData = await userService.GetUserInfoById(userId);
             this.currentCompartment = userFullData.CurrentCompartment;
 
@@ -153,12 +157,12 @@ namespace FireSaverMobile.ViewModels
                 return;
             }
 
-            await InitEvacuationInfo(userId);
+            await InitEvacuationInfo();
 
             IsBusy = false;
         }
 
-        private async Task InitEvacuationInfo(int userId)
+        private async Task InitEvacuationInfo()
         {
 
             EvacuationsPlans = await evacuationService.GetEvacuationPlansFromCompartment();
@@ -176,7 +180,7 @@ namespace FireSaverMobile.ViewModels
             var evacCompartmentRoutePoints = await evacuationService.BuildCompartmentEvacRouteForUser();
 
             OnEvacuationPlanInit(EvacuationsPlans[evacuationPlanIndex], evacCompartmentRoutePoints);
-            evacuationPlanIndex++;
+
         }
 
         private async Task SyncPosHandler()
@@ -226,7 +230,7 @@ namespace FireSaverMobile.ViewModels
                     var userFullData = await userService.GetUserInfoById(userId);
                     this.currentCompartment = userFullData.CurrentCompartment;
 
-                    await InitEvacuationInfo(userId);
+                    await InitEvacuationInfo();
 
                     while (PopupNavigation.Instance.PopupStack.Count > 0)
                         await PopupNavigation.Instance.PopAsync(true);

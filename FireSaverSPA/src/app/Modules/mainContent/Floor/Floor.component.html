@@ -137,6 +137,15 @@
                 <div *ngFor="let item of routePoints"
                   style="display: flex; justify-content: space-around; align-items: center; margin-top: 5px;">
                   <div>{{item.id}}</div>
+                  <div>
+                    <button class="btn btn-primary" 
+                      *ngIf="IsRoutePointExit(item.routePointType); else elseBtn"
+                      (click)="setRoutePointAsPath(item.id)">Unset as Exit</button>
+                    <ng-template  #elseBtn>
+                    <button class="btn btn-primary"
+                    (click)="setRoutePointAsExit(item.id)">Set as Exit</button>
+                    </ng-template>
+                  </div>
                   <div><button class="btn btn-info" (click)="selectRoutePoint(item.id)"
                       i18n="@@selectBtn">Select</button></div>
                   <div><button class="btn btn-danger" (click)="removeRoutePoint(item.id)"

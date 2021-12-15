@@ -83,7 +83,7 @@ namespace FireSaverApi.Controllers
         }
 
 
-        [Authorize(Roles = new string[] { UserRoleName.ADMIN, UserRoleName.AUTHORIZED_USER })]
+        // [Authorize(Roles = new string[] { UserRoleName.ADMIN, UserRoleName.AUTHORIZED_USER })]
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetUserInfo(int userId)
         {
@@ -96,7 +96,7 @@ namespace FireSaverApi.Controllers
             return Ok(userInfo);
         }
 
-        [Authorize(Roles = new string[] { UserRoleName.ADMIN, UserRoleName.AUTHORIZED_USER })]
+        // [Authorize(Roles = new string[] { UserRoleName.ADMIN, UserRoleName.AUTHORIZED_USER })]
         [HttpPut("updateInfo")]
         public async Task<IActionResult> UpdateUserInfo([FromBody] UserInfoDto currentUserInfo)
         {

@@ -144,8 +144,8 @@ namespace FireSaverApi.Controllers
             return BadRequest(new ServerResponse() { Message = "Only responsible users can set building center" });
         }
 
-        [HttpGet("compartment/{compartmentId}")]
         [Authorize]
+        [HttpGet("compartment/{compartmentId}")]
         public async Task<IActionResult> GetCompartmentInfo(int compartmentId)
         {
             var compartment = await buildingService.GetCompartmentById(compartmentId);

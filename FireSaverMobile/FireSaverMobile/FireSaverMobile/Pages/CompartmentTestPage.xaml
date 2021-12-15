@@ -6,7 +6,7 @@
              xmlns:extendedlabelrenderer="clr-namespace:FireSaverMobile.ExtendedLabelRenderer" 
              xmlns:visibletoolbaritem="clr-namespace:FireSaverMobile.VisibleToolbarItem"
               xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
-             Title="{Binding TitleCaption}">
+             Title="{Binding TitleCaption.Localized}">
     <ContentPage.ToolbarItems>
         <visibletoolbaritem:VisibleToolbarItem IsVisible="{Binding IsFinalQuestion}" 
                                                Text="{xct:Translate FinishTest}"
@@ -55,7 +55,7 @@
                                   Padding="10, 0, 10, 0"
                                   DisplayMinMaxValue="False"/>
             <Button Grid.Row="0" Grid.Column="1" Text="{xct:Translate PrevQuestion}" CornerRadius="50" Command="{Binding PrevQuestion}"/>
-            <Button Grid.Row="0" Grid.Column="2" Text="{xct:Translate Next Question}" CornerRadius="50" Command="{Binding NextQuestion}"/>
+            <Button Grid.Row="0" Grid.Column="2" Text="{xct:Translate NextQuestion}" CornerRadius="50" Command="{Binding NextQuestion}"/>
         </Grid>
         <ActivityIndicator Grid.Row="0" Grid.RowSpan="2" HorizontalOptions="Center" VerticalOptions="Center" IsRunning="{Binding IsBusy}"/>
     </Grid>

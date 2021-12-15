@@ -10,7 +10,7 @@ import { HttpFloorService } from 'src/app/Services/httpFloor.service';
 import { HttpEvacuationPlanService } from 'src/app/Services/httpEvacuationPlan.service';
 import { HttpEventType } from '@angular/common/http';
 import { EvacuationPlanDto } from 'src/app/Models/EvacuationPlan/evacuationPlanDto';
-import { InputRoutePoint, Postion as Position, Postion, RoutePoint, ScalePointDto } from 'src/app/Models/PointService/pointDtos';
+import { InputRoutePoint, Postion as Position, Postion, RoutePoint, RoutePointType, ScalePointDto } from 'src/app/Models/PointService/pointDtos';
 import { MatDialog } from '@angular/material/dialog';
 import { PositionInputDialogComponent } from '../position-input-dialog/position-input-dialog.component';
 import { HttpPointService } from 'src/app/Services/httpPoint.service';
@@ -698,5 +698,32 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
     const dialofRef =this.matDialog.open(QrCodeDialogComponent, {
       data: { info: JSON.stringify({ compatrmentId: this.compartmentId, IOTId: identifier } as QRCodeFormat) }
     })
+  }
+
+  IsRoutePointExit(routeType: RoutePointType){
+    if(routeType == RoutePointType.EXIT)
+      return true;
+    else
+      return false;
+  }
+
+  setRoutePointAsExit(routePointId: number){
+    this.changeRoutePointType(routePointId, RoutePointType.EXIT);
+  }
+  
+  setRoutePointAsPath(routePointId: number){
+    this.changeRoutePointType(routePointId, RoutePointType.MAIN_PATH);
+  }
+
+  private changeRoutePointType(routePointId: number, routeType: RoutePointType){
+    var updatingRoutePoint = this.routePoints.find(p => p.id == routePointId);
+    if(updatingRoutePoint){
+      updatingRoutePoint.routePointType = routeType;
+      this.pointService.updateRoutePointPostion(updatingRoutePoint).subscribe(response => {
+        updatingRoutePoint = response;
+      }, error => {
+        this.toastrService.error("Try again")
+      })
+    }
   }
 }
