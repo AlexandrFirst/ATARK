@@ -16,10 +16,11 @@ namespace FireSaverMobile.Pages
         public UserDataView()
         {
             InitializeComponent();
-            this.LayoutChanged += (s, e) =>
-               {
-                   BindingContext = new UserDataViewModel();
-               };
+            BindingContext = new UserDataViewModel();
+            //this.LayoutChanged += (s, e) =>
+            //   {
+                  
+            //   };
         }
 
 

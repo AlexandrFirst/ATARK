@@ -13,7 +13,7 @@ namespace FireSaverMobile.Services
     public class BaseHttpService
     {
         protected const string serverAddr = "192.168.0.109:5000";
-        protected HttpClient client;
+        protected static HttpClient client;
 
         private async Task<string> getToken()
         {
@@ -30,6 +30,7 @@ namespace FireSaverMobile.Services
 
         protected async Task writeAuthValues(AuthentificationResponse authResponse)
         {
+            deleteAuthValues();
             await setToken(authResponse.Token);
             await SecureStorage.SetAsync("roles", string.Join(",", authResponse.Roles));
 

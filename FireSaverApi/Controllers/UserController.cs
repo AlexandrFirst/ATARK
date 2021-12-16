@@ -83,7 +83,7 @@ namespace FireSaverApi.Controllers
         }
 
 
-        // [Authorize(Roles = new string[] { UserRoleName.ADMIN, UserRoleName.AUTHORIZED_USER })]
+        [Authorize]
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetUserInfo(int userId)
         {
