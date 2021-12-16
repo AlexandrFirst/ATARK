@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using FireSaverApi.Contracts;
 using FireSaverApi.DataContext;
 using FireSaverApi.Dtos;
+using FireSaverApi.Dtos.CompartmentDtos;
 using FireSaverApi.Helpers;
 using FireSaverApi.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -16,12 +17,15 @@ namespace FireSaverApi.Controllers
         private readonly IUserService userService;
         private readonly IAuthUserService authService;
         private readonly IUserContextService userContextService;
+        private readonly IBuildingService buildingService;
 
         public UserController(IUserService userService,
                             IAuthUserService authService,
-                            IUserContextService userContextService)
+                            IUserContextService userContextService,
+                            IBuildingService buildingService)
         {
             this.userContextService = userContextService;
+            this.buildingService = buildingService;
             this.authService = authService;
             this.userService = userService;
         }
@@ -49,6 +53,13 @@ namespace FireSaverApi.Controllers
             return Ok(transformedPostion);
         }
 
+        [HttpPost("GetTransformedPostionsByEvacPlanId/{evacPlanId}")]
+        public async Task<IActionResult> TransformWorldPostionToMapByEvacPlanId(int evacPlanId, [FromBody] PositionDto worldPostion)
+        {
+            var transformedPostion = await userService.TransformWorldPostionToMapByEvacPlanId(worldPostion, evacPlanId);
+            return Ok(transformedPostion);
+        }
+
         [HttpGet("guestAuth")]
         public async Task<IActionResult> AuthGuestUser()
         {
@@ -72,7 +83,7 @@ namespace FireSaverApi.Controllers
         }
 
 
-        [Authorize(Roles = new string[] { UserRoleName.ADMIN, UserRoleName.AUTHORIZED_USER })]
+        [Authorize]
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetUserInfo(int userId)
         {
@@ -85,7 +96,7 @@ namespace FireSaverApi.Controllers
             return Ok(userInfo);
         }
 
-        [Authorize(Roles = new string[] { UserRoleName.ADMIN, UserRoleName.AUTHORIZED_USER })]
+        // [Authorize(Roles = new string[] { UserRoleName.ADMIN, UserRoleName.AUTHORIZED_USER })]
         [HttpPut("updateInfo")]
         public async Task<IActionResult> UpdateUserInfo([FromBody] UserInfoDto currentUserInfo)
         {
@@ -126,7 +137,7 @@ namespace FireSaverApi.Controllers
                                                                     enterCompartmentDto.IotId);
             if (testOutput == null)
             {
-                return Ok();
+                return Ok(null);
             }
             else
             {
@@ -144,7 +155,7 @@ namespace FireSaverApi.Controllers
         }
 
         [Authorize]
-        [HttpGet("alarm")]  
+        [HttpGet("alarm")]
         public async Task<IActionResult> SetAlarm()
         {
             var userId = userContextService.GetUserContext().Id;
@@ -158,6 +169,11 @@ namespace FireSaverApi.Controllers
         {
             var userId = userContextService.GetUserContext().Id;
             await userService.SwitchOffAlaramForBuilding(userId);
+
+            var user = await userService.GetUserInfoById(userId);
+
+            await this.buildingService.ReleaseAllBlockedPoints(user.ResponsibleForBuilding.Id);
+
             return Ok(new ServerResponse() { Message = "Alarm is off" });
         }
 
@@ -186,6 +202,21 @@ namespace FireSaverApi.Controllers
             {
                 Message = "Token is valid"
             });
+        }
+
+        [Authorize]
+        [HttpPost("setUserCompartment")]
+        public async Task<IActionResult> SetUserCompartment([FromBody] UserCompartmentDto newUserCompartment)
+        {
+            var newCompartment = await userService.SetCompartment(newUserCompartment.UserId, newUserCompartment.CompartmentId);
+            return Ok(newCompartment);
+        }
+        [Authorize]
+        [HttpPost("setUserCompartmentByEvacPlan")]
+        public async Task<IActionResult> setUserCompartmentByEvacPlan([FromBody] UserCompartmentDto newUserCompartment)
+        {
+            var newCompartment = await userService.SetCompartmentByEvacPlan(newUserCompartment.UserId, newUserCompartment.CompartmentId);
+            return Ok(newCompartment);
         }
     }
 }

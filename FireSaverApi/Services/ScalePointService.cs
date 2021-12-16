@@ -165,5 +165,22 @@ namespace FireSaverApi.Services
             scaleModel.FromPixelYToCoordYCoef = 0;
 
         }
+
+        public async Task UpdateWorldPosition(int pointId, PositionDto newWorldPosition)
+        {
+            var point = await context.ScalePoints.Include(m => m.ScaleModel)
+                                                .ThenInclude(evPlan => evPlan.ApplyingEvacPlans)
+                                                .ThenInclude(c => c.Compartment)
+                                                .FirstOrDefaultAsync(s => s.Id == pointId);
+
+            mapper.Map(newWorldPosition, point.WorldPosition);
+            context.Update(point);
+            await context.SaveChangesAsync();
+
+            var scaleModel = point.ScaleModel;
+            var compartmentId = point.ScaleModel.ApplyingEvacPlans.Compartment.Id;
+
+            await recalculateScaleModel(scaleModel, compartmentId);
+        }
     }
 }

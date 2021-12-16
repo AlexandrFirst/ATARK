@@ -16,6 +16,7 @@ namespace FireSaverApi.Services
         private readonly ICompartmentHelper compartmentHelper;
         private readonly ITimerService timerService;
         private readonly IUserContextService userContextService;
+    
 
         public TestService(DatabaseContext dataContext,
                            IMapper mapper,
@@ -75,7 +76,8 @@ namespace FireSaverApi.Services
             int userId = userContextService.GetUserContext().Id;
             CheckIfUserIsNotBanned(userId, answears.TestId);
 
-            var test = await dataContext.Tests.Include(t => t.Questions).FirstOrDefaultAsync(t => t.Id == answears.TestId);
+            var test = await dataContext.Tests.Include(t => t.Questions).Include(c => c.Compartment).FirstOrDefaultAsync(t => t.Id == answears.TestId);
+            
             if (test == null)
             {
                 throw new System.Exception("Test is not found");
@@ -115,6 +117,12 @@ namespace FireSaverApi.Services
             }
 
             timerService.ClearUSerFailedTest(userId, answears.TestId);
+
+            var user = await dataContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            user.CurrentCompartment = test.Compartment;
+            dataContext.Update(user);
+            await dataContext.SaveChangesAsync();
+
             return true;
         }
 

@@ -6,6 +6,7 @@
     <div *ngIf="reponsibleBuilding" i18n="add_resp_user" (click)="addResponsibleUserToBuilding()">Add responsible user
     </div>
     <div *ngIf="isAdmin" i18n="admin panel label" routerLinkActive="active" routerLink="adminPanel">Admin panel</div>
+    <div *ngIf="reponsibleBuilding" i18n="messages panel label" routerLinkActive="active" routerLink="notifications">User Messages</div>
     <div class="logo" style="margin: 0 auto;">FireSaver</div>
     <div *ngIf="reponsibleBuilding && isAlarmOn == false" (click)="switchOnAlaram()">Switch Alarm on</div>
     <div *ngIf="reponsibleBuilding && isAlarmOn == true" (click)="swithOffAlarm()">Switch Alarm off</div>

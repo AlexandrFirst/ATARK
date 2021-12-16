@@ -10,7 +10,7 @@ import { HttpFloorService } from 'src/app/Services/httpFloor.service';
 import { HttpEvacuationPlanService } from 'src/app/Services/httpEvacuationPlan.service';
 import { HttpEventType } from '@angular/common/http';
 import { EvacuationPlanDto } from 'src/app/Models/EvacuationPlan/evacuationPlanDto';
-import { InputRoutePoint, Postion as Position, Postion, RoutePoint, ScalePointDto } from 'src/app/Models/PointService/pointDtos';
+import { InputRoutePoint, Postion as Position, Postion, RoutePoint, RoutePointType, ScalePointDto } from 'src/app/Models/PointService/pointDtos';
 import { MatDialog } from '@angular/material/dialog';
 import { PositionInputDialogComponent } from '../position-input-dialog/position-input-dialog.component';
 import { HttpPointService } from 'src/app/Services/httpPoint.service';
@@ -22,6 +22,7 @@ import { TestDialogComponent } from '../../../Modules/mainContent/test-dialog/te
 import { HttpTestService } from 'src/app/Services/httpTest.service';
 import { HttpIotService } from 'src/app/Services/httpIot.service';
 import { AddIotDialogComponent } from '../add-iot-dialog/add-iot-dialog.component';
+import { QRCodeFormat } from 'src/app/Models/QRCodeFormat/QRCodeFormat';
 
 enum MapType {
   ScalePoints,
@@ -174,13 +175,13 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
   private initExpandableList() {
     this.cards.forEach((card: ElementRef) => {
       card.nativeElement.addEventListener('click', (e) => {
-        const elem = card.nativeElement.querySelector('.collapse')
+        const elem = card.nativeElement.parentNode.querySelector('.collapse')
         if (elem?.classList.contains('show')) {
           elem?.classList.remove('show')
         } else {
           elem?.classList.add('show')
         }
-      })
+      }, )
     })
   }
 
@@ -495,7 +496,7 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
 
   getCompartmentQrCode() {
     const dialogRef = this.matDialog.open(QrCodeDialogComponent, {
-      data: { info: JSON.stringify({ compartmentId: this.compartmentId }) }
+      data: { info: JSON.stringify({ compatrmentId: this.compartmentId } as QRCodeFormat) }
     })
   }
 
@@ -693,9 +694,36 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
     }
   }
 
-  printQrCode(identifier: string) {
-    this.matDialog.open(QrCodeDialogComponent, {
-      data: { info: JSON.stringify({ compartmentId: this.compartmentId, iotId: identifier }) }
+  printQrCode(identifier: number) {
+    const dialofRef =this.matDialog.open(QrCodeDialogComponent, {
+      data: { info: JSON.stringify({ compatrmentId: this.compartmentId, IOTId: identifier } as QRCodeFormat) }
     })
+  }
+
+  IsRoutePointExit(routeType: RoutePointType){
+    if(routeType == RoutePointType.EXIT)
+      return true;
+    else
+      return false;
+  }
+
+  setRoutePointAsExit(routePointId: number){
+    this.changeRoutePointType(routePointId, RoutePointType.EXIT);
+  }
+  
+  setRoutePointAsPath(routePointId: number){
+    this.changeRoutePointType(routePointId, RoutePointType.MAIN_PATH);
+  }
+
+  private changeRoutePointType(routePointId: number, routeType: RoutePointType){
+    var updatingRoutePoint = this.routePoints.find(p => p.id == routePointId);
+    if(updatingRoutePoint){
+      updatingRoutePoint.routePointType = routeType;
+      this.pointService.updateRoutePointPostion(updatingRoutePoint).subscribe(response => {
+        updatingRoutePoint = response;
+      }, error => {
+        this.toastrService.error("Try again")
+      })
+    }
   }
 }

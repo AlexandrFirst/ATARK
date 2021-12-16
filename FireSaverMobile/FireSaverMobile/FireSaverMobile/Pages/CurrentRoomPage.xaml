@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:map="clr-namespace:FireSaverMobile.MapRenderer"
+             x:Class="FireSaverMobile.Pages.CurrentRoomPage"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Refresh" Clicked="RefreshBtn_clicked"/>
+        <ToolbarItem Text="Enter other room" Clicked="EnterOtherRoomBtn_click"/>
+    </ContentPage.ToolbarItems>
+
+    <Grid RowDefinitions="*, auto, 0.7*, 0.2*">
+        <map:IWebViewCustom Grid.Row="0" x:Name="webView" HorizontalOptions="Center"/>
+        <StackLayout Grid.Row="1">
+            <StackLayout Orientation="Horizontal">
+                <Label Text="{xct:Translate CompartmentName}" />
+                <Label Text="{Binding CompartmentName}" />
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="{xct:Translate CompartmentDescribtion}" />
+                <Label Text="{Binding CompartmentDescription}" />
+            </StackLayout>
+        </StackLayout>
+        <ListView ItemsSource="{Binding ResponsibleUsers}" Grid.Row="2" Margin="0, 10, 0, 0" HasUnevenRows="True">
+            <ListView.Header>
+                <StackLayout>
+                    <Label Text="{xct:Translate ResponsibleUsers}" FontSize="20"/>
+                </StackLayout>
+            </ListView.Header>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <FlexLayout JustifyContent="SpaceBetween" Padding="15, 0, 15, 0" Margin="0, 10, 0, 10">
+                            <StackLayout Orientation="Horizontal">
+                                <Label Text="{Binding Name}" FontSize="20"/>
+                                <Label Text="{Binding Patronymic}" FontSize="20"/>
+                            </StackLayout>
+                            <Button Text="Call" CommandParameter="{Binding TelephoneNumber}" 
+                                        Clicked="TelephoneNumberClicked" 
+                                        CornerRadius="20"
+                                        BackgroundColor="Green"
+                                        TextColor="White"/>
+                        </FlexLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <Grid ColumnDefinitions="*,*" Grid.Row="3">
+            <Button Text="{xct:Translate Fire}" Command="{Binding SendFireSignal}"/>
+            <Button Grid.Column="1" Text="{xct:Translate Help}" Command="{Binding SendHelpSignal}"/>
+        </Grid>
+        <ActivityIndicator Grid.Row="0" Grid.RowSpan="3" HeightRequest="30" WidthRequest="30" IsRunning="{Binding IsBusy}"/>
+    </Grid>
+
+</ContentPage>

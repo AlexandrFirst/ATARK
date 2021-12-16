@@ -20,6 +20,7 @@ import { FloorComponent } from './Floor/Floor.component';
 import { BuildingsComponent } from './Buildings/Buildings.component';
 import { BackupListComponent } from './backup-list/backup-list.component';
 import { BuildingComponent } from './Building/Building.component';
+import { UserNotificaionsComponent } from './UserMessages/UserNotificaions.component';
 
 
 @NgModule({
@@ -40,7 +41,8 @@ import { BuildingComponent } from './Building/Building.component';
     AccountComponent,
     BuildingsComponent,
     BuildingComponent,
-    BackupListComponent
+    BackupListComponent,
+    UserNotificaionsComponent
   ],
   providers: [
     DatePipe

@@ -81,8 +81,8 @@
   </div>
   <div style="display: flex; justify-content: center; margin-top: 20px;">
     <div class="accordion" id="accordionExample" style="width: 800px;" #floor_exp_list>
-      <div class="card f r" #card>
-        <div class="card-header" id="headingOne" (click)="displayScalePoints()">
+      <div class="card f r" >
+        <div class="card-header" id="headingOne" (click)="displayScalePoints()" #card>
           <h5 class="mb-0">
             <button class="btn" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
               aria-controls="collapseOne" i18n="scale point label">
@@ -120,8 +120,8 @@
           </div>
         </div>
       </div>
-      <div class="card f r" #card>
-        <div class="card-header" id="headingOne" (click)="displayRoutePoints();">
+      <div class="card f r" >
+        <div class="card-header" id="headingOne" (click)="displayRoutePoints(); "#card>
           <h5 class="mb-0">
             <button class="btn" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
               aria-controls="collapseOne" i18n="add route point">
@@ -137,6 +137,15 @@
                 <div *ngFor="let item of routePoints"
                   style="display: flex; justify-content: space-around; align-items: center; margin-top: 5px;">
                   <div>{{item.id}}</div>
+                  <div>
+                    <button class="btn btn-primary" 
+                      *ngIf="IsRoutePointExit(item.routePointType); else elseBtn"
+                      (click)="setRoutePointAsPath(item.id)">Unset as Exit</button>
+                    <ng-template  #elseBtn>
+                    <button class="btn btn-primary"
+                    (click)="setRoutePointAsExit(item.id)">Set as Exit</button>
+                    </ng-template>
+                  </div>
                   <div><button class="btn btn-info" (click)="selectRoutePoint(item.id)"
                       i18n="@@selectBtn">Select</button></div>
                   <div><button class="btn btn-danger" (click)="removeRoutePoint(item.id)"
@@ -158,8 +167,8 @@
           </div>
         </div>
       </div>
-      <div class="card f r" #card>
-        <div class="card-header" id="headingOne" (click)="displayIots();">
+      <div class="card f r" >
+        <div class="card-header" id="headingOne" (click)="displayIots();" #card>
           <h5 class="mb-0">
             <button class="btn" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
               aria-controls="collapseOne" i18n="iot label|compartment page">
@@ -176,7 +185,7 @@
                 <div *ngFor="let iot of compartmentInfo?.ioTs"
                   style="display: flex; justify-content: space-around; align-items: center; margin-top: 5px;">
                   <div>{{iot.iotIdentifier}}</div>
-                  <div><button class="btn btn-info" (click)="printQrCode(iot.iotIdentifier)" i18n="print iot qr">Print
+                  <div><button class="btn btn-info" (click)="printQrCode(iot.id)" i18n="print iot qr">Print
                       qr iot info</button>
                   </div>
                   <div><button class="btn btn-danger" (click)="removeIotFromCompartment(iot.iotIdentifier)"
@@ -199,8 +208,8 @@
           </div>
         </div>
       </div>
-      <div class="card f" #card>
-        <div *ngIf="isCompartmentFloor()">
+      <div class="card f" >
+        <div *ngIf="isCompartmentFloor()" #card>
           <div class="card-header" id="headingTwo">
             <h5 class="mb-0">
               <button class="btn" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false"

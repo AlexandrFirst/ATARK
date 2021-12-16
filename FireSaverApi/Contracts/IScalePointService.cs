@@ -9,5 +9,6 @@ namespace FireSaverApi.Contracts
         Task<ScalePointDto> AddNewScalePoint(int evacuationPlanId, ScalePointDto inputPoint);
         Task DeleteSinglePoint(int scalePointId);
         Task DeleteAllPoints(int evacuationPlanId);
+        Task UpdateWorldPosition(int pointId, PositionDto newWorldPosition);
     }
 }

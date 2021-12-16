@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using FireSaverApi.Dtos.BuildingDtos;
+using FireSaverApi.Dtos.CompartmentDtos;
 
 namespace FireSaverApi.Dtos
 {
@@ -16,5 +17,6 @@ namespace FireSaverApi.Dtos
         public BuildingInfoDto ResponsibleForBuilding { get; set; }
         public DateTime DOB { get; set; }
         public PositionDto LastSeenBuildingPosition { get; set; }
+        public CompartmentCommonInfo CurrentCompartment { get; set; }
     }
 }

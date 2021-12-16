@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>LeafletMap</title>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <script src="JS/leaflet.js"></script>
+    <link rel="stylesheet" href="CSS/leaflet.css" />
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        #map {
+            width: 600px;
+            height: 400px;
+        }
+    </style>
+
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+
+        #map {
+            height: 100%;
+            width: 100vw;
+        }
+    </style>
+
+</head>
+<body>
+    <div id='map'></div>
+
+    <script type="text/javascript">
+
+        var routePoints = {};
+        var routeLines = {};
+        var imageMap = null;
+
+        var bounds = [[0, 0], [1000, 1000]];
+
+        var myMap;
+        var selectedPoint;
+
+        function initMap(evacPlanUrl) {
+            myMap = L.map('map', {
+                crs: L.CRS.Simple,
+                maxZoom: 5,
+                minZoom: -2,
+            });
+
+            imageMap = L.imageOverlay(evacPlanUrl, bounds).addTo(myMap);
+
+            console.log('here');
+            console.log(imageMap);
+
+            setTimeout(() => {
+                centerMap();
+            }, 1000)
+        }
+
+        function clearMap() {
+            if (imageMap) {
+                myMap.removeLayer(imageMap);
+                imageMap = null;
+            }
+        }
+
+        function setMap(evacPlanUrl) {
+            if (!imageMap) {
+                imageMap = L.imageOverlay(evacPlanUrl, bounds).addTo(myMap);
+
+                setTimeout(() => {
+                    centerMap();
+                }, 1000)
+            }
+        }
+
+        function removePoint(pointId) {
+            var point = routePoints[pointId];
+            if (point)
+                myMap.removeLayer(point);
+        }
+
+        function removeLine(lineId) {
+            var line = routeLines[lineId];
+            if (line)
+                myMap.removeLayer(line);
+        }
+
+        function changePointPosition(pointId, newLat, newLng) {
+
+            var point = routePoints[pointId];
+            if (!point)
+                return;
+
+            var newLatLng = new L.LatLng(newLat, newLng);
+            point.setLatLng(newLatLng); 
+        }
+
+        function centerMap() {
+            if (myMap) {
+                myMap.fitBounds(bounds);
+            }
+        }
+
+        function placeMarker(lat, lng, id, color ='#ff7800') {
+            const newRoutePoint = L.circleMarker([lat, lng], {
+                radius: 8,
+                fillColor: color,
+                color: color,
+                weight: 1,
+                opacity: 1,
+                fillOpacity: 0.8
+            }).addTo(myMap);
+
+            routePoints[id] = newRoutePoint;
+        }
+
+        function selectPoint(pointId) {
+
+            const newSelectedPoint = routePoints[pointId];
+
+            if (selectedPoint) {
+                selectedPoint.setStyle({ fillColor: '#ff7800' })
+                selectedPoint = newSelectedPoint;
+                selectedPoint.setStyle({ fillColor: '#ff0000' })
+            } else {
+                selectedPoint = newSelectedPoint;
+                selectedPoint.setStyle({ fillColor: '#ff0000' })
+            }
+        }
+
+
+        function newLine(fromPointIndex, toPointIndex, color, id) {
+            var From = routePoints[fromPointIndex];
+            var To = routePoints[toPointIndex];
+            var Line = L.polyline([From.getLatLng(), To.getLatLng()], { color: color, weight: 3, opacity: 0.5, smoothFactor: 1, noClip: false })
+            Line.addTo(myMap);
+            routeLines[id] = Line;
+        }
+
+
+        function newCircle(lat, lon, color, fillColor, fillOpacity, radius) {
+            var circle = L.circle([lat, lon], { color: color, fillColor: fillColor, fillOpacity: fillOpacity, radius: radius });
+            markerGroup.addLayer(circle);
+        }
+
+        function centerMapToPoint(lat, lon) {
+            myMap.panTo(new L.LatLng(lat, lon));
+        }
+
+        function deletePoint(pointId) {
+            var point = routePoints[pointId];
+            myMap.removeLayer(point);
+        }
+
+    </script>
+</body>
+</html>

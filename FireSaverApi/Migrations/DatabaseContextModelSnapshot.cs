@@ -155,6 +155,37 @@ namespace FireSaverApi.Migrations
                     b.ToTable("IoTs");
                 });
 
+            modelBuilder.Entity("FireSaverApi.DataContext.Message", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("BuildingId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MessageType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PlaceDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("SendTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BuildingId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Messages");
+                });
+
             modelBuilder.Entity("FireSaverApi.DataContext.Question", b =>
                 {
                     b.Property<int>("Id")
@@ -190,6 +221,9 @@ namespace FireSaverApi.Migrations
 
                     b.Property<int?>("CompartmentId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsBlocked")
+                        .HasColumnType("bit");
 
                     b.Property<string>("MapPosition")
                         .HasColumnType("nvarchar(max)");
@@ -416,6 +450,23 @@ namespace FireSaverApi.Migrations
                     b.Navigation("Compartment");
                 });
 
+            modelBuilder.Entity("FireSaverApi.DataContext.Message", b =>
+                {
+                    b.HasOne("FireSaverApi.DataContext.Building", "Building")
+                        .WithMany("Messages")
+                        .HasForeignKey("BuildingId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("FireSaverApi.DataContext.User", "User")
+                        .WithMany("Messages")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Building");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("FireSaverApi.DataContext.Question", b =>
                 {
                     b.HasOne("FireSaverApi.DataContext.Test", "Test")
@@ -514,6 +565,8 @@ namespace FireSaverApi.Migrations
                 {
                     b.Navigation("Floors");
 
+                    b.Navigation("Messages");
+
                     b.Navigation("ResponsibleUsers");
                 });
 
@@ -548,6 +601,11 @@ namespace FireSaverApi.Migrations
                     b.Navigation("Compartment");
 
                     b.Navigation("Questions");
+                });
+
+            modelBuilder.Entity("FireSaverApi.DataContext.User", b =>
+                {
+                    b.Navigation("Messages");
                 });
 
             modelBuilder.Entity("FireSaverApi.DataContext.Floor", b =>

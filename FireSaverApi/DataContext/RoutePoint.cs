@@ -32,5 +32,6 @@ namespace FireSaverApi.DataContext
         public RoutePoint ParentPoint { get; set; }
         public RoutePointType RoutePointType { get; set; }
         public Compartment Compartment { get; set; }
+        public bool IsBlocked { get; set; }
     }
 }

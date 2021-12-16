@@ -10,6 +10,7 @@ using AutoMapper;
 using FireSaverApi.Contracts;
 using FireSaverApi.DataContext;
 using FireSaverApi.Dtos;
+using FireSaverApi.Dtos.CompartmentDtos;
 using FireSaverApi.Dtos.IoTDtos;
 using FireSaverApi.Dtos.TestDtos;
 using FireSaverApi.Dtos.UserDtos;
@@ -147,7 +148,7 @@ namespace FireSaverApi.Services
             var guestUser = new RegisterUserDto()
             {
                 DOB = DateTime.Now,
-                Mail = "",
+                Mail = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
                 Password = Guid.NewGuid().ToString(),
                 Patronymic = "",
@@ -162,7 +163,8 @@ namespace FireSaverApi.Services
             return new AuthResponseDto()
             {
                 Token = token,
-                UserId = response.Id
+                UserId = response.Id,
+                Roles = response.RolesList
             };
         }
 
@@ -414,6 +416,44 @@ namespace FireSaverApi.Services
             return mappedWorldPostion;
         }
 
+        public async Task<PositionDto> TransformWorldPostionToMapByEvacPlanId(PositionDto worldPostion, int EvacPlanId)
+        {
+            var compartmentByEvacPlan = await context.EvacuationPlans.Include(e => e.Compartment).FirstOrDefaultAsync(e => e.Id == EvacPlanId);
 
+            var mappedWorldPostion = await locationService.WorldToImgPostion(worldPostion, compartmentByEvacPlan.Compartment.Id);
+            return mappedWorldPostion;
+        }
+
+        public async Task<CompartmentCommonInfo> SetCompartment(int userId, int compartmentId)
+        {
+            var compartment = await context.Compartment
+                        .Include(t => t.CompartmentTest)
+                        .ThenInclude(q => q.Questions)
+                        .FirstOrDefaultAsync(c => c.Id == compartmentId);
+
+            var user = await GetUserById(userId);
+            user.CurrentCompartment = compartment;
+            context.Users.Update(user);
+            await context.SaveChangesAsync();
+
+            return mapper.Map<CompartmentCommonInfo>(compartment);
+        }
+
+
+        public async Task<CompartmentCommonInfo> SetCompartmentByEvacPlan(int userId, int evacPlanId)
+        {
+            var evacPlan = await context.EvacuationPlans
+                        .Include(t => t.Compartment)
+                        .ThenInclude(q => q.CompartmentTest)
+                        .ThenInclude(q => q.Questions)
+                        .FirstOrDefaultAsync(e => e.Id == evacPlanId);
+
+            var user = await GetUserById(userId);
+            user.CurrentCompartment = evacPlan.Compartment;
+            context.Users.Update(user);
+            await context.SaveChangesAsync();
+
+            return mapper.Map<CompartmentCommonInfo>(evacPlan.Compartment);
+        }
     }
 }

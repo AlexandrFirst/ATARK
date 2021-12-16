@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FireSaverMobile.Pages.UserDataView"
+             xmlns:input="clr-namespace:Plugin.InputKit.Shared.Controls;assembly=Plugin.InputKit"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit">
+    <StackLayout>
+        <input:FormView IsValidated="{Binding IsInputValid}" Padding="20,0">
+
+            <input:AdvancedEntry 
+                    IsRequired="True"
+                    Title="{xct:Translate NameTitle}"
+                    Annotation="LettersOnly"
+                    Placeholder="{xct:Translate NamePlaceholder}"
+                    AnnotationColor="Accent"
+                    ValidationMessage="{xct:Translate ValidationError}"
+                    IconImage="personIcon.png"
+                    MinLength="3"
+                    MaxLength="30"
+                    TextColor="Black"
+                    IconColor="OrangeRed"
+                    Text="{Binding UserInfo.Name}"/>
+
+            <input:AdvancedEntry 
+                    IsRequired="True"
+                    Title="{xct:Translate SurnameTitle}"
+                    Annotation="LettersOnly"
+                    Placeholder="{xct:Translate SurnamePlaceholder}"
+                    AnnotationColor="Accent"
+                    ValidationMessage="{xct:Translate ValidationError}"
+                    IconImage="personIcon.png"
+                    MinLength="3"
+                    MaxLength="30"
+                    TextColor="Black"
+                    IconColor="OrangeRed"
+                     Text="{Binding UserInfo.Surname}"/>
+
+            <input:AdvancedEntry 
+                    IsRequired="True"
+                    Title="{xct:Translate PatronymicTitle}"
+                    Placeholder="{xct:Translate PatronymicPlaceholder}"
+                    AnnotationColor="Accent"
+                    ValidationMessage="{xct:Translate ValidationError}"
+                    IconImage="personIcon.png"
+                    MinLength="2"
+                    MaxLength="30"
+                    TextColor="Black"
+                    IconColor="OrangeRed"
+                    Text="{Binding UserInfo.Patronymic}"/>
+
+            <input:AdvancedEntry 
+                    IsRequired="True"
+                    Title="{xct:Translate PhoneTitle}"
+                    Annotation="RegexPattern"
+                    RegexPattern="(^\d{10,})|(^\+?3?8?(0[\s\.-]\d{2}[\s\.-]\d{3}[\s\.-]\d{2}[\s\.-]\d{2})$)"
+                    Placeholder="{xct:Translate PhonePlaceholder}"
+                    AnnotationColor="Accent"
+                    ValidationMessage="{xct:Translate ValidationError}"
+                    IconImage="telIcon.png"
+                    MinLength="2"
+                    MaxLength="30"
+                    TextColor="Black"
+                    IconColor="OrangeRed"
+                    Text="{Binding UserInfo.TelephoneNumber}"/>
+
+
+            <Grid ColumnDefinitions="Auto,Auto, *">
+                <Image Source="dateIcon.png" WidthRequest="30" Grid.Column="0"></Image>
+                <Label Grid.Column="1" VerticalTextAlignment="Center" Text="{xct:Translate BirthdayTitle}"/> 
+                <DatePicker Grid.Column="2" HorizontalOptions="Center" TextColor="OrangeRed" Date="{Binding UserInfo.Dob}"></DatePicker>
+            </Grid>
+
+        </input:FormView>
+        <Button Text="{xct:Translate UpdateBtnTitle}" Margin="10" CornerRadius="20" Command="{Binding UpdateUserInfo}"/>
+    </StackLayout>
+</ContentView>

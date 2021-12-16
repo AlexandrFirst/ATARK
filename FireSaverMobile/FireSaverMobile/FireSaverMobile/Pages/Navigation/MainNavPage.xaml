@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<FlyoutPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FireSaverMobile.Pages.MainNavPage"
+            xmlns:local="clr-namespace:FireSaverMobile.Pages"
+            Title="Fire Saver">
+
+    <FlyoutPage.Flyout>
+        <local:NavFlayoutPage x:Name="flyout"/>
+    </FlyoutPage.Flyout>
+    <FlyoutPage.Detail>
+        <NavigationPage>
+            <x:Arguments>
+                <local:HomePage/>
+            </x:Arguments>
+        </NavigationPage>
+    </FlyoutPage.Detail>
+</FlyoutPage>

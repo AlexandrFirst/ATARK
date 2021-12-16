@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:extendedlabelrenderer="clr-namespace:FireSaverMobile.ExtendedLabelRenderer" xmlns:input="clr-namespace:Plugin.InputKit.Shared.Controls;assembly=Plugin.InputKit"
+             x:Class="FireSaverMobile.Pages.CompartmentRulePage">
+    <ContentPage.Content>
+        <StackLayout>
+            <Label Text="Safety rules: " FontSize="Large" Margin="0, 10, 0, 0" HorizontalOptions="CenterAndExpand"/>
+            <ScrollView Margin="15, 10, 15, 10" VerticalOptions="FillAndExpand">
+                <extendedlabelrenderer:ExtendedLabelRenderer 
+                    x:Name="RulesContent"
+                    VerticalOptions="StartAndExpand" 
+                    HorizontalOptions="CenterAndExpand" 
+                    JustifyText="True"
+                    BindingContext="{x:Reference TextSIzeSlider}"
+                    FontSize="{Binding Path=Value}"/>
+            </ScrollView>
+            <input:AdvancedSlider Grid.Row="0" MaxValue="20" 
+                                  MinValue="10" 
+                                  StepValue="0.1" 
+                                  MaxValueSuffix=" ptx" 
+                                  MinValueSuffix=" ptx"
+                                  ValueSuffix=" ptx"
+                                  Title="Text size"
+                                  Margin="0, 0, 0, 10"
+                                  DisplayMinMaxValue="False"
+                                  x:Name="TextSIzeSlider"/>
+            <StackLayout Orientation="Horizontal" VerticalOptions="End">
+                <Button Text="Enter compartment"  HorizontalOptions="FillAndExpand" Clicked="EnterRoomClicked"/>
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

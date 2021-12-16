@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import * as signalR from '@aspnet/signalr'
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { DeleteMessageDto } from '../Models/MessageModels/DeleteMessageDto';
+import { RecievedMessageDto } from '../Models/MessageModels/MessageRecievedDto';
 import { BaseHttpService } from './baseHttp.service';
 
 @Injectable({
@@ -58,6 +60,24 @@ export class SignalRServiceService extends BaseHttpService {
         observer.next(true)
       })
     })
+  }
+
+  MessageRecieved(): Observable<RecievedMessageDto>{
+    return new Observable<RecievedMessageDto>(observer => {
+      this.hubConnection.on("MessageRecieved", (message: RecievedMessageDto) => {
+        console.log("Message about: ", message)
+        observer.next(message);
+      })
+    });
+  }
+
+  MessageDelete(): Observable<DeleteMessageDto>{
+    return new Observable<DeleteMessageDto>(observer => {
+      this.hubConnection.on("DeleteMessage", (delMessageInfo: DeleteMessageDto) => {
+        console.log("Message to delete: ", delMessageInfo)
+        observer.next(delMessageInfo);
+      })
+    });
   }
 
   setAlaram(): Observable<any> {

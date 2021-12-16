@@ -15,9 +15,11 @@ namespace FireSaverApi.DataContext
         public User()
         {
             RolesList = new List<UserRole>();
+            Messages = new List<Message>();
         }
         public int Id { get; set; }
         public IList<UserRole> RolesList { get; set; }
+        public IList<Message> Messages { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
         public string Patronymic { get; set; }
