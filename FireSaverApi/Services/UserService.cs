@@ -34,6 +34,7 @@ namespace FireSaverApi.Services
         private readonly ITestService testService;
         private readonly ISocketService socketService;
         private readonly IUserRoleHelper roleHelper;
+        private readonly IIotControllerService iotController;
         private readonly AppSettings appSettings;
 
         public UserService(DatabaseContext context,
@@ -43,7 +44,8 @@ namespace FireSaverApi.Services
                             IRoutebuilderService routebuilderService,
                             ITestService testService,
                             ISocketService socketService,
-                            IUserRoleHelper roleHelper)
+                            IUserRoleHelper roleHelper,
+                            IIotControllerService iotController)
         {
             this.appSettings = appsettings.Value;
             this.context = context;
@@ -54,6 +56,7 @@ namespace FireSaverApi.Services
             this.testService = testService;
             this.socketService = socketService;
             this.roleHelper = roleHelper;
+            this.iotController = iotController;
         }
         public async Task<UserInfoDto> CreateNewUser(RegisterUserDto newUserInfo, string Role)
         {
@@ -291,7 +294,6 @@ namespace FireSaverApi.Services
                             .Include(t => t.CompartmentTest)
                             .ThenInclude(q => q.Questions)
                             .FirstOrDefaultAsync(c => c.Id == compartmentId);
-
             if (compartment.CompartmentTest != null)
             {
                 var testToComplete = await testService.GetTestInfo(compartment.CompartmentTest.Id);
@@ -301,9 +303,9 @@ namespace FireSaverApi.Services
             else
             {
                 var user = await GetUserById(userId);
-                if (iotId != null)
+                if (iotId.HasValue)
                 {
-                    await socketService.OpenDoorWithIot(iotId.Value);
+                    await iotController.OpenDoor(iotId.Value);
                 }
 
                 user.CurrentCompartment = compartment;
