@@ -61,5 +61,13 @@ namespace FireSaverApi.Controllers
             return Ok(response);
 
         }
+
+        [HttpPost("iotDataSent/{iotId}")]
+        [Authorize]
+        public async Task<IActionResult> ProcessIotSensorData(string iotId, [FromBody] IoTDataInfo dataInfo)
+        {
+            await iotService.AnalizeIoTDataInfo(iotId, dataInfo);
+            return Ok(new ServerResponse() { Message = "Data is processed" });
+        }
     }
 }

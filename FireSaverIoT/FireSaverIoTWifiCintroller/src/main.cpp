@@ -3,6 +3,10 @@
 #include <ESP8266HTTPClient.h>
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
+#include <functional>
+#include <limits>
+#include "TimerController.h"
+#include "RequestSender.h"
 using namespace std;
 
 const char *ssid = "TP-Link_40C8";
@@ -10,7 +14,7 @@ const char *password = "lebedyn42200";
 
 string bearerToken = "";
 
-string identifier = "1234";
+String identifier = "1234";
 
 int iotId = -1;
 
@@ -21,6 +25,43 @@ const char *mqtt_broker = "192.168.0.109";
 const char *mqtt_username = "iot";
 const char *mqtt_password = "password";
 const int mqtt_port = 1883;
+
+const int doorClosedPin = 15;
+const int doorOpenedPin = 13;
+const int connectingSignalPin = 12;
+const int sensorPin = 14;
+const int alarmPin = 16;
+bool isSetAlarm = false;
+
+TimerController<function<void()>, function<void()>> openCloseDoorTimer(String("Door timer"));
+TimerController<function<void()>, function<void()>> alarmTimer(String("Alarm timer"));
+
+RequestSender requestSender(client, identifier);
+
+void OpenDoor()
+{
+  digitalWrite(doorOpenedPin, HIGH);
+  digitalWrite(doorClosedPin, LOW);
+}
+
+void CloseDoor()
+{
+  digitalWrite(doorOpenedPin, LOW);
+  digitalWrite(doorClosedPin, HIGH);
+}
+
+void SetAlarm()
+{
+  OpenDoor();
+  digitalWrite(alarmPin, HIGH);
+}
+
+void OffAlarm()
+{
+  CloseDoor();
+  digitalWrite(alarmPin, LOW);
+  Serial.println("Switching off alarm");
+}
 
 bool RegisterIoT()
 {
@@ -67,11 +108,31 @@ void callback(char *topic, uint8_t *payload, unsigned int length)
   Serial.print("Message arrived in topic: ");
   Serial.println(topic);
   Serial.print("Message:");
-  for (int i = 0; i < length; i++)
+
+  string message = std::string((char *)payload);
+  if (message == "open" && !isSetAlarm)
   {
-    Serial.print((char)payload[i]);
+    openCloseDoorTimer.SetTimer(5, CloseDoor, OpenDoor);
   }
-  Serial.println();
+  else if (message == "alarm" && !isSetAlarm)
+  {
+    if (openCloseDoorTimer.IsTimerOn())
+    {
+      openCloseDoorTimer.FinishTimer();
+      delay(1000);
+    }
+    isSetAlarm = true;
+    Serial.println("Alarm is on");
+    alarmTimer.SetTimer(
+        std::numeric_limits<int>::max() / 2, OffAlarm, SetAlarm);
+  }
+  else if (message == "close" && isSetAlarm)
+  {
+    isSetAlarm = false;
+    alarmTimer.FinishTimer();
+    Serial.println("Alarm is off");
+  }
+  Serial.println(message.c_str());
   Serial.println("-----------------------");
 }
 
@@ -81,8 +142,15 @@ void setup()
 
   WiFi.begin(ssid, password);
   pinMode(2, OUTPUT);
+  pinMode(doorClosedPin, OUTPUT);
+  pinMode(doorOpenedPin, OUTPUT);
+  pinMode(connectingSignalPin, OUTPUT);
+  pinMode(sensorPin, OUTPUT);
+  pinMode(alarmPin, OUTPUT);
+
   digitalWrite(2, LOW);
 
+  digitalWrite(connectingSignalPin, HIGH);
   while (WiFi.status() != WL_CONNECTED)
   {
     digitalWrite(2, LOW);
@@ -95,7 +163,7 @@ void setup()
 
   int tryCount = 0;
 
-  bool isAuthed = RegisterIoT();
+  bool isAuthed = requestSender.RegisterIoT(iotId);
 
   while (!isAuthed && tryCount < 5)
   {
@@ -103,7 +171,7 @@ void setup()
     delay(1000);
     Serial.println("Authorizationg failed");
     digitalWrite(2, LOW);
-    isAuthed = RegisterIoT();
+    isAuthed = requestSender.RegisterIoT(iotId);
   }
 
   digitalWrite(2, LOW);
@@ -133,15 +201,38 @@ void setup()
     Serial.printf("Topic name: %s \n", topicName.c_str());
     mqttClient.subscribe(topicName.c_str());
   }
+  digitalWrite(connectingSignalPin, LOW);
+  CloseDoor();
 }
+
+int sendingSensorValueThreshold = 5;
+int currentThreshold = 0;
 
 void loop()
 {
   mqttClient.loop();
-  // put your main code here, to run repeatedly:
-}
+  float sensorValue;
+  sensorValue = analogRead(A0);
 
-void OpenDoor()
-{
-  //http.addHeader("Authorization", bearerToken);
+  if (sensorValue > 50)
+  {
+    currentThreshold++;
+    Serial.printf("Sensor value: %f \n", sensorValue);
+    digitalWrite(sensorPin, HIGH);
+
+    if (currentThreshold >= sendingSensorValueThreshold)
+    {
+      requestSender.SendSensorDataToServer(sensorValue);
+      currentThreshold = 0;
+    }
+  }
+  else
+  {
+    digitalWrite(sensorPin, LOW);
+    currentThreshold = 0;
+  }
+
+  delay(1000);
+  openCloseDoorTimer.UpdateTime();
+  alarmTimer.UpdateTime();
 }

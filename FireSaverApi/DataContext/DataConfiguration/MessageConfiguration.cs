@@ -15,6 +15,10 @@ namespace FireSaverApi.DataContext.DataConfiguration
                 .WithMany(message => message.Messages)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder.HasOne(iot => iot.IoT)
+                .WithMany(message => message.Messages)
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }

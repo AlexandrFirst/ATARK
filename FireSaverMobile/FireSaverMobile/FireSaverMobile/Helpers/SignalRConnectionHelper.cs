@@ -24,7 +24,7 @@ namespace FireSaverMobile.Helpers
             }
         }
 
-
+        public bool IsAlarmSet { get; set; } = false;
 
         public bool IsConnected
         {
@@ -76,9 +76,17 @@ namespace FireSaverMobile.Helpers
 
             hubConnection.On("Alarm", async () =>
             {
+                if (IsAlarmSet)
+                    return;
+                IsAlarmSet = true;
                 await PopupNavigation.Instance.PushAsync(new PopupYesActionView(async () => {
                     await NavigationDispetcher.Instance.Navigation.PushModalAsync(new EvacuationPlanPage());
                 }, "ALARM!!!", true));
+            });
+
+            hubConnection.On("AlarmOff", () =>
+            {
+                IsAlarmSet = false;
             });
         }
 

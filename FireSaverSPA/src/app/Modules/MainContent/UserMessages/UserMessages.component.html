@@ -2,15 +2,24 @@
   <div style="width: 800px;">
     <div *ngFor="let message of messages"
       style="border: 1px solid black; display: grid; grid-template-columns: auto 100px;">
-      <div style="align-self: center;">{{message.user.name}} {{message.user.surname}}</div>
-      <div style="align-self: center;">{{message.user.telephoneNumber}}</div>
+      <div *ngIf="message.user; else noUserInfo">
+        <div style="align-self: center;">{{message.user.name}} {{message.user.surname}}</div>
+        <div style="align-self: center;">{{message.user.telephoneNumber}}</div>
+      </div>
+      <ng-template #noUserInfo>
+        <div style="align-self: center;">IoT</div>
+        <div style="align-self: center;"></div>
+      </ng-template>
       <div style="align-self: center;">at {{message.sendTime | date}}</div>
-      <div style="align-self: center;">send message of 
-        <span *ngIf="checkType(message.messageType); else otherMessage">Fire</span>
-        <ng-template #otherMessage>Help</ng-template>
+      <div style="align-self: center;">send message of
+        <container-element [ngSwitch]="checkType(message.messageType)">
+          <span *ngSwitchCase="'fire'">Fire</span>
+          <span *ngSwitchCase="'help'">Help</span>
+          <span *ngSwitchCase="'iot'">Iot</span>
+        </container-element>
       </div>
       <div>He is at {{message.placeDescription}}</div>
-      <button class="btn btn-danger" (click)="deleteMessagedBtnClicked(message.id)">Delete</button> 
+      <button class="btn btn-danger" (click)="deleteMessagedBtnClicked(message.id)">Delete</button>
     </div>
   </div>
 </div>

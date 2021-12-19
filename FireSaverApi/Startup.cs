@@ -179,6 +179,7 @@ namespace FireSaverApi
             services.AddScoped<IRoutebuilderService, RoutebuilderService>();
 
             services.AddScoped<IIoTService, IoTService>();
+            services.AddScoped<IIoTHelper, IoTService>();
 
             services.AddScoped<ITestService, TestService>();
 
