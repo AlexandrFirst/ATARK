@@ -8,64 +8,69 @@ using namespace std;
 template <typename T, typename T1>
 class TimerController
 {
-  public:
+public:
     TimerController(String timerName)
     {
-      this->timerName = timerName;
+        this->timerName = timerName;
     }
     ~TimerController() {}
 
     void SetTimer(int timeToCheck, T funcToRun)
     {
-      Serial.printf("%s started \n", timerName.c_str());
-      if (timeToCheck != 0)
-        return;
-      this->timeToCheck = timeToCheck;
-      this->funcToRun = funcToRun;
+        Serial.printf("timer %s started \n", timerName.c_str());
+        if (this->timeToCheck != 0)
+            return;
+        this->timeToCheck = timeToCheck;
+        this->funcToRun = funcToRun;
     }
 
     void SetTimer(int timeToCheck, T funcToRun, T1 funcOnTimerStart)
     {
-      Serial.printf("%s started \n", timerName.c_str());
-      if (this->timeToCheck != 0)
-        return;
-      this->timeToCheck = timeToCheck;
-      this->funcToRun = funcToRun;
-
-      funcOnTimerStart();
+        Serial.printf("extedned timer %s started \n", timerName.c_str());
+        Serial.printf("%d \n", timeToCheck);
+        if (this->timeToCheck != 0)
+            return;
+        this->timeToCheck = timeToCheck;
+        this->funcToRun = funcToRun;
+        isTimerOn = true;
+        Serial.println("~~~~~");
+        funcOnTimerStart();
     }
 
     void AddTime(int addTime)
     {
-      this->timeToCheck += addTime;
+        this->timeToCheck += addTime;
     }
 
     void UpdateTime()
     {
-//      Serial.printf("%d current time \n", currentTime);
-//       Serial.printf("%d time to check \n", timeToCheck);
-      if (timeToCheck == 0)
-        return;
-      currentTime++;
-      
-      if (currentTime >= timeToCheck)
-      {
-        funcToRun();
-        currentTime = 0;
-        timeToCheck = 0;
-        Serial.printf("%s finished \n", timerName.c_str());
-      }
+        if (timeToCheck == 0)
+            return;
+        currentTime++;
+        if (currentTime >= timeToCheck)
+        {
+            funcToRun();
+            currentTime = 0;
+            timeToCheck = 0;
+            Serial.printf("%s finished \n", timerName.c_str());
+            isTimerOn = false;
+        }
     }
     void FinishTimer()
     {
-      currentTime = timeToCheck;
+        currentTime = timeToCheck;
     }
 
-  private:
+    bool IsTimerOn(){
+        return isTimerOn;
+    }
+
+private:
     int currentTime = 0;
     int timeToCheck = 0;
     T funcToRun;
     String timerName = "";
+    bool isTimerOn = false;
 };
 
 #endif

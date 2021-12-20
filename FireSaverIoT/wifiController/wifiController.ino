@@ -7,6 +7,8 @@
 #include <limits>
 #include "TimerController.h"
 #include "RequestSender.h"
+#include "MQTTClient.h"
+#include <optional>
 using namespace std;
 
 const char *ssid = "TP-Link_40C8";
@@ -40,30 +42,33 @@ RequestSender requestSender(client, identifier);
 
 void OpenDoor()
 {
+  Serial.println("Door opened");
   digitalWrite(doorOpenedPin, HIGH);
   digitalWrite(doorClosedPin, LOW);
 }
 
 void CloseDoor()
 {
-  if(isSetAlarm)
-    return;
+  Serial.println("Door closed");
   digitalWrite(doorOpenedPin, LOW);
   digitalWrite(doorClosedPin, HIGH);
 }
 
 void SetAlarm()
 {
+  Serial.println("Alarm on");
   OpenDoor();
   digitalWrite(alarmPin, HIGH);
 }
 
 void OffAlarm()
 {
+  Serial.println("Alarm off");
   CloseDoor();
   digitalWrite(alarmPin, LOW);
-  Serial.println("Switching off alarm");
 }
+MQTTClient* MQTTClient::current = nullptr;
+MQTTClient* mqttConnection;
 
 bool RegisterIoT()
 {
@@ -112,17 +117,21 @@ void callback(char *topic, uint8_t *payload, unsigned int length)
   Serial.print("Message:");
 
   string message = std::string((char *)payload);
-  if (message == "open1" && !isSetAlarm)
+  if (message == "open" && !isSetAlarm)
   {
     openCloseDoorTimer.SetTimer(5, CloseDoor, OpenDoor);
   }
   else if (message == "alarm" && !isSetAlarm)
   {
-    openCloseDoorTimer.FinishTimer();
+    if (openCloseDoorTimer.IsTimerOn())
+    {
+      openCloseDoorTimer.FinishTimer();
+      delay(1000);
+    }
     isSetAlarm = true;
     Serial.println("Alarm is on");
     alarmTimer.SetTimer(
-        std::numeric_limits<int>::max()/2, OffAlarm, SetAlarm);
+      std::numeric_limits<int>::max() / 2, OffAlarm, SetAlarm);
   }
   else if (message == "close" && isSetAlarm)
   {
@@ -176,28 +185,11 @@ void setup()
 
   if (isAuthed)
   {
-    mqttClient.setServer(mqtt_broker, mqtt_port);
-    mqttClient.setCallback(callback);
-    while (!mqttClient.connected())
-    {
-      String client_id = "esp8266-client-";
-      client_id += String(WiFi.macAddress());
-      Serial.printf("The client %s connects to the public mqtt broker\n", client_id.c_str());
-      if (mqttClient.connect(client_id.c_str(), mqtt_username, mqtt_password))
-      {
-        Serial.println("Public emqx mqtt broker connected");
-      }
-      else
-      {
-        Serial.print("failed with state ");
-        Serial.print(mqttClient.state());
-        delay(2000);
-      }
-    }
-    Serial.println("connected to mqtt server");
-    string topicName = "door/" + to_string(iotId);
-    Serial.printf("Topic name: %s \n", topicName.c_str());
-    mqttClient.subscribe(topicName.c_str());
+    mqttConnection = new MQTTClient(mqttClient, OpenDoor, CloseDoor, SetAlarm, OffAlarm,
+                                    openCloseDoorTimer, alarmTimer);
+
+    mqttConnection->SubscribeToTopic(iotId);
+   
   }
   digitalWrite(connectingSignalPin, LOW);
   CloseDoor();
