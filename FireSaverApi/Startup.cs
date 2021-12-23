@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.Versioning;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -13,6 +15,7 @@ using FireSaverApi.hub;
 using FireSaverApi.Models;
 using FireSaverApi.Profiles;
 using FireSaverApi.Services;
+using FireSaverApi.Services.shared;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -25,6 +28,11 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using MQTTnet;
+using MQTTnet.AspNetCore;
+using MQTTnet.AspNetCore.Extensions;
+using MQTTnet.Protocol;
+using MQTTnet.Server;
 using Newtonsoft.Json;
 
 namespace FireSaverApi
@@ -108,15 +116,32 @@ namespace FireSaverApi
                 });
             });
 
+            string username = Configuration["MqttOption:UserName"];
+            string password = Configuration["MqttOption:Password"];
 
-            // services.AddCors(options =>
-            // {
-            //     options.AddPolicy("AnyHeadersAllowed",
-            //     builder =>
-            //     {
-            //         builder.WithOrigins("https://localhost:4200");
-            //     });
-            // });
+            var optionsBuilder = new MqttServerOptionsBuilder()
+                .WithConnectionValidator(c =>
+                {
+                    if (c.Username != username)
+                    {
+                        c.ReasonCode = MqttConnectReasonCode.BadUserNameOrPassword;
+                        return;
+                    }
+
+                    if (c.Password != password)
+                    {
+                        c.ReasonCode = MqttConnectReasonCode.BadUserNameOrPassword;
+                        return;
+                    }
+
+                    c.ReasonCode = MqttConnectReasonCode.Success;
+                });
+            var option = optionsBuilder.Build();
+
+            services
+                .AddHostedMqttServer(option) //mqttServer => mqttServer.WithoutDefaultEndpoint() | option
+                .AddMqttConnectionHandler()
+                .AddConnections();
 
             services.AddControllers();
             services.AddControllers().AddNewtonsoftJson(o =>
@@ -154,6 +179,7 @@ namespace FireSaverApi
             services.AddScoped<IRoutebuilderService, RoutebuilderService>();
 
             services.AddScoped<IIoTService, IoTService>();
+            services.AddScoped<IIoTHelper, IoTService>();
 
             services.AddScoped<ITestService, TestService>();
 
@@ -162,6 +188,8 @@ namespace FireSaverApi
             services.AddScoped<IUserRoleHelper, UserRoleHelper>();
 
             services.AddScoped<IMessageService, MessageService>();
+
+            services.AddScoped<IIotControllerService, IotControllerService>();
 
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.TryAddSingleton<ITimerService, TimerService>();
@@ -198,6 +226,8 @@ namespace FireSaverApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -216,7 +246,27 @@ namespace FireSaverApi
             {
                 endpoints.MapControllers();
                 endpoints.MapHub<SocketHub>("/socket");
+                endpoints.MapMqtt("/mqtt");
             });
+
+
+            app.UseMqttServer(server =>
+            {
+                server.StopAsync();
+                server.StartedHandler = new MqttServerStartedHandlerDelegate(async args =>
+                {
+                    System.Console.WriteLine("MQTT server is running");
+                });
+
+                server.ClientConnectedHandler = new MqttServerClientConnectedHandlerDelegate(async args =>
+                  {
+                      System.Console.WriteLine("New client connected");
+                  });
+                server.StartAsync(server.Options);
+            });
+
+            ServiceLocator.Instance = app.ApplicationServices;
+
         }
     }
 }

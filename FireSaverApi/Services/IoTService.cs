@@ -23,6 +23,7 @@ namespace FireSaverApi.Services
         private readonly IBuildingHelper buildingHelper;
         private readonly IMapper mapper;
         private readonly ISocketService sockerService;
+        private readonly IMessageService messageService;
         private readonly AppSettings appSettings;
         private readonly ICompartmentHelper compartmentHelper;
 
@@ -31,11 +32,13 @@ namespace FireSaverApi.Services
                             ICompartmentHelper compartmentHelper,
                             IMapper mapper,
                             IOptions<AppSettings> appSettings,
-                            ISocketService sockerService)
+                            ISocketService sockerService,
+                            IMessageService messageService)
         {
             this.compartmentHelper = compartmentHelper;
             this.mapper = mapper;
             this.sockerService = sockerService;
+            this.messageService = messageService;
             this.appSettings = appSettings.Value;
             this.buildingHelper = buildingHelper;
             this.dataContext = dataContext;
@@ -59,7 +62,7 @@ namespace FireSaverApi.Services
             await dataContext.SaveChangesAsync();
         }
 
-        public async Task<IoT> GetIoTById(string IotIdentifier)
+        public async Task<IoT> GetIoTByIdentifier(string IotIdentifier)
         {
             var iot = await dataContext.IoTs.Include(c => c.Compartment).FirstOrDefaultAsync(i => i.IotIdentifier == IotIdentifier);
             if (iot == null)
@@ -71,7 +74,7 @@ namespace FireSaverApi.Services
 
         public async Task RemoveIoTFromCompartment(int compartmentId, string IotIdentifier)
         {
-            var iot = await GetIoTById(IotIdentifier);
+            var iot = await GetIoTByIdentifier(IotIdentifier);
             var compartment = await compartmentHelper.GetCompartmentById(compartmentId);
             
             if(!compartment.Iots.Any(i => i.IotIdentifier == IotIdentifier))
@@ -84,7 +87,7 @@ namespace FireSaverApi.Services
 
         public async Task AddIoTToCompartment(int compartmentId, string IotIdentifier)
         {
-            var iot = await GetIoTById(IotIdentifier);
+            var iot = await GetIoTByIdentifier(IotIdentifier);
             var compartment = await compartmentHelper.GetCompartmentById(compartmentId);
             compartment.Iots.Add(iot);
             dataContext.Update(compartment);
@@ -93,7 +96,7 @@ namespace FireSaverApi.Services
 
         public async Task<IotNewPositionDto> UpdateIoTPostion(string IotIdentifier, PositionDto newPos)
         {
-            var iot = await GetIoTById(IotIdentifier);
+            var iot = await GetIoTByIdentifier(IotIdentifier);
             var pos = mapper.Map<string>(newPos);
             iot.MapPosition = pos;
             dataContext.Update(iot);
@@ -141,16 +144,18 @@ namespace FireSaverApi.Services
 
         public async Task AnalizeIoTDataInfo(string iotId, IoTDataInfo dataInfo)
         {
-            var iot = await GetIoTById(iotId);
+            var iot = await GetIoTByIdentifier(iotId);
 
-            iot = mapper.Map<IoT>(dataInfo);
-            dataContext.Update(iot);
 
-            if (dataInfo.LastRecordedAmmoniaLevel > 10)  //FIXME: check values when to add real iot
+            if (dataInfo.SensorValue > 50)  //FIXME: check values when to add real iot
             {
+                mapper.Map(dataInfo, iot);
+                dataContext.Update(iot);
+                
                 var compartmentId = iot.Compartment.Id;
                 var buildingId = await FindBuildingWithCompartmentId(compartmentId);
                 await sockerService.SetAlarmForBuilding(buildingId);
+                await messageService.SendMessage(iot.Id, MessageType.IOT);
             }
 
             await dataContext.SaveChangesAsync();
@@ -173,6 +178,15 @@ namespace FireSaverApi.Services
             throw new Exception("Error while building seraching");
         }
 
+        public async Task<IoT> GetIoTById(int iotId)
+        {
+             var iot = await dataContext.IoTs.Include(c => c.Compartment).FirstOrDefaultAsync(i => i.Id == iotId);
+            if (iot == null)
+            {
+                throw new System.Exception("iot is not found");
+            }
+            return iot;
+        }
     }
 
 }

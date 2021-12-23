@@ -5,6 +5,7 @@ namespace FireSaverApi.Contracts
 {
     public interface IIoTHelper
     {
-         Task<IoT> GetIoTById(string IotIdentifier);
+         Task<IoT> GetIoTByIdentifier(string IotIdentifier);
+         Task<IoT> GetIoTById(int iotId);
     }
 }

@@ -4,14 +4,16 @@ using FireSaverApi.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FireSaverApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20211219085013_iot bd model changed")]
+    partial class iotbdmodelchanged
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -150,9 +152,6 @@ namespace FireSaverApi.Migrations
                     b.Property<int?>("BuildingId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("IoTId")
-                        .HasColumnType("int");
-
                     b.Property<int>("MessageType")
                         .HasColumnType("int");
 
@@ -168,8 +167,6 @@ namespace FireSaverApi.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BuildingId");
-
-                    b.HasIndex("IoTId");
 
                     b.HasIndex("UserId");
 
@@ -447,19 +444,12 @@ namespace FireSaverApi.Migrations
                         .HasForeignKey("BuildingId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("FireSaverApi.DataContext.IoT", "IoT")
-                        .WithMany("Messages")
-                        .HasForeignKey("IoTId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("FireSaverApi.DataContext.User", "User")
                         .WithMany("Messages")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Building");
-
-                    b.Navigation("IoT");
 
                     b.Navigation("User");
                 });
@@ -581,11 +571,6 @@ namespace FireSaverApi.Migrations
                     b.Navigation("Compartment");
 
                     b.Navigation("ScaleModel");
-                });
-
-            modelBuilder.Entity("FireSaverApi.DataContext.IoT", b =>
-                {
-                    b.Navigation("Messages");
                 });
 
             modelBuilder.Entity("FireSaverApi.DataContext.RoutePoint", b =>

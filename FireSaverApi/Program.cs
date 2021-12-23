@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using MQTTnet.AspNetCore.Extensions;
 
 namespace FireSaverApi
 {
@@ -32,6 +33,7 @@ namespace FireSaverApi
                             HostConfig.CertificatePassword);
                         });
                         opt.ListenAnyIP(5000);
+                        opt.ListenAnyIP(1883, l => l.UseMqtt());
                     });
 
                     webBuilder.UseStartup<Startup>();

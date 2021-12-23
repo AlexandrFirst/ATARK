@@ -25,6 +25,7 @@ export class UserNotificaionsComponent implements OnInit {
     })
 
     this.messageService.getAllMessages().subscribe((messages: RecievedMessageDto[]) => {
+      console.log(messages);
       this.messages.push(...messages);
     })
   }
@@ -41,8 +42,18 @@ export class UserNotificaionsComponent implements OnInit {
     this.messages.splice(messageIndexToDelete, 1);
   }
 
-  checkType(messageType: MessageType): boolean{
-    return messageType == MessageType.FIRE
+  checkType(messageType: MessageType): string {
+    switch (messageType) {
+      case MessageType.FIRE:
+        return "fire"
+      case MessageType.OTHER_HELP:
+      case MessageType.PERSONAL_HELP:
+        return "help"
+      case MessageType.IOT:
+        return "iot"
+      default:
+        return "fire"
+    }
   }
 
 }

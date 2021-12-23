@@ -43,7 +43,7 @@ namespace FireSaverApi.Services
 
             foreach (var user in responsibleUsersForBuilding)
             {
-                if(user.Id == userId)
+                if (user.Id == userId)
                     continue;
                 await socketService.DeleteMessage(user.Id, messageToDelete.Id);
             }
@@ -63,20 +63,55 @@ namespace FireSaverApi.Services
 
         public async Task SendMessage(int fromUserId, MessageType messageType)
         {
-            var user = await userHelper.GetUserById(fromUserId);
-            if (user.CurrentCompartment == null)
-                throw new System.Exception("Can't send messages without compartment");
-
-            var currentBuilding = await buildingHelper.GetBuildingByCompartment(user.CurrentCompartment.Id);
-            var messageToSend = new Message()
+            int compartmentId = -1;
+            Message messageToSend = null;
+            UserInfoDto sendingClientInfo = null;
+            if (messageType == MessageType.IOT)
             {
-                Building = currentBuilding,
-                MessageType = messageType,
-                SendTime = DateTime.Now,
-                User = user,
-                PlaceDescription = user.CurrentCompartment.Name + " " + 
-                    user.CurrentCompartment.Description
-            };
+                var iot = await context.IoTs.Include(c => c.Compartment).FirstOrDefaultAsync(i => i.Id == fromUserId);
+                if (iot == null)
+                    throw new Exception("Iot sendr is not found");
+                messageToSend = new Message()
+                {
+                    MessageType = messageType,
+                    SendTime = DateTime.Now,
+                    IoT = iot,
+                    PlaceDescription = iot.Compartment.Name + " " +
+                       iot.Compartment.Description
+                };
+
+                sendingClientInfo = new UserInfoDto()
+                {
+                    Name = $"Iot with id: {iot.IotIdentifier}",
+                    Surname = "",
+                    TelephoneNumber = iot.MapPosition
+                };
+
+                compartmentId = iot.Compartment.Id;
+            }
+            else
+            {
+                var user = await userHelper.GetUserById(fromUserId);
+                if (user.CurrentCompartment == null)
+                    throw new System.Exception("Can't send messages without compartment");
+
+                compartmentId = user.CurrentCompartment.Id;
+
+                messageToSend = new Message()
+                {
+                    MessageType = messageType,
+                    SendTime = DateTime.Now,
+                    User = user,
+                    PlaceDescription = user.CurrentCompartment.Name + " " +
+                        user.CurrentCompartment.Description
+                };
+
+                sendingClientInfo = mapper.Map<UserInfoDto>(user);
+            }
+
+
+            var currentBuilding = await buildingHelper.GetBuildingByCompartment(compartmentId);
+            messageToSend.Building = currentBuilding;
 
             context.Add(messageToSend);
             await context.SaveChangesAsync();
@@ -84,12 +119,11 @@ namespace FireSaverApi.Services
             foreach (var respUsers in currentBuilding.ResponsibleUsers)
             {
                 await socketService.SendMessage(
-                    mapper.Map<UserInfoDto>(user),
-                    respUsers.Id, 
-                    messageType, 
+                   sendingClientInfo,
+                    respUsers.Id,
+                    messageType,
                     messageToSend.Id,
-                    user.CurrentCompartment.Name + " " + 
-                    user.CurrentCompartment.Description);
+                    messageToSend.PlaceDescription);
             }
 
         }
