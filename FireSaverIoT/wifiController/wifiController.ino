@@ -70,78 +70,7 @@ void OffAlarm()
 MQTTClient* MQTTClient::current = nullptr;
 MQTTClient* mqttConnection;
 
-bool RegisterIoT()
-{
-  digitalWrite(2, HIGH);
-  Serial.println("Authorizationg..");
 
-  HTTPClient http;
-
-  StaticJsonDocument<100> loginDataJs;
-  StaticJsonDocument<100> responseJs;
-
-  loginDataJs["Identifier"] = identifier;
-  char loginData[100];
-  serializeJson(loginDataJs, loginData);
-
-  String dataToSend = String(loginData);
-  Serial.println("Sending data: " + dataToSend);
-  http.begin(client, "http://192.168.0.109:5000/IoT/loginIot");
-  http.addHeader("Content-Type", "application/json");
-
-  int httpCode = http.POST(dataToSend);
-  String payload = http.getString();
-  Serial.println(payload);
-
-  if (payload == "" || httpCode <= 0)
-  {
-
-    Serial.println(httpCode);
-    Serial.println("Response payload: " + payload);
-
-    return false;
-  }
-
-  deserializeJson(responseJs, payload);
-
-  iotId = responseJs["userId"].as<int>();
-  Serial.println("iotId: " + String(iotId));
-
-  return true;
-}
-
-void callback(char *topic, uint8_t *payload, unsigned int length)
-{
-  Serial.print("Message arrived in topic: ");
-  Serial.println(topic);
-  Serial.print("Message:");
-
-  string message = std::string((char *)payload);
-  if (message == "open" && !isSetAlarm)
-  {
-    openCloseDoorTimer.SetTimer(5, CloseDoor, OpenDoor);
-  }
-  else if (message == "alarm" && !isSetAlarm)
-  {
-    if (openCloseDoorTimer.IsTimerOn())
-    {
-      openCloseDoorTimer.FinishTimer();
-      delay(1000);
-    }
-    isSetAlarm = true;
-    Serial.println("Alarm is on");
-    alarmTimer.SetTimer(
-      std::numeric_limits<int>::max() / 2, OffAlarm, SetAlarm);
-  }
-  else if (message == "close" && isSetAlarm)
-  {
-    isSetAlarm = false;
-    alarmTimer.FinishTimer();
-    Serial.println("Alarm is off");
-  }
-  Serial.println(message.c_str());
-  Serial.println("-----------------------");
-}
 
 void setup()
 {

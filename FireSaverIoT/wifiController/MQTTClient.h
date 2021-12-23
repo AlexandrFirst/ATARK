@@ -39,7 +39,7 @@ class MQTTClient
       }
       else if (message == "alarm" && !isSetAlarm)
       {
-;        Serial.println("Activating alarm....");
+        ;        Serial.println("Activating alarm....");
         if (openCloseDoorTimer.IsTimerOn())
         {
           openCloseDoorTimer.FinishTimer();
@@ -70,11 +70,7 @@ class MQTTClient
     {
       mqttClient.setServer(mqtt_broker, mqtt_port);
       MQTTClient::current = this;
-//      mqttClient.setCallback([](char *topic, uint8_t *payload, unsigned int length) {
-//        Serial.println("Call back is called");
-//        Serial.println((char*)payload);
-//      });
-       mqttClient.setCallback(callback_function);
+      mqttClient.setCallback(callback_function);
 
       while (!mqttClient.connected())
       {
