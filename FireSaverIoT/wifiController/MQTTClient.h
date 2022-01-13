@@ -33,13 +33,14 @@ class MQTTClient
       Serial.print("Message:");
 
       string message = std::string((char *)payload);
-      if (message == "open" && !isSetAlarm)
+      Serial.println(message.c_str());
+      if (message == "open1" && !isSetAlarm)
       {
         openCloseDoorTimer.SetTimer(5, CloseDoor, OpenDoor);
       }
       else if (message == "alarm" && !isSetAlarm)
       {
-        ;        Serial.println("Activating alarm....");
+        Serial.println("Activating alarm....");
         if (openCloseDoorTimer.IsTimerOn())
         {
           openCloseDoorTimer.FinishTimer();
@@ -56,7 +57,7 @@ class MQTTClient
         alarmTimer.FinishTimer();
         Serial.println("Alarm is off");
       }
-      Serial.println(message.c_str());
+      
       Serial.println("-----------------------");
     }
 
