@@ -8,9 +8,9 @@ using FireSaverApi.Dtos;
 using FireSaverApi.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace FireSaverApi.Services
+namespace FireSaverApi.Services.PointServices
 {
-    public class ScalePointService : IScalePointService, IPositionTransformHelper
+    public class ScalePointService : IScalePointService
     {
         private readonly DatabaseContext context;
         private readonly IMapper mapper;
@@ -80,18 +80,6 @@ namespace FireSaverApi.Services
             return value / ratioBase;
         }
 
-        public async Task<PositionDto> ConvertImgToWorldPos(PositionDto inputPosition, int compartmentId)
-        {
-            PositionDto worldPos = await locationService.ImgToWorldPostion(inputPosition, compartmentId);
-            return worldPos;
-        }
-
-        public async Task<PositionDto> ConvertWorldToImgPos(PositionDto inputPosition, int compartmentId)
-        {
-            PositionDto imgPos = await locationService.WorldToImgPostion(inputPosition, compartmentId);
-            return imgPos;
-        }
-
         public async Task DeleteAllPoints(int evacuationPlanId)
         {
             var evacuationPlan = await evacuationServiceHelper.GetEvacPlanById(evacuationPlanId);
@@ -151,18 +139,18 @@ namespace FireSaverApi.Services
 
         private void UpdateScaleModel(ScaleModel scaleModel, LocationPointModel newModel)
         {
-            scaleModel.FromCoordXToPixelXCoef = newModel.FromCoordXToPixelXCoef;
-            scaleModel.FromCoordYToPixelYCoef = newModel.FromCoordYToPixelYCoef;
-            scaleModel.FromPixelXToCoordXCoef = newModel.FromPixelXToCoordXCoef;
-            scaleModel.FromPixelYToCoordYCoef = newModel.FromPixelYToCoordYCoef;
+            // scaleModel.FromCoordXToPixelXCoef = newModel.FromCoordXToPixelXCoef;
+            // scaleModel.FromCoordYToPixelYCoef = newModel.FromCoordYToPixelYCoef;
+            // scaleModel.FromPixelXToCoordXCoef = newModel.FromPixelXToCoordXCoef;
+            // scaleModel.FromPixelYToCoordYCoef = newModel.FromPixelYToCoordYCoef;
         }
 
         private void ResetScaleModel(ScaleModel scaleModel)
         {
-            scaleModel.FromCoordXToPixelXCoef = 0;
-            scaleModel.FromCoordYToPixelYCoef = 0;
-            scaleModel.FromPixelXToCoordXCoef = 0;
-            scaleModel.FromPixelYToCoordYCoef = 0;
+            // scaleModel.FromCoordXToPixelXCoef = 0;
+            // scaleModel.FromCoordYToPixelYCoef = 0;
+            // scaleModel.FromPixelXToCoordXCoef = 0;
+            // scaleModel.FromPixelYToCoordYCoef = 0;
 
         }
 

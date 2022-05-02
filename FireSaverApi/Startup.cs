@@ -15,6 +15,7 @@ using FireSaverApi.hub;
 using FireSaverApi.Models;
 using FireSaverApi.Profiles;
 using FireSaverApi.Services;
+using FireSaverApi.Services.PointServices;
 using FireSaverApi.Services.shared;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -174,7 +175,6 @@ namespace FireSaverApi
             services.AddScoped<IEvacuationServiceHelper, EvacuationServiceHelper>();
 
             services.AddScoped<IScalePointService, ScalePointService>();
-            services.AddScoped<IPositionTransformHelper, ScalePointService>();
 
             services.AddScoped<IRoutebuilderService, RoutebuilderService>();
 

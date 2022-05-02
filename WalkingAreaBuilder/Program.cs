@@ -3,23 +3,62 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
+
+/*
+    Improvements: 
+    > check if wavestep inetersects with wall or smth like that
+    > with incresed wavestep fix route display
+*/
+
 
 namespace WalkingAreaBuilder
 {
-    class WavePoint
+
+    enum PointType
+    {
+        Exit = 10,
+        Blocked = 20,
+        Wall = 1,
+        Free = 0,
+        Unprocessed = -1
+    }
+
+
+    class Route
+    {
+        public int DangerFactor { get; set; }
+        public int RouteLength { get; set; }
+        public List<Point> RoutePoints { get; set; } = new List<Point>();
+    }
+
+    class Point
     {
         public int X { get; set; }
         public int Y { get; set; }
+
+        public bool IsInRadiusOf(int radius, Point other)
+        {
+            return Math.Pow(other.X - this.X, 2) + Math.Pow(other.Y - this.Y, 2) <= Math.Pow(radius, 2);
+        }
+    }
+
+    class BlockedPoints : Point
+    {
+        public bool IsAlreadyVisited = false;
+        public int Radius { get; set; } = 30;
+    }
+
+    class WavePoint : Point
+    {
         public int WaveStep { get; set; }
+        public int DangerFactor { get; set; }
         public List<WavePoint> AdjacentPoints = new List<WavePoint>();
         public WavePoint ParentPoint { get; set; }
 
 
-        public bool IsInRadiusOf(int radius, WavePoint other)
-        {
-            return Math.Pow(other.X - this.X, 2) + Math.Pow(other.Y - this.Y, 2) <= Math.Pow(radius, 2);
-        }
+
 
         public override bool Equals(object obj)
         {
@@ -46,10 +85,13 @@ namespace WalkingAreaBuilder
 
     class ImagePoint
     {
-        public int data { get; set; } = -1;
+        public int data { get; set; } = (int)PointType.Unprocessed;
         private bool isVisited = false;
         public bool IsVisited { get { return isVisited; } set { isVisited = value; } }
+
     }
+
+
 
     class Program
     {
@@ -68,8 +110,26 @@ namespace WalkingAreaBuilder
             Y = 340
         };
 
+        static List<BlockedPoints> blockedPoints = new List<BlockedPoints>()
+            {
+                new BlockedPoints()
+                {
+                    X = 480,
+                    Y = 220,
+                    Radius = 40
+                },
+                new BlockedPoints()
+                {
+                    X = 480,
+                    Y = 75,
+                    Radius = 40
+                }
+            };
+
         static void Main(string[] args)
         {
+
+
             String filePath = "evacPlan.png";
             Bitmap bmp = new Bitmap(filePath);
 
@@ -98,7 +158,7 @@ namespace WalkingAreaBuilder
                     if (red == 255 && green == 255 && blue == 255)
                     {
                         if (availablePath[column, row] == null)
-                            availablePath[column, row] = new ImagePoint() { data = 0 };
+                            availablePath[column, row] = new ImagePoint() { data = (int)PointType.Free };
                     }
                     else
                     {
@@ -107,66 +167,159 @@ namespace WalkingAreaBuilder
                         {
                             if (column + i < bmpData.Height)
                             {
-                                availablePath[column + i, row] = new ImagePoint() { data = 1 };
+                                availablePath[column + i, row] = new ImagePoint() { data = (int)PointType.Wall };
                             }
 
                             if (column - i > 0)
                             {
-                                availablePath[column - i, row] = new ImagePoint() { data = 1 };
+                                availablePath[column - i, row] = new ImagePoint() { data = (int)PointType.Wall };
                             }
                             if (row - i > 0)
                             {
-                                availablePath[column, row - i] = new ImagePoint() { data = 1 };
+                                availablePath[column, row - i] = new ImagePoint() { data = (int)PointType.Wall };
                             }
                             if (row + i < bmpData.Width)
                             {
-                                availablePath[column, row + i] = new ImagePoint() { data = 1 };
+                                availablePath[column, row + i] = new ImagePoint() { data = (int)PointType.Wall };
                             }
                         }
 
-                        availablePath[column, row] = new ImagePoint() { data = 1 };
+                        availablePath[column, row] = new ImagePoint() { data = (int)PointType.Wall };
+                    }
+                }
+            }
+
+
+            for (int i = 0; i < blockedPoints.Count; i++)
+            {
+                for (int x = blockedPoints[i].Radius; x >= -blockedPoints[i].Radius; x--)
+                {
+                    int y_threshold = blockedPoints[i].Radius - Math.Abs(x);
+                    for (int y = y_threshold; y >= -y_threshold; y--)
+                    {
+                        SetColor(ref rgbValues, y: (blockedPoints[i].X + x) * 3, x: (blockedPoints[i].Y + y) * stride,
+                            red: 255, green: 0, blue: 0);
+                        ImagePoint imagePoint = GetImagePoint(blockedPoints[i].X + x, blockedPoints[i].Y + y);
+                        if (imagePoint != null)
+                        {
+                            if (imagePoint.data == (int)PointType.Free)
+                                imagePoint.data = (int)PointType.Blocked;
+                        }
                     }
                 }
             }
 
             WavePoint currentPoint = start;
             System.Console.WriteLine("Original Start point: x - " + currentPoint.X + "; y - " + currentPoint.Y);
-            WavePoint endWavePoint = BuildWaves(currentPoint);
-            System.Console.WriteLine("End point: x - " + endWavePoint.X + "; y - " + endWavePoint.Y);
-            if (endWavePoint == null)
-            {
-                System.Console.WriteLine("End point is not found");
-                bmp.UnlockBits(bmpData);
-                return;
-            }
 
-            Random rng = new Random();
-
-            while (!endWavePoint.IsInRadiusOf(waveStep, start))
+            Route currentRoute = new Route();
+            List<Route> routes = new List<Route>();
+            bool success = true;
+            while (true)
             {
-                var prevPoint = endWavePoint;
-                var nextPoint = endWavePoint.ParentPoint;
-                for (int i = Math.Min(prevPoint.X, nextPoint.X), j = Math.Min(prevPoint.Y, nextPoint.Y);
-                    i <= Math.Max(prevPoint.X, nextPoint.X) && j <= Math.Max(prevPoint.Y, nextPoint.Y);
-                    i++, j++)
+                WavePoint endWavePoint = BuildWaves(currentPoint);
+
+
+                if (endWavePoint == null)
                 {
-                    if (i > Math.Max(prevPoint.X, nextPoint.X))
-                        i = Math.Max(prevPoint.X, nextPoint.X);
-                    if (j > Math.Max(prevPoint.Y, nextPoint.Y))
-                        j = Math.Max(prevPoint.Y, nextPoint.Y);
+                    System.Console.WriteLine("End point is not found");
+                    Marshal.Copy(rgbValues, 0, ptr, bytes);
+                    bmp.UnlockBits(bmpData);
+                    bmp.Save("changedPng1.png");
 
-                    SetColor(ref rgbValues,
-                        y: j * stride, x: i * 3,
-                        red: 255, green: 242, blue: 0);
+                    success = false;
+
+                    break;
                 }
 
-                endWavePoint = endWavePoint.ParentPoint;
-            }
-            System.Console.WriteLine("Start point: x - " + endWavePoint.X + "; y - " + endWavePoint.Y);
+                System.Console.WriteLine("End point: x - " + endWavePoint.X + "; y - " + endWavePoint.Y);
 
-            Marshal.Copy(rgbValues, 0, ptr, bytes);
-            bmp.UnlockBits(bmpData);
-            bmp.Save("changedPng.png");
+                currentRoute = new Route();
+                Random rng = new Random();
+
+                while (!endWavePoint.IsInRadiusOf(waveStep, start))
+                {
+                    var prevPoint = endWavePoint;
+                    var nextPoint = endWavePoint.ParentPoint;
+                    for (int i = Math.Min(prevPoint.X, nextPoint.X), j = Math.Min(prevPoint.Y, nextPoint.Y);
+                        i <= Math.Max(prevPoint.X, nextPoint.X) && j <= Math.Max(prevPoint.Y, nextPoint.Y);
+                        i++, j++)
+                    {
+                        if (i > Math.Max(prevPoint.X, nextPoint.X))
+                            i = Math.Max(prevPoint.X, nextPoint.X);
+                        if (j > Math.Max(prevPoint.Y, nextPoint.Y))
+                            j = Math.Max(prevPoint.Y, nextPoint.Y);
+
+                        SetColor(ref rgbValues,
+                            y: j * stride, x: i * 3,
+                            red: 255, green: 0, blue: 0);
+                    }
+
+
+                    currentRoute.RouteLength++;
+                    currentRoute.RoutePoints.Add(new Point { X = endWavePoint.X, Y = endWavePoint.Y });
+
+
+                    if (endWavePoint.DangerFactor != 0)
+                    {
+                        currentRoute.DangerFactor += endWavePoint.DangerFactor;
+                        foreach (var blockPoint in blockedPoints)
+                        {
+                            if (endWavePoint.IsInRadiusOf(blockPoint.Radius, blockPoint))
+                            {
+                                blockPoint.IsAlreadyVisited = true;
+                            }
+                        }
+                    }
+                    endWavePoint = endWavePoint.ParentPoint;
+                }
+
+                System.Console.WriteLine("Start point: x - " + endWavePoint.X + "; y - " + endWavePoint.Y);
+
+                if (currentRoute.DangerFactor == 0 || routes.Select(r => r.RouteLength).Contains(currentRoute.RouteLength))
+                {
+                    routes.Add(currentRoute);
+                    break;
+                }
+
+                routes.Add(currentRoute);
+
+                for (int column = 0; column < bmpData.Height; column++)
+                {
+                    for (int row = 0; row < bmpData.Width; row++)
+                    {
+                        GetImagePoint(row, column).IsVisited = false;
+                    }
+                }
+
+            }
+            System.Console.WriteLine("Total route count: " + routes.Count);
+
+
+            Route safestRoute = routes.First();
+            double minFactor = Double.MaxValue;
+
+            foreach (var route in routes)
+            {
+                double currentFactor = Convert.ToDouble(route.DangerFactor);
+                if (currentFactor < minFactor)
+                {
+                    safestRoute = route;
+                    minFactor = currentFactor;
+                }
+                System.Console.WriteLine("Route length: " + route.RouteLength +
+                    "; danger factor: " + route.DangerFactor +
+                    "; final factor: " + currentFactor);
+            }
+
+            System.Console.WriteLine("Safest route factor: " + minFactor);
+
+            if (success)
+            {
+                Marshal.Copy(rgbValues, 0, ptr, bytes);
+                bmp.UnlockBits(bmpData);
+                bmp.Save("changedPng1.png");
+            }
         }
 
         public static (byte, byte, byte) GetColor(byte[] rgbValues, int x, int y)
@@ -223,6 +376,12 @@ namespace WalkingAreaBuilder
 
                             return newFrontPoint;
                         }
+
+                        if (GetImagePoint(newFrontPoint.X, newFrontPoint.Y).data == (int)PointType.Blocked)
+                        {
+                            newFrontPoint.DangerFactor++;
+                        }
+
                         SetColor(ref rgbValues,
                     y: newFrontPoint.Y * stride, x: newFrontPoint.X * 3,
                     red: red, green: green, blue: blue);
@@ -232,9 +391,12 @@ namespace WalkingAreaBuilder
                 }
                 if (newFront.Count == 0)
                     return null;
+
                 Shuffle(newFront, random);
+
                 oldFront.Clear();
                 oldFront.AddRange(newFront);
+
                 newFront.Clear();
 
             }
@@ -243,13 +405,34 @@ namespace WalkingAreaBuilder
 
         public static ImagePoint GetImagePoint(int x, int y)
         {
-            return availablePath[y, x];
+            if (y < 0)
+                return null;
+            else if (y >= availablePath.GetLength(0))
+                return null;
+            else if (x < 0)
+                return null;
+            else if (x >= availablePath.GetLength(1))
+                return null;
+            else
+                return availablePath[y, x];
         }
 
         public static void AddWavePoint(int m_x, int m_y, List<WavePoint> pointsAround)
         {
             if (IsPointVisited(m_x, m_y))
                 return;
+
+            WavePoint newWavePoint = new WavePoint()
+            {
+                X = m_x,
+                Y = m_y
+            };
+
+            if (blockedPoints.Any(p => p.IsInRadiusOf(p.Radius, newWavePoint) &&
+                p.IsAlreadyVisited))
+            {
+                return;
+            }
 
             pointsAround.Add(new WavePoint()
             {
@@ -269,16 +452,16 @@ namespace WalkingAreaBuilder
             List<WavePoint> pointsAround = new List<WavePoint>();
 
             bool isUpDirectionAvailable = currentPoint.Y - waveStep >= 0 &&
-                availablePath[currentPoint.Y - waveStep, currentPoint.X].data == 0;
+                availablePath[currentPoint.Y - waveStep, currentPoint.X].data != (int)PointType.Wall;
 
             bool isDownDirectionAvailable = currentPoint.Y + waveStep < availablePath.GetLongLength(0) &&
-                availablePath[currentPoint.Y + waveStep, currentPoint.X].data == 0;
+                availablePath[currentPoint.Y + waveStep, currentPoint.X].data != (int)PointType.Wall;
 
             bool isRightDirectionAvailable = currentPoint.X + waveStep < availablePath.GetLongLength(1) &&
-                availablePath[currentPoint.Y, currentPoint.X + waveStep].data == 0;
+                availablePath[currentPoint.Y, currentPoint.X + waveStep].data != (int)PointType.Wall;
 
             bool isLeftDirectionAvailable = currentPoint.X - waveStep >= 0 &&
-                availablePath[currentPoint.Y, currentPoint.X - waveStep].data == 0;
+                availablePath[currentPoint.Y, currentPoint.X - waveStep].data != (int)PointType.Wall;
 
 
             if (isUpDirectionAvailable)
