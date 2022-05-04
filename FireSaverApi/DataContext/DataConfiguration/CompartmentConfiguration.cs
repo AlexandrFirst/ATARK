@@ -22,10 +22,6 @@ namespace FireSaverApi.DataContext.DataConfiguration
                 .WithOne(iot => (TEntity)iot.Compartment)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            builder.HasMany(compartment => compartment.RoutePoints)
-                .WithOne(iot => (TEntity)iot.Compartment)
-                .OnDelete(DeleteBehavior.Cascade);
-
             builder.HasMany(compartment => compartment.InboundUsers)
                 .WithOne(iot => (TEntity)iot.CurrentCompartment);
 

@@ -7,7 +7,6 @@ namespace FireSaverApi.DataContext
         public Compartment()
         {
             Iots = new List<IoT>();
-            RoutePoints = new List<RoutePoint>();
             InboundUsers = new List<User>();
         }
         public int Id { get; set; }
@@ -15,13 +14,12 @@ namespace FireSaverApi.DataContext
         public string Description { get; set; }
         public EvacuationPlan EvacuationPlan { get; set; }
         public int? EvacuationPlanId { get; set; }
-
+        public string CompartmentPointsDataPublicId { get; set; }
         public string SafetyRules { get; set; }
         public Test CompartmentTest { get; set; }
         public int? CompartmentTestId { get; set; }
 
         public IList<IoT> Iots { get; set; }
-        public IList<RoutePoint> RoutePoints { get; set; }
         public IList<User> InboundUsers { get; set; }
     }
 }

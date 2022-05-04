@@ -6,7 +6,6 @@ namespace FireSaverApi.DataContext
     public class DatabaseContext : DbContext
     {
         public virtual DbSet<ScalePoint> ScalePoints { get; set; }
-        public virtual DbSet<RoutePoint> RoutePoints { get; set; }
         public virtual DbSet<Building> Buildings { get; set; }
         public virtual DbSet<EvacuationPlan> EvacuationPlans { get; set; }
         public virtual DbSet<Floor> Floors { get; set; }
@@ -27,7 +26,6 @@ namespace FireSaverApi.DataContext
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfiguration(new RoutePointConfiguration());
             modelBuilder.ApplyConfiguration(new BuildingConfiguration());
             modelBuilder.ApplyConfiguration(new CompartmentConfiguration<Room>());
             modelBuilder.ApplyConfiguration(new CompartmentConfiguration<Floor>());
@@ -35,7 +33,6 @@ namespace FireSaverApi.DataContext
             modelBuilder.ApplyConfiguration(new FloorConfiguration());
             modelBuilder.ApplyConfiguration(new IoTConfiguration());
             modelBuilder.ApplyConfiguration(new PointConfiguration<ScalePoint>());
-            modelBuilder.ApplyConfiguration(new PointConfiguration<RoutePoint>());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new ScalePointConfiguration());
             modelBuilder.ApplyConfiguration(new RoleConfiguration());

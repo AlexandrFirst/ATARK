@@ -128,8 +128,6 @@ namespace WalkingAreaBuilder
 
         static void Main(string[] args)
         {
-
-
             String filePath = "evacPlan.png";
             Bitmap bmp = new Bitmap(filePath);
 

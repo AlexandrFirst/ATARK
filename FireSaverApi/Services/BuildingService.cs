@@ -158,19 +158,7 @@ namespace FireSaverApi.Services
 
         public async Task ReleaseAllBlockedPoints(int buildingId)
         {
-            var buildingCompartments = await GetAllBuildingCompartment(buildingId);
-
-            var compartmentsId = buildingCompartments.Select(c => c.Id);
-
-            var compartmentRoutePoints = await context.RoutePoints.Include(c => c.Compartment)
-                .Where(p => compartmentsId.Contains(p.Compartment.Id)).ToListAsync();
-
-            foreach (var point in compartmentRoutePoints)
-            {
-                point.IsBlocked = false;
-            }
-            context.RoutePoints.UpdateRange(compartmentRoutePoints);
-            await context.SaveChangesAsync();
+           
         }
 
         private async Task<List<Compartment>> GetAllBuildingCompartment(int buildingId)
