@@ -31,7 +31,6 @@ namespace FireSaverApi.Services
         private readonly IMapper mapper;
         private readonly IOptions<AppSettings> appsettings;
         private readonly ILocationService locationService;
-        private readonly IRoutebuilderService routebuilderService;
         private readonly ITestService testService;
         private readonly ISocketService socketService;
         private readonly IUserRoleHelper roleHelper;
@@ -43,7 +42,6 @@ namespace FireSaverApi.Services
                             IMapper mapper,
                             IOptions<AppSettings> appsettings,
                             ILocationService locationService,
-                            IRoutebuilderService routebuilderService,
                             ITestService testService,
                             ISocketService socketService,
                             IUserRoleHelper roleHelper,
@@ -55,7 +53,6 @@ namespace FireSaverApi.Services
             this.mapper = mapper;
             this.appsettings = appsettings;
             this.locationService = locationService;
-            this.routebuilderService = routebuilderService;
             this.testService = testService;
             this.socketService = socketService;
             this.roleHelper = roleHelper;
@@ -232,7 +229,15 @@ namespace FireSaverApi.Services
 
             RouteBuilder routeBuilder = new RouteBuilder(compartmentDataStorage.GetCompartmentDataById(user.CurrentCompartment.Id),
                 compartmentDataStorage.GetBlockedPointsByCompartmentId(user.CurrentCompartment.Id));
-            Route route = routeBuilder.BuildRoute(userPosition);
+
+
+            List<Common.Point> exitPoints = user.CurrentCompartment.ExitPoints.Select(p =>
+            {
+                PositionDto positionDto = mapper.Map<PositionDto>(p);
+                return new Common.Point() { X = (int)positionDto.Latitude, Y = (int)positionDto.Longtitude };
+            }).ToList();
+
+            Route route = routeBuilder.BuildRoute(userPosition, exitPoints);
 
             return mapper.Map<RouteDto>(route);
         }

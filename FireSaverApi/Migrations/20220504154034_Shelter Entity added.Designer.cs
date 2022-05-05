@@ -4,14 +4,16 @@ using FireSaverApi.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FireSaverApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20220504154034_Shelter Entity added")]
+    partial class ShelterEntityadded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -115,26 +117,6 @@ namespace FireSaverApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("EvacuationPlans");
-                });
-
-            modelBuilder.Entity("FireSaverApi.DataContext.ExitPoint", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("CompartmentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("MapPosition")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompartmentId");
-
-                    b.ToTable("ExitPoints");
                 });
 
             modelBuilder.Entity("FireSaverApi.DataContext.IoT", b =>
@@ -295,9 +277,6 @@ namespace FireSaverApi.Migrations
                     b.Property<int?>("BuildingId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Capacity")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("BuildingId");
@@ -453,13 +432,6 @@ namespace FireSaverApi.Migrations
                     b.Navigation("EvacuationPlan");
                 });
 
-            modelBuilder.Entity("FireSaverApi.DataContext.ExitPoint", b =>
-                {
-                    b.HasOne("FireSaverApi.DataContext.Compartment", null)
-                        .WithMany("ExitPoints")
-                        .HasForeignKey("CompartmentId");
-                });
-
             modelBuilder.Entity("FireSaverApi.DataContext.IoT", b =>
                 {
                     b.HasOne("FireSaverApi.DataContext.Compartment", "Compartment")
@@ -602,8 +574,6 @@ namespace FireSaverApi.Migrations
 
             modelBuilder.Entity("FireSaverApi.DataContext.Compartment", b =>
                 {
-                    b.Navigation("ExitPoints");
-
                     b.Navigation("InboundUsers");
 
                     b.Navigation("Iots");

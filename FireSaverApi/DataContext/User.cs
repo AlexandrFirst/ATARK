@@ -30,6 +30,7 @@ namespace FireSaverApi.DataContext
         public string LastSeenBuildingPosition { get; set; }
         public Building ResponsibleForBuilding { get; set; }
         public Compartment CurrentCompartment { get; set; }
+        public Shelter Shelter { get; set; }
 
     }
 }

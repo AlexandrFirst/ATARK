@@ -43,8 +43,8 @@ namespace FireSaverApi
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            Task.Run(AddRolesIfEmpty).Wait();
-            Task.Run(AddAdminIfItNotExists).Wait();
+            // Task.Run(AddRolesIfEmpty).Wait();
+            // Task.Run(AddAdminIfItNotExists).Wait();
         }
 
         async Task AddAdminIfItNotExists()
@@ -190,6 +190,7 @@ namespace FireSaverApi
             services.AddScoped<IMessageService, MessageService>();
 
             services.AddScoped<IIotControllerService, IotControllerService>();
+            
 
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.TryAddSingleton<ITimerService, TimerService>();

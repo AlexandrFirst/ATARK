@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FireSaverApi.Helpers;
+using FireSaverApi.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -45,7 +46,16 @@ namespace FireSaverApi
                     HostConfig.CertificatePassword =
                         context.Configuration["CertPassword"];
                 })
-                .ConfigureServices(services => services.AddHostedService<GuestsCleaner>());
+                .ConfigureServices((context, services) =>
+                {
+                    services.AddHostedService<GuestsCleaner>();
+                })
+                .ConfigureServices((context, services) =>
+                {
+                    IConfiguration configuration = context.Configuration;
+                    services.Configure<TelegramData>(configuration.GetSection("TelegramData"));
+                    services.AddHostedService<AirAlertScanner>();
+                });
     }
 
 

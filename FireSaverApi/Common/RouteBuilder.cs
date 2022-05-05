@@ -20,7 +20,7 @@ namespace FireSaverApi.Common
             this.waveStep = waveStep;
         }
 
-        public WavePoint BuildWaves(WavePoint userPosition)
+        private WavePoint BuildWaves(WavePoint userPosition, List<Point> exits)
         {
             if (userPosition.X < 0 || userPosition.X > availablePath.GetLength(1) ||
                 userPosition.Y < 0 || userPosition.Y > availablePath.GetLength(0))
@@ -62,7 +62,7 @@ namespace FireSaverApi.Common
                     {
                         newFrontPoint.ParentPoint = oldFrontPoint;
                         newFrontPoint.WaveStep = oldFrontPoint.WaveStep + 1;
-                        if (RouteBuilderHelper.GetImagePoint(newFrontPoint.X, newFrontPoint.Y, availablePath).data == (int)PointType.Exit)
+                        if (exits.Any(e => e.IsInRadiusOf(1, newFrontPoint)))
                         {
                             newFront.Clear();
                             oldFront.Clear();
@@ -105,18 +105,16 @@ namespace FireSaverApi.Common
             }
         }
 
-        public Route BuildRoute(WavePoint currectUserPosition)
+        public Route BuildRoute(WavePoint currectUserPosition, List<Point> exits)
         {
-            bool success = true;
             List<Route> routes = new List<Route>();
             while (true)
             {
-                WavePoint endWavePoint = BuildWaves(currectUserPosition);
+                WavePoint endWavePoint = BuildWaves(currectUserPosition, exits);
 
 
                 if (endWavePoint == null)
                 {
-                    success = false;
                     break;
                 }
 
@@ -129,16 +127,6 @@ namespace FireSaverApi.Common
                 {
                     var prevPoint = endWavePoint;
                     var nextPoint = endWavePoint.ParentPoint;
-                    for (int i = Math.Min(prevPoint.X, nextPoint.X), j = Math.Min(prevPoint.Y, nextPoint.Y);
-                        i <= Math.Max(prevPoint.X, nextPoint.X) && j <= Math.Max(prevPoint.Y, nextPoint.Y);
-                        i++, j++)
-                    {
-                        if (i > Math.Max(prevPoint.X, nextPoint.X))
-                            i = Math.Max(prevPoint.X, nextPoint.X);
-                        if (j > Math.Max(prevPoint.Y, nextPoint.Y))
-                            j = Math.Max(prevPoint.Y, nextPoint.Y);
-                    }
-
 
                     currentRoute.RouteLength++;
                     currentRoute.RoutePoints.Add(new Point { X = endWavePoint.X, Y = endWavePoint.Y });
