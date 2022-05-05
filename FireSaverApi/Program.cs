@@ -27,12 +27,12 @@ namespace FireSaverApi
                     //   "applicationUrl": "https://localhost:5001;http://localhost:5000",
                     webBuilder.ConfigureKestrel(opt =>
                     {
-                        opt.ListenAnyIP(5001, listenOpt =>
-                        {
-                            listenOpt.UseHttps(
-                            HostConfig.CertificateFileLocation,
-                            HostConfig.CertificatePassword);
-                        });
+                        // opt.ListenAnyIP(5001, listenOpt =>
+                        // {
+                        //     listenOpt.UseHttps(
+                        //     HostConfig.CertificateFileLocation,
+                        //     HostConfig.CertificatePassword);
+                        // });
                         opt.ListenAnyIP(5000);
                         opt.ListenAnyIP(1883, l => l.UseMqtt());
                     });
@@ -49,13 +49,13 @@ namespace FireSaverApi
                 .ConfigureServices((context, services) =>
                 {
                     services.AddHostedService<GuestsCleaner>();
-                })
-                .ConfigureServices((context, services) =>
-                {
-                    IConfiguration configuration = context.Configuration;
-                    services.Configure<TelegramData>(configuration.GetSection("TelegramData"));
-                    services.AddHostedService<AirAlertScanner>();
                 });
+                // .ConfigureServices((context, services) =>
+                // {
+                //     IConfiguration configuration = context.Configuration;
+                //     services.Configure<TelegramData>(configuration.GetSection("TelegramData"));
+                //     services.AddHostedService<AirAlertScanner>();
+                // });
     }
 
 

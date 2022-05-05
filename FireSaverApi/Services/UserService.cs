@@ -36,6 +36,7 @@ namespace FireSaverApi.Services
         private readonly IUserRoleHelper roleHelper;
         private readonly IIotControllerService iotController;
         private readonly CompartmentDataStorage compartmentDataStorage;
+        private readonly ICompartmentDataCloudinaryService compartmentDataCloudinaryService;
         private readonly AppSettings appSettings;
 
         public UserService(DatabaseContext context,
@@ -46,7 +47,8 @@ namespace FireSaverApi.Services
                             ISocketService socketService,
                             IUserRoleHelper roleHelper,
                             IIotControllerService iotController,
-                            CompartmentDataStorage compartmentDataStorage)
+                            CompartmentDataStorage compartmentDataStorage,
+                            ICompartmentDataCloudinaryService compartmentDataCloudinaryService)
         {
             this.appSettings = appsettings.Value;
             this.context = context;
@@ -58,6 +60,7 @@ namespace FireSaverApi.Services
             this.roleHelper = roleHelper;
             this.iotController = iotController;
             this.compartmentDataStorage = compartmentDataStorage;
+            this.compartmentDataCloudinaryService = compartmentDataCloudinaryService;
         }
         public async Task<UserInfoDto> CreateNewUser(RegisterUserDto newUserInfo, string Role)
         {
@@ -219,6 +222,10 @@ namespace FireSaverApi.Services
             }
 
             var worldPosition = mapper.Map<PositionDto>(user.LastSeenBuildingPosition);
+            if (worldPosition == null)
+                throw new Exception("Switch on your geo");
+
+
             var mappedWorldPostion = await locationService.WorldToImgPostion(worldPosition, user.CurrentCompartment.Id);
 
             var userPosition = new WavePoint()
@@ -227,25 +234,52 @@ namespace FireSaverApi.Services
                 Y = (int)mappedWorldPostion.Longtitude
             };
 
-            RouteBuilder routeBuilder = new RouteBuilder(compartmentDataStorage.GetCompartmentDataById(user.CurrentCompartment.Id),
-                compartmentDataStorage.GetBlockedPointsByCompartmentId(user.CurrentCompartment.Id));
+            ImagePoint[,] availablePath = compartmentDataStorage.GetCompartmentDataById(user.CurrentCompartment.Id);
+
+            if (availablePath == null)
+            {
+                if (user.CurrentCompartment.CompartmentPointsDataPublicId == null)
+                {
+                    throw new Exception("No compartment data found");
+                }
+
+                availablePath = await compartmentDataCloudinaryService.
+                    GetCompartmentData(user.CurrentCompartment.CompartmentPointsDataPublicId);
+                compartmentDataStorage.LoadData(user.CurrentCompartment.Id, availablePath);
+            }
+
+
+            var blockedPoints = compartmentDataStorage.GetBlockedPointsByCompartmentId(user.CurrentCompartment.Id);
+            if(blockedPoints == null)
+                blockedPoints = new BlockedPoint[0];
+
+            RouteBuilder routeBuilder = new RouteBuilder(availablePath, blockedPoints);
 
 
             List<Common.Point> exitPoints = user.CurrentCompartment.ExitPoints.Select(p =>
             {
-                PositionDto positionDto = mapper.Map<PositionDto>(p);
+                PositionDto positionDto = mapper.Map<PositionDto>(p.MapPosition);
                 return new Common.Point() { X = (int)positionDto.Latitude, Y = (int)positionDto.Longtitude };
             }).ToList();
 
             Route route = routeBuilder.BuildRoute(userPosition, exitPoints);
 
-            return mapper.Map<RouteDto>(route);
+            RouteDto result = new RouteDto()
+            {
+                DangerFactor = route.DangerFactor,
+                RoutePoints = route.RoutePoints
+                    .Select(p => new PositionDto(){Latitude = p.X, Longtitude = p.Y})
+                    .ToList()
+            };
+
+            return result;
         }
 
         public async Task<User> GetUserById(int userId)
         {
             var foundUser = await context.Users.Include(b => b.ResponsibleForBuilding)
                                                .Include(c => c.CurrentCompartment)
+                                               .ThenInclude(e => e.ExitPoints)
                                                .Include(r => r.RolesList)
                                                .FirstOrDefaultAsync(u => u.Id == userId);
             if (foundUser == null)

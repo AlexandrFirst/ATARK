@@ -43,8 +43,8 @@ namespace FireSaverApi
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            // Task.Run(AddRolesIfEmpty).Wait();
-            // Task.Run(AddAdminIfItNotExists).Wait();
+            Task.Run(AddRolesIfEmpty).Wait();
+            Task.Run(AddAdminIfItNotExists).Wait();
         }
 
         async Task AddAdminIfItNotExists()

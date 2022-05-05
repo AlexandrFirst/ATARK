@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using CloudinaryDotNet;
@@ -25,61 +26,66 @@ namespace FireSaverApi.Services
 
         public async Task<ImagePoint[,]> GetCompartmentData(string publicId)
         {
-            var result = await cloudinary.GetResourceAsync(publicId);
-
-            FileStream f = File.OpenRead(result.Url);
-            StreamReader reader = new StreamReader(f);
-            string line = "";
+            var result = await cloudinary.GetResourceAsync(new GetResourceParams(publicId) { ResourceType = ResourceType.Raw });
 
             List<List<ImagePoint>> listImagePoints = new List<List<ImagePoint>>();
 
-            while ((line = await reader.ReadLineAsync()) != null)
+            WebClient wc = new WebClient();
+            using (StreamReader reader = new StreamReader(wc.OpenRead(new Uri(result.Url))))
             {
-                List<ImagePoint> lineImagePoints = new List<ImagePoint>();
-                char[] points = line.ToCharArray();
-                for (int i = 0; i < points.GetLength(0); i++)
+                string line = "";
+
+                while ((line = await reader.ReadLineAsync()) != null)
                 {
-                    lineImagePoints.Add(new ImagePoint() { data = int.Parse(points[i].ToString()) });
+                    List<ImagePoint> lineImagePoints = new List<ImagePoint>();
+                    char[] points = line.ToCharArray();
+                    for (int i = 0; i < points.GetLength(0); i++)
+                    {
+                        lineImagePoints.Add(new ImagePoint() { data = int.Parse(points[i].ToString()) });
+                    }
+                    listImagePoints.Add(lineImagePoints);
                 }
             }
-
-            int size0 = listImagePoints.Count;
-            int size1 = listImagePoints[0].Count;
-            ImagePoint[,] imagePoints = new ImagePoint[size1, size0];
+            int size0 = listImagePoints.Count - 1;
+            int size1 = listImagePoints[0].Count - 1;
+            ImagePoint[,] imagePoints = new ImagePoint[size0, size1];
 
             for (int i = 0; i < size0; i++)
             {
                 for (int j = 0; j < size1; j++)
                 {
-                    imagePoints[j, i] = listImagePoints[i][j];
+                    imagePoints[i, j] = listImagePoints[i][j];
                 }
             }
 
             return imagePoints;
         }
 
-        public async Task<string> UpdateFile(ImagePoint[,] imagePoints, string publicId, string newFileName)
+        public async Task<string> UpdateFile(ImagePoint[,] imagePoints, string publicId)
         {
+            return await UploadFile(imagePoints);
             if ((await DestroyFile(publicId)).Equals("ok"))
             {
-                return await UploadFile(imagePoints, newFileName);
+
             }
             return null;
         }
 
-        public async Task<string> UpdateFile(Stream imageStream, string publicId, string newFileName)
+        public async Task<string> UpdateFile(Stream imageStream, string publicId)
         {
+            return await UploadFile(imageStream);
+
             if ((await DestroyFile(publicId)).Equals("ok"))
             {
-                return await UploadFile(imageStream, newFileName);
+
             }
             return null;
         }
 
-        public async Task<string> UploadFile(Stream stream, string fileName)
+        public async Task<string> UploadFile(Stream stream)
         {
-            FileDescription file = new FileDescription(fileName, stream);
-
+            stream.Seek(0, SeekOrigin.Begin);
+            FileDescription file = new FileDescription(Guid.NewGuid().ToString(), stream);
             RawUploadParams uploadParams = new RawUploadParams()
             {
                 File = file
@@ -89,7 +95,7 @@ namespace FireSaverApi.Services
 
         }
 
-        public async Task<string> UploadFile(ImagePoint[,] imagePoints, string fileName)
+        public async Task<string> UploadFile(ImagePoint[,] imagePoints)
         {
             StringBuilder text = new StringBuilder();
 
@@ -103,17 +109,17 @@ namespace FireSaverApi.Services
                 text.AppendLine(dataLine);
             }
 
-            using (MemoryStream ms = new MemoryStream())
+            MemoryStream ms = new MemoryStream();
+
+            StreamWriter sw = new StreamWriter(ms, Encoding.UTF8);
+
+
+            foreach (ReadOnlyMemory<char> chunk in text.GetChunks())
             {
-                using (StreamWriter sw = new StreamWriter(ms, Encoding.UTF8, leaveOpen: true))
-                {
-                    foreach (ReadOnlyMemory<char> chunk in text.GetChunks())
-                    {
-                        await sw.WriteAsync(chunk);
-                    }
-                }
-                return await UploadFile(ms, fileName);
+                await sw.WriteAsync(chunk);
             }
+            return await UploadFile(sw.BaseStream);
+
         }
     }
 }

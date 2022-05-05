@@ -59,8 +59,10 @@ namespace FireSaverApi.Controllers
                 return NotFound(new ServerResponse() { Message = "Compartment is not found" });
             }
 
-            Point point = mapper.Map<Point>(coords);
-            ExitPoint exitPoint = point as ExitPoint;
+            ExitPoint exitPoint = new ExitPoint()
+            {
+                MapPosition = mapper.Map<string>(coords)
+            };
 
             compartment.ExitPoints.Add(exitPoint);
             await databaseContext.SaveChangesAsync();

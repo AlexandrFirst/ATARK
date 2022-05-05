@@ -69,7 +69,7 @@ namespace FireSaverApi.Services
             ImagePoint[,] imagePoints = imageParser.ParseImage();
 
 
-            string publicId = await dataCompartmentCloudinaryService.UploadFile(imagePoints, compartment.Id.ToString());
+            string publicId = await dataCompartmentCloudinaryService.UploadFile(imagePoints);
             compartment.CompartmentPointsDataPublicId = publicId;
 
             dataContext.Update(compartment);
@@ -87,8 +87,9 @@ namespace FireSaverApi.Services
             var evacPlan = compartment.EvacuationPlan;
             await planImageUploadService.DeletePlanImage(evacPlan.PublicId);
 
-
-            var newPublicId = await dataCompartmentCloudinaryService.UpdateFile(planImage.OpenReadStream(), compartment.CompartmentPointsDataPublicId, compartmentId.ToString());
+            ImageParser imageParser = new ImageParser(planImage.OpenReadStream());
+            ImagePoint[,] imagePoints = imageParser.ParseImage();
+            var newPublicId = await dataCompartmentCloudinaryService.UpdateFile(imagePoints, compartment.CompartmentPointsDataPublicId);
 
             compartment.CompartmentPointsDataPublicId = newPublicId;
             dataContext.Compartment.Update(compartment);
@@ -108,7 +109,7 @@ namespace FireSaverApi.Services
             var compartment = await compartmentHelper.GetCompartmentById(compartmentId);
             var evacPlan = compartment.EvacuationPlan;
 
-            compartmentDataStorage.LoadData(compartmentId, 
+            compartmentDataStorage.LoadData(compartmentId,
                 await dataCompartmentCloudinaryService.GetCompartmentData(compartment.CompartmentPointsDataPublicId));
 
             return mapper.Map<EvacuationPlanDto>(evacPlan);
@@ -120,7 +121,12 @@ namespace FireSaverApi.Services
             var evacPlan = compartment.EvacuationPlan;
 
             compartmentDataStorage.RemoveCompartmentData(compartmentId);
-            await dataCompartmentCloudinaryService.DestroyFile(compartment.CompartmentPointsDataPublicId);
+
+            if (evacPlan != null && evacPlan.PublicId != null)
+                await planImageUploadService.DeletePlanImage(evacPlan.PublicId);
+
+            if (compartment.CompartmentPointsDataPublicId is not null)
+                await dataCompartmentCloudinaryService.DestroyFile(compartment.CompartmentPointsDataPublicId);
 
             dataContext.EvacuationPlans.Remove(evacPlan);
             await dataContext.SaveChangesAsync();
@@ -173,7 +179,7 @@ namespace FireSaverApi.Services
 
             foreach (var c in result)
             {
-                compartmentDataStorage.LoadData(c.Compartment.Id, 
+                compartmentDataStorage.LoadData(c.Compartment.Id,
                     await dataCompartmentCloudinaryService.GetCompartmentData(c.Compartment.CompartmentPointsDataPublicId));
             }
 

@@ -6,10 +6,10 @@ namespace FireSaverApi.Contracts
 {
     public interface ICompartmentDataCloudinaryService
     {
-        Task<string> UploadFile(Stream stream, string fileName);
-        Task<string> UploadFile(ImagePoint[,] imagePoints, string fileName);
-        Task<string> UpdateFile(Stream imageStream, string publicId, string newFileName);
-        Task<string> UpdateFile(ImagePoint[,] imagePoints, string publicId, string newFileName);
+        Task<string> UploadFile(Stream stream);
+        Task<string> UploadFile(ImagePoint[,] imagePoints);
+        Task<string> UpdateFile(Stream imageStream, string publicId);
+        Task<string> UpdateFile(ImagePoint[,] imagePoints, string publicId);
         Task<string> DestroyFile(string publicId);
         Task<ImagePoint[,]> GetCompartmentData(string PublicId);
     }

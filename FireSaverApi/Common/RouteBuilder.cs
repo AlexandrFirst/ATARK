@@ -78,17 +78,17 @@ namespace FireSaverApi.Common
                         newFront.AddRange(tempNewFront);
 
                     }
-                    if (newFront.Count == 0)
-                        return null;
-
-                    Shuffle(newFront, random);
-
-                    oldFront.Clear();
-                    oldFront.AddRange(newFront);
-
-                    newFront.Clear();
-
                 }
+                if (newFront.Count == 0)
+                    return null;
+
+                Shuffle(newFront, random);
+
+                oldFront.Clear();
+                oldFront.AddRange(newFront);
+
+                newFront.Clear();
+
             }
         }
 
@@ -164,7 +164,11 @@ namespace FireSaverApi.Common
                     }
                 }
             }
-            Route safestRoute = routes.First();
+            Route safestRoute = routes.FirstOrDefault();
+            if (safestRoute == null)
+            {
+                throw new Exception("No routes are available");
+            }
             double minFactor = double.MaxValue;
 
             foreach (var route in routes)
