@@ -63,6 +63,7 @@ namespace FireSaverApi.Helpers
             });
 
             Client.Update += Client_Update;
+            WTelegram.Helpers.Log = (lvl, str) => { };
             My = await Client.LoginUserIfNeeded();
             var dialogs = await Client.Messages_GetAllDialogs();
             dialogs.CollectUsersChats(Users, Chats);
@@ -82,6 +83,7 @@ namespace FireSaverApi.Helpers
                                 case TL.Message m:
                                     {
                                         string chatName = GetChatName(m.peer_id);
+                                        System.Console.WriteLine(chatName);
                                         if (chatName == "Повітряна Тривога")
                                         {
                                             string message = m.message;
@@ -96,6 +98,8 @@ namespace FireSaverApi.Helpers
 
                                                 if (statusGroup == null || areaGroup == null)
                                                     return;
+
+                                                System.Console.WriteLine("Place: " + areaGroup.Value + "; status: " + statusGroup.Value);
 
                                                 string[] regions = areaGroup.Value.Split(" та ");
 
@@ -138,7 +142,7 @@ namespace FireSaverApi.Helpers
             return null;
         }
 
-        private string Chat(long id) => Chats.TryGetValue(id, out var chat) ? chat.ToString() : null;
+        private string Chat(long id) => Chats.TryGetValue(id, out var chat) ? chat.Title : null;
         public Task StopAsync(CancellationToken cancellationToken)
         {
             return Task.CompletedTask;
