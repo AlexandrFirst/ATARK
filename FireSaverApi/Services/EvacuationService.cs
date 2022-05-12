@@ -1,8 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using FireSaverApi.Common;
 using FireSaverApi.Contracts;
 using FireSaverApi.DataContext;
 using FireSaverApi.Dtos.EvacuationPlanDtos;
@@ -17,20 +22,26 @@ namespace FireSaverApi.Services
         private readonly IMapper mapper;
         private readonly ICompartmentHelper compartmentHelper;
         private readonly IPlanImageUploadService planImageUploadService;
+        private readonly ICompartmentDataCloudinaryService dataCompartmentCloudinaryService;
         private readonly IEvacuationServiceHelper evacServiceHelper;
+        private readonly CompartmentDataStorage compartmentDataStorage;
 
         public EvacuationService(DatabaseContext dataContext,
                                  IMapper mapper,
                                  ICompartmentHelper compartmentHelper,
-                                 IPlanImageUploadService planImageUploadService,
+                                 IPlanImageUploadService planImageCloudinaryService,
+                                 ICompartmentDataCloudinaryService dataCompartmentCloudinaryService,
                                  IEvacuationServiceHelper evacServiceHelper,
-                                 IUserHelper userHelper)
+                                 IUserHelper userHelper,
+                                 CompartmentDataStorage compartmentDataStorage)
         {
             this.dataContext = dataContext;
             this.mapper = mapper;
             this.compartmentHelper = compartmentHelper;
-            this.planImageUploadService = planImageUploadService;
+            this.planImageUploadService = planImageCloudinaryService;
+            this.dataCompartmentCloudinaryService = dataCompartmentCloudinaryService;
             this.evacServiceHelper = evacServiceHelper;
+            this.compartmentDataStorage = compartmentDataStorage;
         }
 
         public async Task<EvacuationPlanDto> addEvacuationPlanToCompartment(int compartmentId, IFormFile planImage)
@@ -54,6 +65,15 @@ namespace FireSaverApi.Services
                 ScaleModel = new ScaleModel()
             };
 
+            ImageParser imageParser = new ImageParser(planImage.OpenReadStream());
+            ImagePoint[,] imagePoints = imageParser.ParseImage();
+
+
+            string publicId = await dataCompartmentCloudinaryService.UploadFile(imagePoints);
+            compartment.CompartmentPointsDataPublicId = publicId;
+
+            dataContext.Update(compartment);
+
             await dataContext.EvacuationPlans.AddAsync(newEvacPlan);
             await dataContext.SaveChangesAsync();
 
@@ -67,6 +87,12 @@ namespace FireSaverApi.Services
             var evacPlan = compartment.EvacuationPlan;
             await planImageUploadService.DeletePlanImage(evacPlan.PublicId);
 
+            ImageParser imageParser = new ImageParser(planImage.OpenReadStream());
+            ImagePoint[,] imagePoints = imageParser.ParseImage();
+            var newPublicId = await dataCompartmentCloudinaryService.UpdateFile(imagePoints, compartment.CompartmentPointsDataPublicId);
+
+            compartment.CompartmentPointsDataPublicId = newPublicId;
+            dataContext.Compartment.Update(compartment);
 
             evacPlan.PublicId = uploadPlanResponse.PublicId;
             evacPlan.Url = uploadPlanResponse.Url;
@@ -82,6 +108,10 @@ namespace FireSaverApi.Services
         {
             var compartment = await compartmentHelper.GetCompartmentById(compartmentId);
             var evacPlan = compartment.EvacuationPlan;
+
+            compartmentDataStorage.LoadData(compartmentId,
+                await dataCompartmentCloudinaryService.GetCompartmentData(compartment.CompartmentPointsDataPublicId));
+
             return mapper.Map<EvacuationPlanDto>(evacPlan);
         }
 
@@ -89,6 +119,14 @@ namespace FireSaverApi.Services
         {
             var compartment = await compartmentHelper.GetCompartmentById(compartmentId);
             var evacPlan = compartment.EvacuationPlan;
+
+            compartmentDataStorage.RemoveCompartmentData(compartmentId);
+
+            if (evacPlan != null && evacPlan.PublicId != null)
+                await planImageUploadService.DeletePlanImage(evacPlan.PublicId);
+
+            if (compartment.CompartmentPointsDataPublicId is not null)
+                await dataCompartmentCloudinaryService.DestroyFile(compartment.CompartmentPointsDataPublicId);
 
             dataContext.EvacuationPlans.Remove(evacPlan);
             await dataContext.SaveChangesAsync();
@@ -137,6 +175,12 @@ namespace FireSaverApi.Services
                 var restFloorsEvacPlans = await GetFloorsBelowLevel((currentCompartment as Floor).Level);
 
                 result.AddRange(restFloorsEvacPlans);
+            }
+
+            foreach (var c in result)
+            {
+                compartmentDataStorage.LoadData(c.Compartment.Id,
+                    await dataCompartmentCloudinaryService.GetCompartmentData(c.Compartment.CompartmentPointsDataPublicId));
             }
 
             return mapper.Map<List<EvacuationPlanDto>>(result);

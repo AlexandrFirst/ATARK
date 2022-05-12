@@ -5,7 +5,9 @@ using AutoMapper;
 using FireSaverApi.Contracts;
 using FireSaverApi.DataContext;
 using FireSaverApi.Dtos;
+using FireSaverApi.Helpers;
 using FireSaverApi.Models;
+using FireSaverApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,78 +18,70 @@ namespace FireSaverApi.Controllers
     public class RouteBuilderController : ControllerBase
     {
         private readonly IMapper mapper;
-        private readonly IRoutebuilderService routeBuilder;
+        private readonly IUserContextService userContextService;
+        private readonly IUserHelper userHelper;
+        private readonly CompartmentDataStorage compartmentDataStorage;
+        private readonly DatabaseContext databaseContext;
 
         public RouteBuilderController(IMapper mapper,
-                                        IRoutebuilderService routeBuilder)
+                                        IUserContextService userContextService,
+                                        IUserHelper userHelper,
+                                        CompartmentDataStorage compartmentDataStorage,
+                                        DatabaseContext databaseContext)
         {
             this.mapper = mapper;
-            this.routeBuilder = routeBuilder;
+            this.userContextService = userContextService;
+            this.userHelper = userHelper;
+            this.compartmentDataStorage = compartmentDataStorage;
+            this.databaseContext = databaseContext;
         }
 
-        [HttpPost("newpoint")]
-        public async Task<IActionResult> SetNewPoint([FromBody] NewRoutePointDto routePoint)
+        [Authorize]
+        [HttpPost("addBlockePoint/{radius}")]
+        public async Task<IActionResult> AddBlockedPoint([FromBody] PositionDto coords, int radius)
         {
-            var newPoint = await routeBuilder.SetNewPoint(routePoint);
-            return Ok(mapper.Map<RoutePointDto>(newPoint));
+            var userId = userContextService.GetUserContext().Id;
+            var user = await userHelper.GetUserById(userId);
+
+            compartmentDataStorage.AddBlockPointToCompartment(user.CurrentCompartment.Id, new Common.BlockedPoint()
+            { X = (int)coords.Latitude, Y = (int)coords.Longtitude, Radius = radius });
+
+            return Ok(new ServerResponse() { Message = "Point is added" });
         }
 
-        [HttpPost("{compartmentId}/newroute")]
-        public async Task<IActionResult> SetNewRoute(int compartmentId, [FromBody] NewRoutePointDto routePoint)
+        [Authorize(Roles = new string[] { UserRoleName.ADMIN })]
+        [HttpPost("addExitPoint/{compartmentId}")]
+        public async Task<IActionResult> AddExitToCompartment([FromBody] PositionDto coords, int compartmentId)
         {
-            var newPoint = await routeBuilder.SetNewRoute(compartmentId, routePoint);
-            return Ok(mapper.Map<RoutePointDto>(newPoint));
+            var compartment = await databaseContext.Compartment.FirstOrDefaultAsync(c => c.Id == compartmentId);
+            if (compartment == null)
+            {
+                return NotFound(new ServerResponse() { Message = "Compartment is not found" });
+            }
+
+            ExitPoint exitPoint = new ExitPoint()
+            {
+                MapPosition = mapper.Map<string>(coords)
+            };
+
+            compartment.ExitPoints.Add(exitPoint);
+            await databaseContext.SaveChangesAsync();
+            return Ok(exitPoint);
         }
 
-        [HttpDelete("routepoint/{routePointId}")]
-        public async Task<IActionResult> DeletePoint(int routePointId)
+        [Authorize(Roles = new string[] { UserRoleName.ADMIN })]
+        [HttpDelete("removeExitPoint/{pointId}")]
+        public async Task<IActionResult> RemoveExitPoint(int pointId)
         {
-            var deletePointOutputDto = await routeBuilder.DeletePoint(routePointId);
-            return Ok(deletePointOutputDto);
+            var point = await databaseContext.ExitPoints.FirstOrDefaultAsync(e => e.Id == pointId);
+
+            if (point == null)
+                return NotFound(new ServerResponse() { Message = "Point is not found" });
+
+            databaseContext.Remove(point);
+            await databaseContext.SaveChangesAsync();
+            return Ok(new ServerResponse() { Message = "Point is deleted" });
         }
 
-        [HttpDelete("routepoint/block/{routePointId}")]
-        public async Task<IActionResult> BlockRoutePoint(int routePointId)
-        {
-            await routeBuilder.BlockRoutePoint(routePointId);
-            return Ok(new ServerResponse() { Message = "point is blocked" });
-        }
-
-        [HttpGet("routepoint/{routePointId}")]
-        public async Task<IActionResult> GetRoutePoint(int routePointId)
-        {
-            var retrievingPoint = await routeBuilder.GetRoutePoint(routePointId);
-            var pointToReturn = mapper.Map<RoutePointDto>(retrievingPoint);
-            return Ok(pointToReturn);
-        }
-
-        [HttpDelete("route/{routeId}")]
-        public async Task<IActionResult> DeleteRoute(int routeId)
-        {
-            await routeBuilder.DeleteRoute(routeId);
-
-            return Ok();
-        }
-
-        [HttpGet("route/{routePointId}")]
-        public async Task<IActionResult> GetRoute(int routePointId)
-        {
-            var initPoint = await routeBuilder.GetAllRoute(routePointId);
-            return Ok(mapper.Map<RoutePointDto>(initPoint));
-        }
-
-        [HttpGet("compartment/{compartmentId}")]
-        public async Task<IActionResult> GetAllRouteForCompartment(int compartmentId)
-        {
-            var route = await routeBuilder.GetAllRoutForCompartment(compartmentId);
-            return Ok(mapper.Map<RoutePointDto>(route));
-        }
-
-        [HttpPut("updateMapPos")]
-        public async Task<IActionResult> UpdateRoutePointPos([FromBody] RoutePointDto updatingRoutePoint)
-        {
-            var pointToUpdate = await routeBuilder.UpdateRoutePointPos(updatingRoutePoint);
-            return Ok(pointToUpdate);
-        }
     }
 }

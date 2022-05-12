@@ -9,6 +9,5 @@ namespace FireSaverApi.Contracts
     {
         Task<LocationPointModel> CalculateLocationModel(int compartmentId);
         Task<PositionDto> WorldToImgPostion(PositionDto worldPostion, int compartmentId);
-        Task<PositionDto> ImgToWorldPostion(PositionDto worldPostion, int compartmentId);
     }
 }

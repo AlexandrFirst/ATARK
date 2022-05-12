@@ -2,19 +2,17 @@ namespace FireSaverApi.Models
 {
     public class LocationPointModel
     {
-        public double FromPixelXToCoordXCoef { get; set; }
-        public double FromCoordXToPixelXCoef { get; set; }
-
-        public double FromPixelYToCoordYCoef { get; set; }
-        public double FromCoordYToPixelYCoef { get; set; }
+        public double ImageXToRealXProjectCoef { get; set; }
+        public double ImageYToRealXProjectCoef { get; set; }
+        public double ImageXToRealYProjectCoef { get; set; }
+        public double ImageYToRealYProjectCoef { get; set; }
 
         public bool isInvalid()
         {
-            return FromPixelXToCoordXCoef == 0 || 
-                   FromCoordXToPixelXCoef == 0 || 
-                   FromPixelYToCoordYCoef == 0 || 
-                   FromCoordYToPixelYCoef == 0;
+            return ImageXToRealXProjectCoef == 0 ||
+                    ImageYToRealXProjectCoef == 0 ||
+                    ImageXToRealYProjectCoef == 0 ||
+                    ImageYToRealYProjectCoef == 0;
         }
-
     }
 }

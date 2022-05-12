@@ -12,11 +12,10 @@ namespace FireSaverApi.DataContext
         public int Id { get; set; }
         public IList<ScalePoint> ScalePoints { get; set; }
 
-        public double FromPixelXToCoordXCoef { get; set; }
-        public double FromCoordXToPixelXCoef { get; set; }
-
-        public double FromPixelYToCoordYCoef { get; set; }
-        public double FromCoordYToPixelYCoef { get; set; }
+        public double ImageXToRealXProjectCoef { get; set; }
+        public double ImageYToRealXProjectCoef { get; set; }
+        public double ImageXToRealYProjectCoef { get; set; }
+        public double ImageYToRealYProjectCoef { get; set; }
 
         public double MinDistanceDifferenceLatitudeCoef
         {

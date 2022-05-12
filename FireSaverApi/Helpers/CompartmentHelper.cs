@@ -20,7 +20,6 @@ namespace FireSaverApi.Helpers
                                                                        .ThenInclude(p => p.ScalePoints) 
                                                                        .Include(t => t.CompartmentTest)
                                                                        .ThenInclude(q => q.Questions)
-                                                                       .Include(r => r.RoutePoints)
                                                                        .FirstOrDefaultAsync(c => c.Id == compartmentId);
             if(compartment == null)
             {

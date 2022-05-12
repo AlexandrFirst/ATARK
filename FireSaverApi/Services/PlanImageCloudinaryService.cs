@@ -9,22 +9,11 @@ using Microsoft.Extensions.Options;
 
 namespace FireSaverApi.Services
 {
-    public class PlanImageUploadService : IPlanImageUploadService
+    public class PlanImageCloudinaryService : CloudinaryService, IPlanImageUploadService
     {
-        private readonly CloudinarySettings cloudinarySettings;
-        private Cloudinary cloudinary;
 
-        public PlanImageUploadService(IOptions<CloudinarySettings> cloudinarySettings)
-        {
-            this.cloudinarySettings = cloudinarySettings.Value;
-
-            var cloudinaryAccount = new Account(cloudinarySettings.Value.CloudName,
-                                                cloudinarySettings.Value.APIKey,
-                                                cloudinarySettings.Value.APISecret);
-
-            cloudinary = new Cloudinary(cloudinaryAccount);
-            cloudinary.Api.Secure = true;
-        }
+        public PlanImageCloudinaryService(IOptions<CloudinarySettings> cloudinarySettings)
+            : base(cloudinarySettings) { }
 
         public async Task DeletePlanImage(string planImagePublicId)
         {

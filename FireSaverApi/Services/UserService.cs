@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using FireSaverApi.Common;
 using FireSaverApi.Contracts;
 using FireSaverApi.DataContext;
 using FireSaverApi.Dtos;
@@ -30,33 +31,36 @@ namespace FireSaverApi.Services
         private readonly IMapper mapper;
         private readonly IOptions<AppSettings> appsettings;
         private readonly ILocationService locationService;
-        private readonly IRoutebuilderService routebuilderService;
         private readonly ITestService testService;
         private readonly ISocketService socketService;
         private readonly IUserRoleHelper roleHelper;
         private readonly IIotControllerService iotController;
+        private readonly CompartmentDataStorage compartmentDataStorage;
+        private readonly ICompartmentDataCloudinaryService compartmentDataCloudinaryService;
         private readonly AppSettings appSettings;
 
         public UserService(DatabaseContext context,
                             IMapper mapper,
                             IOptions<AppSettings> appsettings,
                             ILocationService locationService,
-                            IRoutebuilderService routebuilderService,
                             ITestService testService,
                             ISocketService socketService,
                             IUserRoleHelper roleHelper,
-                            IIotControllerService iotController)
+                            IIotControllerService iotController,
+                            CompartmentDataStorage compartmentDataStorage,
+                            ICompartmentDataCloudinaryService compartmentDataCloudinaryService)
         {
             this.appSettings = appsettings.Value;
             this.context = context;
             this.mapper = mapper;
             this.appsettings = appsettings;
             this.locationService = locationService;
-            this.routebuilderService = routebuilderService;
             this.testService = testService;
             this.socketService = socketService;
             this.roleHelper = roleHelper;
             this.iotController = iotController;
+            this.compartmentDataStorage = compartmentDataStorage;
+            this.compartmentDataCloudinaryService = compartmentDataCloudinaryService;
         }
         public async Task<UserInfoDto> CreateNewUser(RegisterUserDto newUserInfo, string Role)
         {
@@ -208,7 +212,7 @@ namespace FireSaverApi.Services
                 throw new InorrectOldPasswordException();
             }
         }
-        public async Task<List<RoutePointDto>> BuildEvacuationRootForCompartment(int userId)
+        public async Task<RouteDto> BuildEvacuationRootForCompartment(int userId)
         {
             var user = await GetUserById(userId);
 
@@ -217,67 +221,65 @@ namespace FireSaverApi.Services
                 throw new Exception("Current compartment for user is not set");
             }
 
-            var compartmentPoints = await context.RoutePoints
-                                                 .Where(p => p.Compartment.Id == user.CurrentCompartment.Id)
-                                                 .ToListAsync();
-
-            if (compartmentPoints.Count == 0)
-            {
-                throw new Exception("No points for the compartment found");
-            }
-
             var worldPosition = mapper.Map<PositionDto>(user.LastSeenBuildingPosition);
+            if (worldPosition == null)
+                throw new Exception("Switch on your geo");
+
+
             var mappedWorldPostion = await locationService.WorldToImgPostion(worldPosition, user.CurrentCompartment.Id);
 
-            RoutePoint closestPoint = GetClosestPoint(compartmentPoints, mappedWorldPostion);
-
-            var rootPointFotCurrentRoutePoint = await routebuilderService.GetRootPointForRoutePoint(closestPoint.Id);
-
-            var exitPoints = compartmentPoints.Where(p => p.RoutePointType == RoutePointType.EXIT ||
-                                                          p.RoutePointType == RoutePointType.ADDITIONAL_EXIT).ToList();
-            if (exitPoints.Count == 0)
+            var userPosition = new WavePoint()
             {
-                return new List<RoutePointDto>()
-                {
-                    mapper.Map<RoutePointDto>(await routebuilderService.GetAllRoute(rootPointFotCurrentRoutePoint.Id))
-                };
-            }
-            else
+                X = (int)mappedWorldPostion.Latitude,
+                Y = (int)mappedWorldPostion.Longtitude
+            };
+
+            ImagePoint[,] availablePath = compartmentDataStorage.GetCompartmentDataById(user.CurrentCompartment.Id);
+
+            if (availablePath == null)
             {
-                var possibleEvacuationList = new List<RoutePointDto>();
-                for (int i = 0; i < exitPoints.Count; i++)
+                if (user.CurrentCompartment.CompartmentPointsDataPublicId == null)
                 {
-                    var evacuationRoute = await routebuilderService.GetRouteBetweenPoints(closestPoint.Id, exitPoints[i].Id);
-                    possibleEvacuationList.Add(mapper.Map<RoutePointDto>(evacuationRoute));
+                    throw new Exception("No compartment data found");
                 }
-                return possibleEvacuationList;
+
+                availablePath = await compartmentDataCloudinaryService.
+                    GetCompartmentData(user.CurrentCompartment.CompartmentPointsDataPublicId);
+                compartmentDataStorage.LoadData(user.CurrentCompartment.Id, availablePath);
             }
 
-        }
 
-        private RoutePoint GetClosestPoint(List<RoutePoint> compartmentPoints, PositionDto mappedWorldPostion)
-        {
-            double minDistance = double.MaxValue;
-            var closestPoint = compartmentPoints.First();
+            var blockedPoints = compartmentDataStorage.GetBlockedPointsByCompartmentId(user.CurrentCompartment.Id);
+            if(blockedPoints == null)
+                blockedPoints = new BlockedPoint[0];
 
-            for (int i = 0; i < compartmentPoints.Count; i++)
+            RouteBuilder routeBuilder = new RouteBuilder(availablePath, blockedPoints);
+
+
+            List<Common.Point> exitPoints = user.CurrentCompartment.ExitPoints.Select(p =>
             {
-                var currentPointPostion = mapper.Map<PositionDto>(compartmentPoints[i].MapPosition);
-                double distance = CalcHelper.ComputeDistanceBetweenPoints(mappedWorldPostion, currentPointPostion);
-                if (distance < minDistance)
-                {
-                    minDistance = distance;
-                    closestPoint = compartmentPoints[i];
-                }
-            }
+                PositionDto positionDto = mapper.Map<PositionDto>(p.MapPosition);
+                return new Common.Point() { X = (int)positionDto.Latitude, Y = (int)positionDto.Longtitude };
+            }).ToList();
 
-            return closestPoint;
+            Route route = routeBuilder.BuildRoute(userPosition, exitPoints);
+
+            RouteDto result = new RouteDto()
+            {
+                DangerFactor = route.DangerFactor,
+                RoutePoints = route.RoutePoints
+                    .Select(p => new PositionDto(){Latitude = p.X, Longtitude = p.Y})
+                    .ToList()
+            };
+
+            return result;
         }
 
         public async Task<User> GetUserById(int userId)
         {
             var foundUser = await context.Users.Include(b => b.ResponsibleForBuilding)
                                                .Include(c => c.CurrentCompartment)
+                                               .ThenInclude(e => e.ExitPoints)
                                                .Include(r => r.RolesList)
                                                .FirstOrDefaultAsync(u => u.Id == userId);
             if (foundUser == null)

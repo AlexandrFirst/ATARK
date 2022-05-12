@@ -15,6 +15,7 @@ using FireSaverApi.hub;
 using FireSaverApi.Models;
 using FireSaverApi.Profiles;
 using FireSaverApi.Services;
+using FireSaverApi.Services.PointServices;
 using FireSaverApi.Services.shared;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -168,15 +169,14 @@ namespace FireSaverApi
             services.AddScoped<ICompartmentService<RoomDto, Room>, RoomService>();
 
             services.AddScoped<ICompartmentHelper, CompartmentHelper>();
-            services.AddScoped<IPlanImageUploadService, PlanImageUploadService>();
+
+            services.AddScoped<IPlanImageUploadService, PlanImageCloudinaryService>();
+            services.AddScoped<ICompartmentDataCloudinaryService, CompartmentDataCloudinaryService>();
 
             services.AddScoped<IEvacuationService, EvacuationService>();
             services.AddScoped<IEvacuationServiceHelper, EvacuationServiceHelper>();
 
             services.AddScoped<IScalePointService, ScalePointService>();
-            services.AddScoped<IPositionTransformHelper, ScalePointService>();
-
-            services.AddScoped<IRoutebuilderService, RoutebuilderService>();
 
             services.AddScoped<IIoTService, IoTService>();
             services.AddScoped<IIoTHelper, IoTService>();
@@ -190,10 +190,11 @@ namespace FireSaverApi
             services.AddScoped<IMessageService, MessageService>();
 
             services.AddScoped<IIotControllerService, IotControllerService>();
+            
 
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.TryAddSingleton<ITimerService, TimerService>();
-
+            services.AddSingleton<CompartmentDataStorage>();
 
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
