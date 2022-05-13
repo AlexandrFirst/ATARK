@@ -12,6 +12,9 @@ namespace FireSaverApi.Profiles
             CreateMap<Building, BuildingInfoDto>().ReverseMap();
             CreateMap<NewBuildingDto, Building>().ReverseMap();
             CreateMap<BuildingCenterDto, Building>().ReverseMap();
+
+            CreateMap<Shelter, ShelterDto>();
+            CreateMap<ShelterDto, Shelter>().ForMember(d => d.Id, opt => opt.Ignore());
         }
     }
 }

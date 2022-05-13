@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { HttpBuildingService } from 'src/app/Services/httpBuilding.service';
 
 @Component({
   selector: 'app-building-dialog',
@@ -27,7 +28,8 @@ export class BuildingDialogComponent {
   }
 
   constructor(public dialogRef: MatDialogRef<BuildingDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private buildingService: HttpBuildingService) {
     console.log(data)
 
     this.buildingForm = new FormGroup({
@@ -36,14 +38,18 @@ export class BuildingDialogComponent {
     });
 
     if (data) {
-      this.id = data.id;      
+      this.id = data.id;
     }
   }
 
   CloseAndChange() {
     if (this.buildingForm.valid) {
-      console.log(this.buildingForm.value)
-      this.dialogRef.close({ id: this.id, address: this.formAddress.value, info: this.formInfo.value });
+      this.buildingService.validateBuildingAdress(this.formAddress.value).subscribe(result => {
+        console.log(this.buildingForm.value)
+        this.dialogRef.close({ id: this.id, address: this.formAddress.value, info: this.formInfo.value, pos: result.location });
+      }, error => {
+        alert("No such address exists")
+      });
     }
   }
 

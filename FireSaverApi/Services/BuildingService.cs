@@ -126,6 +126,7 @@ namespace FireSaverApi.Services
         public async Task<Building> GetBuildingById(int buildingId)
         {
             var building = await context.Buildings.Include(b => b.ResponsibleUsers)
+                                                    .Include(s => s.Shelters)
                                                    .Include(f => f.Floors)
                                                    .ThenInclude(r => r.Rooms)
                                                    .ThenInclude(u => u.InboundUsers)
@@ -158,7 +159,7 @@ namespace FireSaverApi.Services
 
         public async Task ReleaseAllBlockedPoints(int buildingId)
         {
-           
+
         }
 
         private async Task<List<Compartment>> GetAllBuildingCompartment(int buildingId)
@@ -200,15 +201,54 @@ namespace FireSaverApi.Services
                 return r_compartment.RoomFloor.BuildingWithThisFloor;
             }
 
-
-
-
         }
 
         public async Task<CompartmentCommonInfo> GetCompartmentById(int compartmentId)
         {
             var compartment = await compartmentHelper.GetCompartmentById(compartmentId);
             return mapper.Map<CompartmentCommonInfo>(compartment);
+        }
+
+        public async Task<ShelterDto> AddShelter(int buildingId, ShelterDto newShelter)
+        {
+            var building = await GetBuildingById(buildingId);
+            Shelter shelter = mapper.Map<Shelter>(newShelter);
+            building.Shelters.Add(shelter);
+            await context.SaveChangesAsync();
+            return mapper.Map<ShelterDto>(shelter);
+        }
+
+        public async Task<ShelterDto> UpdateShelter(int shelterId, ShelterDto newShelter)
+        {
+            var shelter = await context.Shelters.FirstOrDefaultAsync(s => s.Id == shelterId);
+            if (shelter == null)
+            {
+                return null;
+            }
+            mapper.Map(newShelter, shelter);
+
+            await context.SaveChangesAsync();
+            return mapper.Map<ShelterDto>(shelter);
+        }
+
+        public async Task<ShelterDto> GetShelterInfo(int shelterId)
+        {
+            var shelter = await context.Shelters.FirstOrDefaultAsync(s => s.Id == shelterId);
+            return mapper.Map<ShelterDto>(shelter);
+        }
+
+        public async Task<bool> RemoveShelter(int shelterId)
+        {
+            var shelter = await context.Shelters.FirstOrDefaultAsync(s => s.Id == shelterId);
+            if (shelter == null)
+            {
+                return false;
+            }
+
+            context.Remove(shelter);
+            await context.SaveChangesAsync();
+            return true;
+
         }
     }
 

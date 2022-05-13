@@ -19,5 +19,10 @@ namespace FireSaverApi.Contracts
         Task<PagedList<BuildingInfoDto>> GetAllBuildings(BuildingFilterParams buildingFilter);
         Task ReleaseAllBlockedPoints(int buildingId);
         Task<CompartmentCommonInfo> GetCompartmentById(int compartmentId);
+
+        Task<ShelterDto> GetShelterInfo(int shelterId);
+        Task<ShelterDto> AddShelter(int buildingId, ShelterDto newShelter);
+        Task<ShelterDto> UpdateShelter(int shelterId, ShelterDto newShelter);
+        Task<bool> RemoveShelter(int shelterId);
     }
 }

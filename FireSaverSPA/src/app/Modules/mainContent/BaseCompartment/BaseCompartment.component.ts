@@ -10,7 +10,7 @@ import { HttpFloorService } from 'src/app/Services/httpFloor.service';
 import { HttpEvacuationPlanService } from 'src/app/Services/httpEvacuationPlan.service';
 import { HttpEventType } from '@angular/common/http';
 import { EvacuationPlanDto } from 'src/app/Models/EvacuationPlan/evacuationPlanDto';
-import { InputRoutePoint, Postion as Position, Postion, RoutePoint, RoutePointType, ScalePointDto } from 'src/app/Models/PointService/pointDtos';
+import { ExitPoint, InputRoutePoint, Postion as Position, Postion, RoutePoint, RoutePointType, ScalePointDto } from 'src/app/Models/PointService/pointDtos';
 import { MatDialog } from '@angular/material/dialog';
 import { PositionInputDialogComponent } from '../position-input-dialog/position-input-dialog.component';
 import { HttpPointService } from 'src/app/Services/httpPoint.service';
@@ -26,8 +26,9 @@ import { QRCodeFormat } from 'src/app/Models/QRCodeFormat/QRCodeFormat';
 
 enum MapType {
   ScalePoints,
-  RoutePoints,
-  Iots
+  ExitPoints,
+  Iots,
+  Shelters
 }
 
 export interface InitCallback {
@@ -42,7 +43,7 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
   @ViewChildren("card") private cards: QueryList<ElementRef>
 
   private map: any;
-  private bounds: LatLngBoundsLiteral = [[0, 0], [1000, 1000]];
+  private bounds: LatLngBoundsLiteral;
 
   protected compartmentId: number;
 
@@ -65,11 +66,10 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
   private userPointColor: string = "#4000ff";
 
   scalePointMarkers = new Map();
-
-  routePoints: RoutePoint[] = [];
-  private routePointMarkers = new Map();
+  exitPoints: ExitPoint[] = [];
+  private exitPointMarkers = new Map();
   private routePolylines = new Map();
-  private selectedRoutePoint: RoutePoint;
+  private selectedRoutePoint: ExitPoint;
 
   private iotPos = new Map<string, L.CircleMarker>();
 
@@ -153,7 +153,7 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
   }
 
   displayRoutePoints() {
-    this.mapType = MapType.RoutePoints;
+    this.mapType = MapType.ExitPoints;
     this.initMapPoints();
   }
 
@@ -167,6 +167,10 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
     this.initMapPoints();
   }
 
+  displayShelters() {
+    this.mapType = MapType.Shelters;
+    this.initMapPoints();
+  }
 
   protected abstract initCompartmentInfo(callback: InitCallback): void;
   abstract updateCOmpartmentInfo();
@@ -181,7 +185,7 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
         } else {
           elem?.classList.add('show')
         }
-      }, )
+      })
     })
   }
 
@@ -234,6 +238,9 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
 
   private initMap() {
     if (this.evacPlanInfo) {
+
+      this.bounds = [[0, 0], [this.evacPlanInfo.height, this.evacPlanInfo.width]];
+
       this.map = L.map('myMap', {
         crs: L.CRS.Simple,
         maxZoom: 5,
@@ -273,15 +280,15 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
       this.clearIotsMarkers()
       this.clearRoute()
       this.initScalePointMarkers();
-    } else if (this.mapType == MapType.RoutePoints) {
-      this.clearScalePoints();
-      this.clearIotsMarkers();
-      this.initRoutePointMarkers();
-    } else if (this.mapType == MapType.Iots) {
+    } else if (this.mapType == MapType.ExitPoints) {
+      this.clearIotsMarkers()
+      this.clearScalePoints()
+      this.initExitPointMarkers();
+    }
+    else if (this.mapType == MapType.Iots) {
       this.clearRoute()
       this.clearScalePoints();
       this.initIotMarkers();
-
     }
   }
 
@@ -296,6 +303,19 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
       });
     }
   }
+
+  initExitPointMarkers() {
+    this.clearRoute();
+    this.pointService.getExitPoints(this.compartmentId).subscribe(response => {
+      this.exitPoints = response;
+      this.exitPoints.forEach((p: ExitPoint) => {
+        this.exitPointMarkers.set(p.id, this.placeMarker(p.mapPosition.latitude, p.mapPosition.longtitude,
+          this.pointBaseColor));
+      })
+
+    });
+  }
+
 
   clearScalePoints() {
     if (this.scalePointMarkers) {
@@ -398,87 +418,10 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
     return newRoutePoint;
   }
 
-  initRoutePointMarkers() {
-    this.pointService.getEvacRoutePointsForCompartment(this.compartmentId).subscribe(response => {
-      console.log(response)
-      this.printRouteFromPoint(response);
-    }, error => {
-      console.log(error)
-      if (error.error?.Message) {
-        this.toastrService.warning(error.error?.Message);
-      }
-      else {
-        this.toastrService.error($localize`:@@ErrorToastr:Something went wrong`)
-      }
-    })
-  }
-
-  addRoutePoint() {
-    if (this.selectedMapPosition) {
-      if (this.routePoints.length > 0) {
-        if (this.selectedRoutePoint) {
-          this.pointService.addPointToRouteEvacuationPlan({
-            parentRoutePointId: this.selectedRoutePoint.id,
-            pointPostion: this.selectedMapPosition
-          } as InputRoutePoint).subscribe(response => {
-            this.initRoutePointMarkers();
-          })
-        }
-        else {
-          this.toastrService.warning($localize`Select route point to add a new one`)
-        }
-      } else {
-        this.pointService.addRouteToEvacuationPlan({
-          parentRoutePointId: null,
-          pointPostion: this.selectedMapPosition
-        } as InputRoutePoint, this.compartmentId).subscribe(response => {
-          this.initEvacuationPlanInfo();
-        })
-      }
-    }
-  }
-
-
-  printRouteFromPoint(point: RoutePoint) {
-    this.clearRoute();
-    this.printRoute(point);
-    console.log(this.routePoints)
-  }
-
-  private printRoute(currentPoint: RoutePoint) {
-    var currentMarker = this.placeMarker(currentPoint.mapPosition.latitude, currentPoint.mapPosition.longtitude, this.pointBaseColor);
-
-    this.routePoints.push(currentPoint);
-    this.routePointMarkers.set(currentPoint.id, currentMarker);
-
-    this.addPointHandler(currentPoint)
-
-    if (currentPoint.childrenPoints.length == 0) {
-      return;
-    }
-
-    currentPoint.childrenPoints.forEach(elem => {
-      elem.parentPoint = {
-        id: currentPoint.id
-      } as RoutePoint;
-
-      this.printRoute(elem);
-
-      var newPolyline = L.polyline([this.routePointMarkers.get(currentPoint.id).getLatLng(), this.routePointMarkers.get(elem.id).getLatLng()]).addTo(this.map);
-      this.routePolylines.set(elem.id, newPolyline);
-    });
-  }
-
-  removeRoutePoint(routePointId: number) {
-    this.pointService.deleteRoutePoint(routePointId).subscribe(response => {
-      this.initRoutePointMarkers();
-    })
-  }
-
   clearRoute() {
-    this.routePoints.forEach(routePoint => {
+    this.exitPoints.forEach(routePoint => {
 
-      const marker = this.routePointMarkers.get(routePoint.id);
+      const marker = this.exitPointMarkers.get(routePoint.id);
       const polyline = this.routePolylines.get(routePoint.id);
 
       if (marker)
@@ -488,9 +431,9 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
         this.map.removeLayer(polyline);
     });
 
-    this.routePointMarkers.clear();
+    this.exitPointMarkers.clear();
     this.routePolylines.clear();
-    this.routePoints = [];
+    this.exitPoints = [];
 
   }
 
@@ -500,94 +443,28 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
     })
   }
 
-  selectRoutePoint(routePointId: number): L.CircleMarker {
-    console.log(this.routePointMarkers)
-    const newlySelectedPoint = this.routePointMarkers.get(routePointId);
-    this.selectedRoutePoint = this.routePoints.find(elem => elem.id == routePointId);
+  selectExitPoint(routePointId: number): L.CircleMarker {
+    console.log(this.exitPointMarkers)
+    const newlySelectedPoint = this.exitPointMarkers.get(routePointId);
+    this.selectedRoutePoint = this.exitPoints.find(elem => elem.id == routePointId);
     this.selectPoint(newlySelectedPoint);
     console.log(this.selectedRoutePoint, " - current route point")
     return newlySelectedPoint
   }
 
-  private addPointHandler(point: RoutePoint, isStartPoint: boolean = false) {
-
-    var isPointUnderTrack = false;
-
-    const selectedRouteMarker = this.selectRoutePoint(point.id)
-
-    selectedRouteMarker.on("mousedown", () => {
-
-      this.pointService.getRoutePointById(point.id).subscribe(data => {
-        //this.selectedRoutePoint = data
-        this.selectRoutePoint(data.id)
-      })
-
-      if (!isPointUnderTrack) {
-        this.map.dragging.disable()
-        this.map.on("mousemove", trackCursor)
-        isPointUnderTrack = true;
-      }
-    })
-
-    this.map.on("click", () => {
-      if (isPointUnderTrack) {
-        this.map.dragging.enable()
-        this.map.off("mousemove", trackCursor)
-        isPointUnderTrack = false;
-
-        const newPos: Postion = {
-          latitude: selectedRouteMarker.getLatLng().lat,
-          longtitude: selectedRouteMarker.getLatLng().lng
-        }
-
-        point.mapPosition = newPos;
-        this.pointService.updateRoutePointPostion(point).subscribe(success => {
-          console.log("position is updated: ", success)
+  addExitPoint() {
+    if (this.selectedMapPosition) {
+      this.pointService.addExitPoint(this.compartmentId, this.selectedMapPosition).
+        subscribe(response => {
+          this.initMapPoints();
         })
-      }
-    })
-
-
-    const trackCursor = (evt) => {
-
-      console.log("Selected route point: ", this.selectedRoutePoint)
-
-      selectedRouteMarker.setLatLng(evt.latlng)
-      console.log(this.selectedRoutePoint)
-
-      var oldPolyline = this.routePolylines.get(this.selectedRoutePoint.id);
-
-      if (this.selectedRoutePoint.parentPoint) {
-        console.log("Updating id there is parent root")
-        oldPolyline.setLatLngs([this.routePointMarkers.get(this.selectedRoutePoint.parentPoint.id).getLatLng(),
-        selectedRouteMarker.getLatLng()]);
-      }
-
-      var childArray: any = this.selectedRoutePoint.childrenPoints;
-
-      if (childArray && childArray.length > 0) {
-        childArray.forEach(point => {
-          console.log(this.routePolylines);
-          var polyline = this.routePolylines.get(point.id);
-          polyline.setLatLngs([this.routePointMarkers.get(this.selectedRoutePoint.id).getLatLng(),
-          this.routePointMarkers.get(point.id).getLatLng()])
-        })
-      }
-
     }
+  }
 
-    this.routePointMarkers.set(point.id, selectedRouteMarker);
-
-
-    // if (!isStartPoint) {
-    //   var newPolyline = L.polyline([this.routePointMarkers.get(this.selectedRoutePoint.id).getLatLng(), selectedRouteMarker.getLatLng()]).addTo(this.map);
-
-    //   this.routePolylines.set(point.id, newPolyline);
-    // }
-
-    this.selectedRoutePoint = point
-
-    return selectedRouteMarker;
+  removeExitPoint(routePointId: number) {
+    this.pointService.deleteExitPoint(routePointId).subscribe(response => {
+      this.initExitPointMarkers();
+    })
   }
 
   addTest() {
@@ -695,35 +572,16 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
   }
 
   printQrCode(identifier: number) {
-    const dialofRef =this.matDialog.open(QrCodeDialogComponent, {
+    const dialofRef = this.matDialog.open(QrCodeDialogComponent, {
       data: { info: JSON.stringify({ compatrmentId: this.compartmentId, IOTId: identifier } as QRCodeFormat) }
     })
   }
 
-  IsRoutePointExit(routeType: RoutePointType){
-    if(routeType == RoutePointType.EXIT)
+  IsRoutePointExit(routeType: RoutePointType) {
+    if (routeType == RoutePointType.EXIT)
       return true;
     else
       return false;
   }
 
-  setRoutePointAsExit(routePointId: number){
-    this.changeRoutePointType(routePointId, RoutePointType.EXIT);
-  }
-  
-  setRoutePointAsPath(routePointId: number){
-    this.changeRoutePointType(routePointId, RoutePointType.MAIN_PATH);
-  }
-
-  private changeRoutePointType(routePointId: number, routeType: RoutePointType){
-    var updatingRoutePoint = this.routePoints.find(p => p.id == routePointId);
-    if(updatingRoutePoint){
-      updatingRoutePoint.routePointType = routeType;
-      this.pointService.updateRoutePointPostion(updatingRoutePoint).subscribe(response => {
-        updatingRoutePoint = response;
-      }, error => {
-        this.toastrService.error("Try again")
-      })
-    }
-  }
 }

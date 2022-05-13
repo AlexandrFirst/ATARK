@@ -1,7 +1,6 @@
 import { Postion } from "../PointService/pointDtos";
 
-export class NewBuildingDto {
-    address: string;
-    info: string;
+export class BuildingCenterDto{
     buildingCenterPosition: Postion;
+    safetyDistance: number;
 }

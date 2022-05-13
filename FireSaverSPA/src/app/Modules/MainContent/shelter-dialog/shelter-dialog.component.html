@@ -1,0 +1,28 @@
+<form [formGroup]="shelterForm">
+  <div *ngIf="id">Shelter with id: {{id}}</div>
+  <div>
+    <div>Shelter adress: </div>
+    <textarea [value]="data?.address" style="resize: none; width: 200px; height: 100px;"
+      formControlName="address"></textarea>
+    <div *ngIf="formAddress.invalid && (formAddress.touched || formAddress.dirty)">
+      Fill in this field
+    </div>
+  </div>
+  <div>
+    <div>Info</div>
+    <textarea type="text" [value]="data?.info" style="resize: none; width: 200px; height: 100px;"
+      formControlName="info"></textarea>
+    <div *ngIf="formInfo.invalid && (formInfo.touched || formInfo.dirty)" >
+      Fill in this field
+    </div>
+  </div>
+  <div>
+    <div>Capacity</div>
+    <input type="number" [value]="data?.capacity" formControlName="capacity"/>
+    <div *ngIf="formCapacity.invalid && (formCapacity.touched || formCapacity.dirty)" >
+      Fill in this field
+    </div>
+  </div>
+  <button type="button" class="btn btn-primary" [disabled]="shelterForm.invalid" (click)="submitForm()" i18n="@@submitBtn">Add</button>
+  <button type="button" class="btn btn-danger" (click)="closeForm()">Cancel</button>
+</form>

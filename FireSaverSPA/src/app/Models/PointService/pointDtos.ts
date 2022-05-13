@@ -1,5 +1,4 @@
-export enum RoutePointType
-{
+export enum RoutePointType {
     EXIT,
     ADDITIONAL_EXIT,
     BUILDING_EXIT,
@@ -35,6 +34,11 @@ export class RoutePoint {
     childrenPoints: RoutePoint[];
     parentPoint: RoutePoint;
     routePointType: RoutePointType = RoutePointType.MAIN_PATH;
+}
+
+export class ExitPoint {
+    id: number;
+    mapPosition: Postion;
 }
 
 export class InputRoutePoint {

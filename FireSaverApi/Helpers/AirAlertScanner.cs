@@ -83,7 +83,6 @@ namespace FireSaverApi.Helpers
                                 case TL.Message m:
                                     {
                                         string chatName = GetChatName(m.peer_id);
-                                        System.Console.WriteLine(chatName);
                                         if (chatName == "Повітряна Тривога")
                                         {
                                             string message = m.message;

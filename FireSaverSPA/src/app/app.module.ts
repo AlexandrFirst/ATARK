@@ -44,6 +44,7 @@ import { PositionInputDialogComponent } from './Modules/mainContent/position-inp
 import { FloorAddDialogComponent } from './Modules/mainContent/floor-add-dialog/floor-add-dialog.component';
 import { QrCodeDialogComponent } from './Modules/mainContent/qr-code-dialog/qr-code-dialog.component';
 import { AddIotDialogComponent } from './Modules/mainContent/add-iot-dialog/add-iot-dialog.component';
+import { ShelterDialogComponent } from './Modules/mainContent/shelter-dialog/shelter-dialog.component';
 
 registerLocaleData(localeUk, 'uk')
 
@@ -62,7 +63,8 @@ registerLocaleData(localeUk, 'uk')
     FloorAddDialogComponent,
     QrCodeDialogComponent,
     TestDialogComponent,
-    AddIotDialogComponent
+    AddIotDialogComponent,
+    ShelterDialogComponent
   ],
   imports: [
     CommonModule,

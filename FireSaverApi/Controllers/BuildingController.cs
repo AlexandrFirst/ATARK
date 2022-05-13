@@ -151,5 +151,50 @@ namespace FireSaverApi.Controllers
             var compartment = await buildingService.GetCompartmentById(compartmentId);
             return Ok(compartment);
         }
+
+        [Authorize(Roles = new string[] { UserRoleName.ADMIN, UserRoleName.AUTHORIZED_USER })]
+        [HttpPost("shelter/{buildingId}")]
+        public async Task<IActionResult> AddShelterToCompartment(int buildingId, ShelterDto shelterDto)
+        {
+            var shelter = await buildingService.AddShelter(buildingId, shelterDto);
+            return Ok(shelter);
+        }
+
+        [Authorize(Roles = new string[] { UserRoleName.ADMIN, UserRoleName.AUTHORIZED_USER })]
+        [HttpPut("shelter/{shelterId}")]
+        public async Task<IActionResult> UpdateShelter(int shelterId, ShelterDto shelterDto)
+        {
+            var shelter = await buildingService.UpdateShelter(shelterId, shelterDto);
+            if (shelter == null)
+            {
+                return NotFound(new ServerResponse() { Message = "No shelter found" });
+            }
+            return Ok(shelter);
+        }
+
+        [Authorize(Roles = new string[] { UserRoleName.ADMIN, UserRoleName.AUTHORIZED_USER })]
+        [HttpDelete("shelter/{shelterId}")]
+        public async Task<IActionResult> DeleteShelter(int shelterId)
+        {
+            bool success = await buildingService.RemoveShelter(shelterId);
+            if (!success)
+            {
+                return NotFound(new ServerResponse() { Message = "Shelter is not found" });
+            }
+            return Ok(new ServerResponse() { Message = "Shelter is deleted" });
+        }
+
+        [Authorize]
+        [HttpGet("shelter/{shelterId}")]
+        public async Task<IActionResult> GetShelterById(int shelterId)
+        {
+            var shelter = await buildingService.GetShelterInfo(shelterId);
+            if (shelter == null)
+            {
+                return NotFound(new ServerResponse() { Message = "No shelter is found" });
+            }
+            return Ok(shelter);
+        }
+
     }
 }

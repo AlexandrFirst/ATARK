@@ -111,7 +111,7 @@ namespace FireSaverApi.Services
 
             compartmentDataStorage.LoadData(compartmentId,
                 await dataCompartmentCloudinaryService.GetCompartmentData(compartment.CompartmentPointsDataPublicId));
-
+            
             return mapper.Map<EvacuationPlanDto>(evacPlan);
         }
 

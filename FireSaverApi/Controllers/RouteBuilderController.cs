@@ -5,6 +5,7 @@ using AutoMapper;
 using FireSaverApi.Contracts;
 using FireSaverApi.DataContext;
 using FireSaverApi.Dtos;
+using FireSaverApi.Dtos.PointDtos;
 using FireSaverApi.Helpers;
 using FireSaverApi.Models;
 using FireSaverApi.Services;
@@ -81,6 +82,22 @@ namespace FireSaverApi.Controllers
             databaseContext.Remove(point);
             await databaseContext.SaveChangesAsync();
             return Ok(new ServerResponse() { Message = "Point is deleted" });
+        }
+
+        [Authorize]
+        [HttpGet("getExitPoints/{compartmentId}")]
+        public async Task<IActionResult> GetExitPoints(int compartmentId)
+        {
+            Compartment compartment = await databaseContext.Compartment.Include(e => e.ExitPoints).FirstOrDefaultAsync(c => c.Id == compartmentId);
+            if (compartment != null)
+            {
+                List<ExitPointDto> exitPoints = mapper.Map<List<ExitPointDto>>(compartment.ExitPoints);
+                return Ok(exitPoints);
+            }
+            else
+            {
+                return NotFound(new ServerResponse() { Message = "No exit points for compartment" });
+            }
         }
 
     }

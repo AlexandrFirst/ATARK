@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Params, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import * as $ from 'jquery';
 import { BuildingInfoDto } from 'src/app/Models/BuildingService/buildingInfoDto';
 import { HttpBuildingService } from 'src/app/Services/httpBuilding.service';
-import { ToastrService } from 'ngx-toastr';
+import { Toast, ToastrService } from 'ngx-toastr';
 import { MatDialog } from '@angular/material/dialog';
 import { BuildingDialogComponent } from '../building-dialog/building-dialog.component';
 import { CompartmentAddDialogComponent } from '../compartment-add-dialog/compartment-add-dialog.component';
@@ -14,6 +14,12 @@ import { HttpFloorService } from 'src/app/Services/httpFloor.service';
 import { FloorDto } from 'src/app/Models/Compartment/floorDto';
 import { UpdateBuildingDto } from 'src/app/Models/BuildingService/updateBuildingDto';
 import { FloorAddDialogComponent } from '../floor-add-dialog/floor-add-dialog.component';
+import { } from "googlemaps"
+import { Observable } from 'rxjs';
+import { ShelterDialogComponent } from '../shelter-dialog/shelter-dialog.component';
+import { ShelterDto } from 'src/app/Models/BuildingService/ShelterDto';
+import { Postion } from 'src/app/Models/PointService/pointDtos';
+declare var google: any;
 
 @Component({
   selector: 'app-Building',
@@ -23,8 +29,24 @@ import { FloorAddDialogComponent } from '../floor-add-dialog/floor-add-dialog.co
 export class BuildingComponent implements OnInit {
 
   private buildingId;
-  buildingInfo: BuildingInfoDto;
+  public buildingInfo: BuildingInfoDto;
+  buildingPos: Postion;
 
+  get buildingShelters() {
+    if (this.buildingInfo)
+      return this.buildingInfo.shelters
+    return []
+  }
+
+
+  @ViewChild('worldMap') mapElement: any;
+  worldMap: google.maps.Map;
+  marker: google.maps.Marker;
+  geocoder: google.maps.Geocoder;
+  responseDiv: HTMLDivElement;
+  response: HTMLPreElement;
+
+  buildingShelter = new Map<number, google.maps.Marker>();
 
   constructor(private activatedRoute: ActivatedRoute,
     private router: Router,
@@ -33,7 +55,7 @@ export class BuildingComponent implements OnInit {
     private toastrService: ToastrService,
     private matDialog: MatDialog,
     private floorService: HttpFloorService) {
-   
+
   }
 
   ngOnInit() {
@@ -53,21 +75,44 @@ export class BuildingComponent implements OnInit {
   initBuildingInfo() {
     this.buildingService.getBuildingById(this.buildingId).subscribe(buildingInfo => {
       this.buildingInfo = buildingInfo;
+
+      if (!this.buildingInfo.buildingCenterPosition) {
+        this.validateBuildingAdress(this.buildingInfo.address).subscribe(result => {
+          console.log(result);
+          this.buildingPos = {
+            latitude: result.location.lat(),
+            longtitude: result.location.lng()
+          };
+          console.log("Building pos", this.buildingPos);
+        }, error => {
+          this.toastrService.error("incorrect building adress! Fix this please: ", error)
+        });
+      }
+      else {
+        this.buildingPos = buildingInfo.buildingCenterPosition
+      }
+
+
+
       console.log(this.buildingInfo)
     }, error => {
       this.toastrService.error("Can't find buiding with id: " + this.buildingId)
     })
   }
 
+  validateBuildingAdress(adress): Observable<any> {
+    return this.buildingService.validateBuildingAdress(adress);
+  }
+
   private initExpandableList() {
     console.log("Building component expandabel count: ", $('.collapse').length)
 
     $('.b').each((index, value) => {
-     
+
       value.addEventListener('click', (e) => {
         console.log("clicked on list elem")
         $('.collapse').each((index1, value1) => {
-          
+
           if (index == index1) {
             if (value1.classList.contains('show')) {
               return;
@@ -197,7 +242,7 @@ export class BuildingComponent implements OnInit {
       data: {
         address: this.buildingInfo.address,
         info: this.buildingInfo.info,
-        id: this.buildingId
+        id: this.buildingId,
       },
       panelClass: "dialog-container-custom"
     })
@@ -208,7 +253,11 @@ export class BuildingComponent implements OnInit {
         this.buildingService.updateBuildingInfo({
           address: data.address,
           info: data.info,
-          id: data.id
+          id: data.id,
+          buildingCenterPosition: {
+            latitude: data.pos.lat(),
+            longtitude: data.pos.lng()
+          }
         } as UpdateBuildingDto).subscribe(success => {
           console.log(success)
           this.toastrService.success("Building with id: " + success.id + " updated");
@@ -229,6 +278,122 @@ export class BuildingComponent implements OnInit {
       }
     }
     this.router.navigate(['main', 'floor', floorId], NavigationExtars);
+  }
+
+
+  showShelters() {
+    console.log("construction google map")
+    console.log(this.buildingPos)
+    if (this.buildingPos) {
+      this.initShelterMap();
+    } else {
+      this.toastrService.error("can't be use with bad address")
+    }
+  }
+
+  addShelter() {
+    console.log("Shelter is adding")
+    let dialogRef = this.matDialog.open(ShelterDialogComponent);
+    dialogRef.afterClosed().subscribe((result: ShelterDto) => {
+      console.log("new shelter data:", result)
+      this.buildingService.addShelterToBuilding(this.buildingId, result).subscribe(data => {
+        this.toastrService.success("new shelter added with id: ", data.id);
+        const marker = new google.maps.Marker({
+          position: { lat: data.shelterPosition.latitude, lng: data.shelterPosition.longtitude },
+          map: this.worldMap,
+          title: "Current building",
+        });
+        this.buildingShelter.set(data.id, marker);
+        this.buildingShelters.push(data);
+      })
+    })
+  }
+
+  updateShelter(shelterId: number) {
+    this.buildingService.getShelter(shelterId).subscribe(data => {
+      let dialogRef = this.matDialog.open(ShelterDialogComponent, { data: data });
+      dialogRef.afterClosed().subscribe(output => {
+        this.buildingService.updateShelter(shelterId, output).subscribe(res => {
+          this.toastrService.success("updated shelter with id: ", res.id);
+          this.addShelterMarker(data);
+        })
+      });
+    });
+  }
+
+  selectMarker(pos: Postion) {
+    this.worldMap.setCenter({ lat: pos.latitude, lng: pos.longtitude });
+    this.worldMap.setZoom(20);
+  }
+
+  deleteShelter(shelterId: number) {
+    let dialogRef = this.matDialog.open(ConfirmDialogComponent, {
+      data: { message: `Are you sure you want to delete shelter with id: ${shelterId}` }
+    });
+    dialogRef.afterClosed().subscribe(data => {
+      if (data == true) {
+        this.buildingService.deleteShelter(shelterId).subscribe(data => {
+          this.toastrService.success("shelter is deleted");
+          this.buildingShelter.get(shelterId).setMap(null);
+          this.buildingShelter.delete(shelterId)
+
+          const elem = this.buildingShelters.filter(s => s.id == shelterId)[0];
+          const index = this.buildingShelters.indexOf(elem);
+          this.buildingInfo.shelters = this.buildingShelters.splice(index, 1);
+        })
+      }
+    });
+  }
+
+  initShelterMap() {
+    console.log("construction google map")
+    //get by adress location
+
+    const mapProperties = {
+      center: { lat: this.buildingPos.latitude, lng: this.buildingPos.longtitude },
+      zoom: 17,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    this.worldMap = new google.maps.Map(this.mapElement.nativeElement, mapProperties);
+
+    new google.maps.Marker({
+      position: { lat: this.buildingPos.latitude, lng: this.buildingPos.longtitude },
+      map: this.worldMap,
+      title: "Current building",
+    });
+
+
+    if (this.buildingInfo.shelters) {
+      this.buildingInfo.shelters.forEach((data: ShelterDto) => {
+        this.addShelterMarker(data);
+      });
+    }
+  }
+
+  private addShelterMarker(data: ShelterDto) {
+
+    if (!data.shelterPosition) {
+      this.buildingService.validateBuildingAdress(data.address).subscribe(result => {
+        const marker = new google.maps.Marker({
+          position: result.location,
+          map: this.worldMap,
+          title: "Current building",
+        });
+        this.buildingShelter.set(data.id, marker);
+
+      }, error => {
+        console.log(error)
+        this.toastrService.error("Can't get shelter pos with id: " + data.id);
+      })
+    }
+    else {
+      const marker = new google.maps.Marker({
+        position: { lat: data.shelterPosition.latitude, lng: data.shelterPosition.longtitude },
+        map: this.worldMap,
+        title: "Current building",
+      });
+      this.buildingShelter.set(data.id, marker);
+    }
   }
 
 }

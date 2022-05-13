@@ -49,7 +49,11 @@ export class BuildingsComponent implements OnInit {
         this.buildingService.updateBuildingInfo({
           address: data.address,
           info: data.info,
-          id: data.id
+          id: data.id,
+          buildingCenterPosition: {
+            latitude: data.pos.lat(),
+            longtitude: data.pos.lng()
+          }
         } as UpdateBuildingDto).subscribe(success => {
           console.log(success)
           this.toastrService.success("Building with id: " + success.id + " updated");
@@ -68,11 +72,16 @@ export class BuildingsComponent implements OnInit {
     })
 
     dialogRef.afterClosed().subscribe(data => {
-      console.log(data);
+      console.log("New building data: ", data);
+      console.log("Building position: ", data.pos.lat(), data.pos.lng())
       if (data) {
         this.buildingService.addBuilding({
           address: data.address,
-          info: data.info
+          info: data.info,
+          buildingCenterPosition: {
+            latitude: data.pos.lat(),
+            longtitude: data.pos.lng()
+          }
         } as NewBuildingDto).subscribe(success => {
           this.toastrService.success("New building with id: " + success.id + " added");
           this.initBuildingsInfo();

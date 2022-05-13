@@ -11,7 +11,7 @@
             cursor: pointer;" (click)="backBtnClick()">
   Back
 </div>
-<div style="height: 700px; overflow-y: scroll;">
+<div style="height: 800px; overflow-y: scroll;">
   <div style="display: flex; justify-content: center;">
     <div style="font-size: large; width: 800px; text-align: justify;">
       <section style="margin-top: 10px; display: flex;">
@@ -125,35 +125,26 @@
           <h5 class="mb-0">
             <button class="btn" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
               aria-controls="collapseOne" i18n="add route point">
-              Route points
+              Exit points
             </button>
           </h5>
         </div>
         <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
           <div class="card-body">
             <div *ngIf="evacPlanInfo != null; else no_map_template_scale">
-              <div *ngIf="routePoints.length == 0; else route_points">No route points</div>
-              <ng-template #route_points>
-                <div *ngFor="let item of routePoints"
+              <div *ngIf="exitPoints.length == 0; else exit_points">No route points</div>
+              <ng-template #exit_points>
+                <div *ngFor="let item of exitPoints"
                   style="display: flex; justify-content: space-around; align-items: center; margin-top: 5px;">
                   <div>{{item.id}}</div>
-                  <div>
-                    <button class="btn btn-primary" 
-                      *ngIf="IsRoutePointExit(item.routePointType); else elseBtn"
-                      (click)="setRoutePointAsPath(item.id)">Unset as Exit</button>
-                    <ng-template  #elseBtn>
-                    <button class="btn btn-primary"
-                    (click)="setRoutePointAsExit(item.id)">Set as Exit</button>
-                    </ng-template>
-                  </div>
-                  <div><button class="btn btn-info" (click)="selectRoutePoint(item.id)"
+                  <div><button class="btn btn-info" (click)="selectExitPoint(item.id)"
                       i18n="@@selectBtn">Select</button></div>
-                  <div><button class="btn btn-danger" (click)="removeRoutePoint(item.id)"
+                  <div><button class="btn btn-danger" (click)="removeExitPoint(item.id)"
                       i18n="@@deletebtn">Delete</button></div>
                 </div>
               </ng-template>
-              <button class="btn btn-primary" (click)="addRoutePoint()" [disabled]="this.selectedMapPosition == null">
-                Add route point</button>
+              <button class="btn btn-primary" (click)="addExitPoint()" [disabled]="this.selectedMapPosition == null">
+                Add exit point</button>
             </div>
             <ng-template #no_map_template_scale>
               <div style="width: 100%; display: flex; justify-content: center; height: 50px; align-items: center;">
@@ -246,4 +237,7 @@
       <button class="btn btn-danger" style="margin-left: 20px;" (click)="deleteTest()" i18n="delete test">Delete
         test</button>
     </ng-template>
+  </div>
+  <div>
+    
   </div>
