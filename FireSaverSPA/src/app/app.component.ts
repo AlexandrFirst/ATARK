@@ -1,8 +1,11 @@
+import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import * as L from 'leaflet';
-import { Observable, Subject, Subscriber } from 'rxjs';
+import { Observable, of, Subject, Subscriber } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { ScalePointDto, Postion } from './Models/PointService/pointDtos';
 import { HttpServiceService } from './Services/httpService.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -18,10 +21,16 @@ export class AppComponent implements OnInit {
 
   inputWorldPos: Subject<Postion> = new Subject<Postion>();
 
+  mapsLoaded: Observable<boolean>;
+
   ngOnInit(): void {
   }
 
-  constructor(private http: HttpServiceService) {
+  constructor(private http: HttpServiceService, 
+    httpClient: HttpClient) {
+
+    this.mapsLoaded = httpClient.jsonp(`https://maps.googleapis.com/maps/api/js?key=${environment.googleMapsKey}`, 'callback')
+      .pipe(map(() => true), catchError(() => of(false)))
   }
 
   worldMapCLicked($event: Postion) {
@@ -67,7 +76,7 @@ export class AppComponent implements OnInit {
       return;
     }
 
-    this.http.calculateImagePosition(this.worldPosition).subscribe((res:Postion) => {
+    this.http.calculateImagePosition(this.worldPosition).subscribe((res: Postion) => {
       console.log("Ok response: ", res.latitude, res.longtitude);
       this.inputPos.next(res);
     }, error => {
@@ -90,7 +99,7 @@ export class AppComponent implements OnInit {
       return;
     }
 
-    this.http.calculateWorldPosition(this.imgPosition).subscribe((res:Postion) => {
+    this.http.calculateWorldPosition(this.imgPosition).subscribe((res: Postion) => {
       console.log("Ok response: ", res.latitude, res.longtitude);
       this.inputWorldPos.next(res);
     }, error => {

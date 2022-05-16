@@ -4,7 +4,7 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppComponent } from './app.component';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClientJsonpModule, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { WorldMapComponent } from './Components/worldMap/worldMap.component';
 import { MyMapComponent } from './Components/myMap/myMap.component';
 import { LoginComponent } from './Components/Login/Login.component';
@@ -69,12 +69,14 @@ registerLocaleData(localeUk, 'uk')
     LeafletModule,
     NgbModule,
     HttpClientModule,
+    HttpClientJsonpModule,
     ReactiveFormsModule,
     MatDialogModule,
     NgxPaginationModule,
     NgxQRCodeModule,
     NgxPrintModule,
-    AppRouterModule
+    AppRouterModule,
+    
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AddHeaderInterceptor, multi: true }

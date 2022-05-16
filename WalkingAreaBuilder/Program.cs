@@ -6,17 +6,10 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 
-/*
-    Improvements: 
-    > check if wavestep inetersects with wall or smth like that
-    > with incresed wavestep fix route display
-*/
-
-
 namespace WalkingAreaBuilder
 {
 
-    enum PointType
+    public enum PointType
     {
         Exit = 10,
         Blocked = 20,
@@ -26,14 +19,14 @@ namespace WalkingAreaBuilder
     }
 
 
-    class Route
+    public class Route
     {
         public int DangerFactor { get; set; }
         public int RouteLength { get; set; }
         public List<Point> RoutePoints { get; set; } = new List<Point>();
     }
 
-    class Point
+    public class Point
     {
         public int X { get; set; }
         public int Y { get; set; }
@@ -42,15 +35,23 @@ namespace WalkingAreaBuilder
         {
             return Math.Pow(other.X - this.X, 2) + Math.Pow(other.Y - this.Y, 2) <= Math.Pow(radius, 2);
         }
+
+        public static Point operator -(Point a, Point b)
+        {
+            return new Point() { X = b.X - a.X, Y = b.Y - a.Y };
+        }
+
     }
 
-    class BlockedPoints : Point
+
+
+    public class BlockedPoints : Point
     {
         public bool IsAlreadyVisited = false;
         public int Radius { get; set; } = 30;
     }
 
-    class WavePoint : Point
+    public class WavePoint : Point
     {
         public int WaveStep { get; set; }
         public int DangerFactor { get; set; }
@@ -83,7 +84,7 @@ namespace WalkingAreaBuilder
         }
     }
 
-    class ImagePoint
+    public class ImagePoint
     {
         public int data { get; set; } = (int)PointType.Unprocessed;
         private bool isVisited = false;
@@ -106,25 +107,25 @@ namespace WalkingAreaBuilder
         },
         end = new WavePoint()
         {
-            X = 450,
-            Y = 340
+            X = 70,
+            Y = 300
         };
 
         static List<BlockedPoints> blockedPoints = new List<BlockedPoints>()
-            {
-                new BlockedPoints()
-                {
-                    X = 480,
-                    Y = 220,
-                    Radius = 40
-                },
-                new BlockedPoints()
-                {
-                    X = 480,
-                    Y = 75,
-                    Radius = 40
-                }
-            };
+        {
+            // new BlockedPoints()
+            // {
+            //     X = 480,
+            //     Y = 220,
+            //     Radius = 40
+            // },
+            // new BlockedPoints()
+            // {
+            //     X = 480,
+            //     Y = 75,
+            //     Radius = 40
+            // }
+        };
 
         static void Main(string[] args)
         {
@@ -234,25 +235,19 @@ namespace WalkingAreaBuilder
 
                 currentRoute = new Route();
                 Random rng = new Random();
+                List<Point> routePoints = new List<Point>();
 
                 while (!endWavePoint.IsInRadiusOf(waveStep, start))
                 {
+
                     var prevPoint = endWavePoint;
                     var nextPoint = endWavePoint.ParentPoint;
-                    for (int i = Math.Min(prevPoint.X, nextPoint.X), j = Math.Min(prevPoint.Y, nextPoint.Y);
-                        i <= Math.Max(prevPoint.X, nextPoint.X) && j <= Math.Max(prevPoint.Y, nextPoint.Y);
-                        i++, j++)
-                    {
-                        if (i > Math.Max(prevPoint.X, nextPoint.X))
-                            i = Math.Max(prevPoint.X, nextPoint.X);
-                        if (j > Math.Max(prevPoint.Y, nextPoint.Y))
-                            j = Math.Max(prevPoint.Y, nextPoint.Y);
 
-                        SetColor(ref rgbValues,
-                            y: j * stride, x: i * 3,
-                            red: 255, green: 0, blue: 0);
-                    }
+                    routePoints.Add(endWavePoint);
 
+                    SetColor(ref rgbValues,
+                        y: prevPoint.Y * stride, x: prevPoint.X * 3,
+                        red: 255, green: 0, blue: 0);
 
                     currentRoute.RouteLength++;
                     currentRoute.RoutePoints.Add(new Point { X = endWavePoint.X, Y = endWavePoint.Y });
@@ -277,6 +272,22 @@ namespace WalkingAreaBuilder
                 if (currentRoute.DangerFactor == 0 || routes.Select(r => r.RouteLength).Contains(currentRoute.RouteLength))
                 {
                     routes.Add(currentRoute);
+
+                    List<Point> optimizedRoute = OptimizeRoot(routePoints, endWavePoint);
+
+                    for(int i = 0; i < 3; i ++)
+                    {
+                        optimizedRoute = OptimizeRoot(optimizedRoute, endWavePoint);
+                    }
+
+                    for (int i = 0; i < optimizedRoute.Count - 1; i++)
+                    {
+                        drawLine(optimizedRoute[i], optimizedRoute[i + 1]);
+                    }
+
+                    System.Console.WriteLine("Optimized route point size: " + optimizedRoute.Count);
+                    System.Console.WriteLine("Initial route point size: " + routePoints.Count);
+
                     break;
                 }
 
@@ -317,6 +328,57 @@ namespace WalkingAreaBuilder
                 Marshal.Copy(rgbValues, 0, ptr, bytes);
                 bmp.UnlockBits(bmpData);
                 bmp.Save("changedPng1.png");
+            }
+        }
+
+
+        public static List<Point> OptimizeRoot(List<Point> routePoints, Point endWavePoint)
+        {
+            List<Point> optimizedRoute = new List<Point>();
+            optimizedRoute.Add(routePoints.First());
+
+            VectorizedPoint vectorizedPoint = new VectorizedPoint(optimizedRoute.Last(), routePoints[1]);
+
+            for (int i = 2; i < routePoints.Count; i++)
+            {
+                VectorizedPoint newPoint = new VectorizedPoint(optimizedRoute.Last(), routePoints[i]);
+                double angle = vectorizedPoint.GetAngle(newPoint);
+                //System.Console.WriteLine("Angle size " + angle.ToString());
+                if (angle > 0.0001)
+                {
+                    optimizedRoute.Add(routePoints[i]);
+                    if (i + 1 < routePoints.Count)
+                    {
+                        vectorizedPoint = new VectorizedPoint(optimizedRoute.Last(), routePoints[++i]);
+                        //System.Console.WriteLine(optimizedRoute.Last().X + ";" + optimizedRoute.Last().Y);
+                    }
+                }
+
+            }
+            if (optimizedRoute.Last() != (endWavePoint as Point))
+            {
+                optimizedRoute.Add(endWavePoint);
+            }
+            return optimizedRoute;
+        }
+        public static void drawLine(Point p1, Point p2)
+        {
+            double a = p2.Y - p1.Y;
+            double b = p2.X - p1.X;
+            double z = a * p1.X - p1.Y * b;
+
+            Func<double, double> f = (double x) =>
+            {
+                return x * (a / b) - (z / b);
+            };
+
+            for (int x = Math.Min(p1.X, p2.X); x <= Math.Max(p1.X, p2.X); x++)
+            {
+                double y = f(x);
+                SetColor(ref rgbValues,
+                       y: (int)y * stride, x: x * 3,
+                       red: 0, green: 0, blue: 255);
+
             }
         }
 

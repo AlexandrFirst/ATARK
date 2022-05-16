@@ -24,8 +24,11 @@
       },
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-builders/custom-webpack:browser",
           "options": {
+            "customWebpackConfig": {
+              "path": "./webpack-dev.config.js"
+            },
             "outputPath": "dist/",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -61,6 +64,9 @@
               ]
             },
             "production": {
+              "customWebpackConfig": {
+                "path": "./webpack-prod.config.js"
+              },
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -91,7 +97,7 @@
           "defaultConfiguration": ""
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
             "browserTarget": "FireSaverSPA:build",
             "sslCert": "ssl/fireSaver.crt",
@@ -101,7 +107,7 @@
             "production": {
               "browserTarget": "FireSaverSPA:build:production"
             },
-            "uk":{
+            "uk": {
               "browserTarget": "FireSaverSPA:build:uk"
             }
           }

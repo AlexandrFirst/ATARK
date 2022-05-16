@@ -15,10 +15,12 @@ import { FloorDto } from 'src/app/Models/Compartment/floorDto';
 import { UpdateBuildingDto } from 'src/app/Models/BuildingService/updateBuildingDto';
 import { FloorAddDialogComponent } from '../floor-add-dialog/floor-add-dialog.component';
 import { } from "googlemaps"
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { ShelterDialogComponent } from '../shelter-dialog/shelter-dialog.component';
 import { ShelterDto } from 'src/app/Models/BuildingService/ShelterDto';
 import { Postion } from 'src/app/Models/PointService/pointDtos';
+import { HttpClient } from '@angular/common/http';
+import { catchError, map } from 'rxjs/operators';
 declare var google: any;
 
 @Component({
@@ -48,14 +50,18 @@ export class BuildingComponent implements OnInit {
 
   buildingShelter = new Map<number, google.maps.Marker>();
 
+  mapsLoaded: Observable<boolean>;
+
   constructor(private activatedRoute: ActivatedRoute,
     private router: Router,
     private location: Location,
     private buildingService: HttpBuildingService,
     private toastrService: ToastrService,
     private matDialog: MatDialog,
-    private floorService: HttpFloorService) {
+    private floorService: HttpFloorService,
+    ) {
 
+    
   }
 
   ngOnInit() {
