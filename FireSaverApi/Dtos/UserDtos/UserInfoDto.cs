@@ -18,5 +18,6 @@ namespace FireSaverApi.Dtos
         public DateTime DOB { get; set; }
         public PositionDto LastSeenBuildingPosition { get; set; }
         public CompartmentCommonInfo CurrentCompartment { get; set; }
+        public ShelterDto Shelter { get; set; }
     }
 }
