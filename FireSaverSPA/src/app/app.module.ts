@@ -14,17 +14,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ToastrModule } from 'ngx-toastr';
 
-
 import { RouterModule } from '@angular/router';
 import { AddHeaderInterceptor } from './Interceptors/addHeadersInterceptor';
 import { LoginGuard } from './route-guards/login.guard';
 import { MainContentGuard } from './route-guards/mainContent.guard';
 import { MainContentComponent } from './Modules/mainContent/mainContent.component';
 import { NgxPaginationModule } from 'ngx-pagination';
-
-
-
-
 
 import { NgxQRCodeModule } from '@techiediaries/ngx-qrcode';
 
