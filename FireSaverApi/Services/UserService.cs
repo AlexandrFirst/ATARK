@@ -230,11 +230,11 @@ namespace FireSaverApi.Services
 
             var userPosition = new WavePoint()
             {
-                X = (int)mappedWorldPostion.Latitude,
-                Y = (int)mappedWorldPostion.Longtitude
+                X = (int)mappedWorldPostion.Longtitude,
+                Y = (int)mappedWorldPostion.Latitude
             };
 
-            ImagePoint[,] availablePath = compartmentDataStorage.GetCompartmentDataById(user.CurrentCompartment.Id);
+            ImagePointArray availablePath = null; //compartmentDataStorage.GetCompartmentDataById(user.CurrentCompartment.Id);
 
             if (availablePath == null)
             {
@@ -245,30 +245,35 @@ namespace FireSaverApi.Services
 
                 availablePath = await compartmentDataCloudinaryService.
                     GetCompartmentData(user.CurrentCompartment.CompartmentPointsDataPublicId);
-                compartmentDataStorage.LoadData(user.CurrentCompartment.Id, availablePath);
+                //compartmentDataStorage.LoadData(user.CurrentCompartment.Id, availablePath);
             }
 
 
             var blockedPoints = compartmentDataStorage.GetBlockedPointsByCompartmentId(user.CurrentCompartment.Id);
-            if(blockedPoints == null)
+            if (blockedPoints == null)
                 blockedPoints = new BlockedPoint[0];
 
             RouteBuilder routeBuilder = new RouteBuilder(availablePath, blockedPoints);
 
+            var evacPlanInfo = user.CurrentCompartment.EvacuationPlan;
+
+            userPosition.Y = evacPlanInfo.Height - userPosition.Y;
 
             List<Common.Point> exitPoints = user.CurrentCompartment.ExitPoints.Select(p =>
             {
                 PositionDto positionDto = mapper.Map<PositionDto>(p.MapPosition);
-                return new Common.Point() { X = (int)positionDto.Latitude, Y = (int)positionDto.Longtitude };
+                return new Common.Point() { X = (int)positionDto.Longtitude, Y = evacPlanInfo.Height - (int)positionDto.Latitude };
             }).ToList();
 
             Route route = routeBuilder.BuildRoute(userPosition, exitPoints);
+
+            int pointIndex = 1;
 
             RouteDto result = new RouteDto()
             {
                 DangerFactor = route.DangerFactor,
                 RoutePoints = route.RoutePoints
-                    .Select(p => new PositionDto(){Latitude = p.X, Longtitude = p.Y})
+                    .Select(p => new PositionDto() { Latitude = p.X, Longtitude = p.Y, Id = pointIndex++ })
                     .ToList()
             };
 
@@ -280,6 +285,8 @@ namespace FireSaverApi.Services
             var foundUser = await context.Users.Include(b => b.ResponsibleForBuilding)
                                                .Include(c => c.CurrentCompartment)
                                                .ThenInclude(e => e.ExitPoints)
+                                               .Include(c => c.CurrentCompartment)
+                                               .ThenInclude(ev => ev.EvacuationPlan)
                                                .Include(r => r.RolesList)
                                                .FirstOrDefaultAsync(u => u.Id == userId);
             if (foundUser == null)

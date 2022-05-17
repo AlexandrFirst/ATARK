@@ -47,16 +47,16 @@ namespace FireSaverMobile.Services
             return evacuationPlans.Where(p => p!=null).ToList();
         }
 
-        public async Task<RoutePointDto> BuildCompartmentEvacRouteForUser()
+        public async Task<RoutePointsDto> BuildCompartmentEvacRouteForUser()
         {
-            var evacuationRoute = await client.GetRequest<List<RoutePointDto>>($"http://{serverAddr}/User/evacuate");
+            var evacuationRoute = await client.GetRequest<RoutePointsDto>($"http://{serverAddr}/User/evacuate");
             if (evacuationRoute == null)
             {
                 return null;
             }
             else 
             {
-                return evacuationRoute.First();
+                return evacuationRoute;
             }
         }
     }

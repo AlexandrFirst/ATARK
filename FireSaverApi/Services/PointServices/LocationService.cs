@@ -130,7 +130,7 @@ namespace FireSaverApi.Services
 
 
             double deltaRealX = firstPosCoord.Latitude - worldPostion.Latitude;
-            double deltaRealY = firstPosCoord.Latitude - worldPostion.Longtitude;
+            double deltaRealY = firstPosCoord.Longtitude - worldPostion.Longtitude;
 
 
             PositionDto transformedPos = new PositionDto()
@@ -139,10 +139,10 @@ namespace FireSaverApi.Services
                 Longtitude = firstPosPixel.Longtitude
             };
 
-            double deltaImageX = deltaRealX * (1.0 / scaleModel.ImageXToRealXProjectCoef) +
-                deltaRealY * (1.0 / scaleModel.ImageYToRealXProjectCoef);
-            double deltaImageY = deltaRealX * (1.0 / scaleModel.ImageXToRealYProjectCoef) +
-                deltaRealY * (1.0 / scaleModel.ImageYToRealYProjectCoef);
+            double deltaImageX = deltaRealX * (scaleModel.ImageXToRealXProjectCoef) +
+                deltaRealY * (scaleModel.ImageYToRealXProjectCoef);
+            double deltaImageY = deltaRealX * (scaleModel.ImageXToRealYProjectCoef) +
+                deltaRealY * (scaleModel.ImageYToRealYProjectCoef);
 
             transformedPos.Latitude += deltaImageX;
             transformedPos.Longtitude += deltaImageY;

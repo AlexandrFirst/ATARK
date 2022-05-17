@@ -48,9 +48,17 @@
         var myMap;
         var selectedPoint;
 
-        function initMap(evacPlanUrl) {
+        function initMap(evacPlanUrl, width, height) {
+
+            bounds = [[0, 0], [height, width]]
+
+            const newSrc = L.extend({}, L.CRS.Simple, {
+                projection: L.Projection.LonLat,
+                transformation: new L.Transformation(1, 0, 1, 0), // this line is changed!!
+            });
+
             myMap = L.map('map', {
-                crs: L.CRS.Simple,
+                crs: newSrc,
                 maxZoom: 5,
                 minZoom: -2,
             });

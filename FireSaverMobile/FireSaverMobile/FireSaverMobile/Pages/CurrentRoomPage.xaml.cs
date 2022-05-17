@@ -38,7 +38,7 @@ namespace FireSaverMobile.Pages
                     {
                         await Create();
                         Thread.Sleep(1000);
-                        await InitMap(evacPlan.Url);
+                        await InitMap(evacPlan.Url, evacPlan.Width, evacPlan.Height);
                     }
                     else 
                     {
@@ -65,7 +65,7 @@ namespace FireSaverMobile.Pages
                     if (!isCreated)
                         await Create();
                     Thread.Sleep(1000);
-                    await InitMap(evacPlan.Url);
+                    await InitMap(evacPlan.Url, evacPlan.Width, evacPlan.Height);
 
                     isCreated = true;
                 });
@@ -98,9 +98,9 @@ namespace FireSaverMobile.Pages
             PhoneDialer.Open(button.CommandParameter.ToString());
         }
 
-        private async Task InitMap(string imageUrl)
+        private async Task InitMap(string imageUrl, int width, int height)
         {
-            var res = await webView.EvaluateJavaScriptAsync(string.Format($"initMap('{imageUrl}')"));
+            var res = await webView.EvaluateJavaScriptAsync(string.Format($"initMap('{imageUrl}', {width}, {height})"));
             Console.WriteLine(res);
         }
 

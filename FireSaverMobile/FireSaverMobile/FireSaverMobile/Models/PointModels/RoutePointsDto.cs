@@ -22,12 +22,9 @@ namespace FireSaverMobile.Models.PointModels
         EMERGENCY_CALL,
         HYDRANT
     }
-    public class RoutePointDto
+    public class RoutePointsDto
     {
-        public int Id { get; set; }
-        public Position MapPosition { get; set; }
-        public List<RoutePointDto> ChildrenPoints { get; set; }
-        public RoutePointDto ParentPoint { get; set; }
-        public RoutePointType RoutePointType { get; set; }
+        public double DangerFactor { get; set; }
+        public List<Position> RoutePoints { get; set; }
     }
 }

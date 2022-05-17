@@ -13,6 +13,6 @@ namespace FireSaverMobile.Contracts
         Task<List<CompartmentDto>> GetFloorsByBuildingId(int buildingId);
         Task<List<CompartmentDto>> GetRoomsByFloorId(int floorId);
         Task<List<EvacuationPlanDto>> GetEvacuationPlansFromCompartment();
-        Task<RoutePointDto> BuildCompartmentEvacRouteForUser();
+        Task<RoutePointsDto> BuildCompartmentEvacRouteForUser();
     }
 }

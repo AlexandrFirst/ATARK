@@ -24,7 +24,7 @@ namespace FireSaverApi.Services
             return result.Result;
         }
 
-        public async Task<ImagePoint[,]> GetCompartmentData(string publicId)
+        public async Task<ImagePointArray> GetCompartmentData(string publicId)
         {
             var result = await cloudinary.GetResourceAsync(new GetResourceParams(publicId) { ResourceType = ResourceType.Raw });
 
@@ -58,10 +58,10 @@ namespace FireSaverApi.Services
                 }
             }
 
-            return imagePoints;
+            return new ImagePointArray(imagePoints);
         }
 
-        public async Task<string> UpdateFile(ImagePoint[,] imagePoints, string publicId)
+        public async Task<string> UpdateFile(ImagePointArray imagePoints, string publicId)
         {
             return await UploadFile(imagePoints);
             if ((await DestroyFile(publicId)).Equals("ok"))
@@ -95,7 +95,7 @@ namespace FireSaverApi.Services
 
         }
 
-        public async Task<string> UploadFile(ImagePoint[,] imagePoints)
+        public async Task<string> UploadFile(ImagePointArray imagePoints)
         {
             StringBuilder text = new StringBuilder();
 

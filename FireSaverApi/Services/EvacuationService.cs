@@ -66,7 +66,7 @@ namespace FireSaverApi.Services
             };
 
             ImageParser imageParser = new ImageParser(planImage.OpenReadStream());
-            ImagePoint[,] imagePoints = imageParser.ParseImage();
+            ImagePointArray imagePoints = imageParser.ParseImage();
 
 
             string publicId = await dataCompartmentCloudinaryService.UploadFile(imagePoints);
@@ -88,7 +88,7 @@ namespace FireSaverApi.Services
             await planImageUploadService.DeletePlanImage(evacPlan.PublicId);
 
             ImageParser imageParser = new ImageParser(planImage.OpenReadStream());
-            ImagePoint[,] imagePoints = imageParser.ParseImage();
+            ImagePointArray imagePoints = imageParser.ParseImage();
             var newPublicId = await dataCompartmentCloudinaryService.UpdateFile(imagePoints, compartment.CompartmentPointsDataPublicId);
 
             compartment.CompartmentPointsDataPublicId = newPublicId;
@@ -109,8 +109,8 @@ namespace FireSaverApi.Services
             var compartment = await compartmentHelper.GetCompartmentById(compartmentId);
             var evacPlan = compartment.EvacuationPlan;
 
-            compartmentDataStorage.LoadData(compartmentId,
-                await dataCompartmentCloudinaryService.GetCompartmentData(compartment.CompartmentPointsDataPublicId));
+            // compartmentDataStorage.LoadData(compartmentId,
+            //     await dataCompartmentCloudinaryService.GetCompartmentData(compartment.CompartmentPointsDataPublicId));
             
             return mapper.Map<EvacuationPlanDto>(evacPlan);
         }
@@ -177,11 +177,11 @@ namespace FireSaverApi.Services
                 result.AddRange(restFloorsEvacPlans);
             }
 
-            foreach (var c in result)
-            {
-                compartmentDataStorage.LoadData(c.Compartment.Id,
-                    await dataCompartmentCloudinaryService.GetCompartmentData(c.Compartment.CompartmentPointsDataPublicId));
-            }
+            // foreach (var c in result)
+            // {
+            //     compartmentDataStorage.LoadData(c.Compartment.Id,
+            //         await dataCompartmentCloudinaryService.GetCompartmentData(c.Compartment.CompartmentPointsDataPublicId));
+            // }
 
             return mapper.Map<List<EvacuationPlanDto>>(result);
         }

@@ -6,12 +6,12 @@ namespace FireSaverApi.Common
 {
     public class RouteBuilder
     {
-        private readonly ImagePoint[,] availablePath;
+        private readonly ImagePointArray availablePath;
         private readonly BlockedPoint[] blockedPoints;
         private readonly int waveStep;
 
         public RouteBuilder(
-            ImagePoint[,] availablePoints,
+            ImagePointArray availablePoints,
             BlockedPoint[] blockedPoints,
             int waveStep = 1)
         {
@@ -23,7 +23,16 @@ namespace FireSaverApi.Common
         private WavePoint BuildWaves(WavePoint userPosition, List<Point> exits)
         {
             if (userPosition.X < 0 || userPosition.X > availablePath.GetLength(1) ||
-                userPosition.Y < 0 || userPosition.Y > availablePath.GetLength(0))
+                userPosition.Y < 0 || userPosition.Y > availablePath.GetLength(0) ||
+                (!isPlaceFree(userPosition.X, userPosition.Y) &&
+                !isPlaceFree(userPosition.X + 1, userPosition.Y) &&
+                !isPlaceFree(userPosition.X, userPosition.Y + 1) &&
+                !isPlaceFree(userPosition.X - 1, userPosition.Y) &&
+                !isPlaceFree(userPosition.X, userPosition.Y - 1) &&
+                !isPlaceFree(userPosition.X + 1, userPosition.Y + 1) &&
+                !isPlaceFree(userPosition.X - 1, userPosition.Y - 1) &&
+                !isPlaceFree(userPosition.X - 1, userPosition.Y + 1) &&
+                !isPlaceFree(userPosition.X + 1, userPosition.Y - 1)))
             {
                 int radius = 30;
                 for (int x = radius; x >= -radius; x--)
@@ -37,8 +46,8 @@ namespace FireSaverApi.Common
                         {
                             if (imagePoint.data == (int)PointType.Free)
                             {
-                                userPosition.X = x;
-                                userPosition.Y = y;
+                                userPosition.X = userPosition.X + x;
+                                userPosition.Y = userPosition.Y + y;
                                 goto begin;
                             }
 
@@ -180,8 +189,43 @@ namespace FireSaverApi.Common
                     minFactor = currentFactor;
                 }
             }
-
+            List<Point> optimizedRoute = OptimizeRoot(safestRoute.RoutePoints, safestRoute.RoutePoints.Last());
+            for (int i = 0; i < 3; i++)
+            {
+                optimizedRoute = OptimizeRoot(optimizedRoute, safestRoute.RoutePoints.Last());
+            }
+            safestRoute.RoutePoints = optimizedRoute;
             return safestRoute;
+        }
+
+        public List<Point> OptimizeRoot(List<Point> routePoints, Point endWavePoint)
+        {
+            List<Point> optimizedRoute = new List<Point>();
+            optimizedRoute.Add(routePoints.First());
+
+            VectorizedPoint vectorizedPoint = new VectorizedPoint(optimizedRoute.Last(), routePoints[1]);
+
+            for (int i = 2; i < routePoints.Count; i++)
+            {
+                VectorizedPoint newPoint = new VectorizedPoint(optimizedRoute.Last(), routePoints[i]);
+                double angle = vectorizedPoint.GetAngle(newPoint);
+                //System.Console.WriteLine("Angle size " + angle.ToString());
+                if (angle > 0.0001)
+                {
+                    optimizedRoute.Add(routePoints[i]);
+                    if (i + 1 < routePoints.Count)
+                    {
+                        vectorizedPoint = new VectorizedPoint(optimizedRoute.Last(), routePoints[++i]);
+                        //System.Console.WriteLine(optimizedRoute.Last().X + ";" + optimizedRoute.Last().Y);
+                    }
+                }
+
+            }
+            if (optimizedRoute.Last() != (endWavePoint as Point))
+            {
+                optimizedRoute.Add(endWavePoint);
+            }
+            return optimizedRoute;
         }
 
         private bool IsPointVisited(int x, int y)
@@ -213,6 +257,18 @@ namespace FireSaverApi.Common
             RouteBuilderHelper.GetImagePoint(m_x, m_y, availablePath).IsVisited = true;
         }
 
+        private bool isPlaceFree(int x, int y)
+        {
+            try
+            {
+                return availablePath[y, x].data != (int)PointType.Wall;
+            }
+            catch (IndexOutOfRangeException)
+            {
+                return false;
+            }
+        }
+
         private List<WavePoint> GetPointAround(WavePoint currentPoint)
         {
             List<WavePoint> pointsAround = new List<WavePoint>();
@@ -220,10 +276,10 @@ namespace FireSaverApi.Common
             bool isUpDirectionAvailable = currentPoint.Y - waveStep >= 0 &&
                 availablePath[currentPoint.Y - waveStep, currentPoint.X].data != (int)PointType.Wall;
 
-            bool isDownDirectionAvailable = currentPoint.Y + waveStep < availablePath.GetLongLength(0) &&
+            bool isDownDirectionAvailable = currentPoint.Y + waveStep < availablePath.GetLength(0) &&
                 availablePath[currentPoint.Y + waveStep, currentPoint.X].data != (int)PointType.Wall;
 
-            bool isRightDirectionAvailable = currentPoint.X + waveStep < availablePath.GetLongLength(1) &&
+            bool isRightDirectionAvailable = currentPoint.X + waveStep < availablePath.GetLength(1) &&
                 availablePath[currentPoint.Y, currentPoint.X + waveStep].data != (int)PointType.Wall;
 
             bool isLeftDirectionAvailable = currentPoint.X - waveStep >= 0 &&

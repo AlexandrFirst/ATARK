@@ -38,13 +38,13 @@ namespace FireSaverMobile.Pages
             this.BindingContext = evacPlanModel;
 
 
-            evacPlanModel.OnEvacuationPlanInit += (EvacuationPlanDto evacPlanDto, RoutePointDto startPoint) =>
+            evacPlanModel.OnEvacuationPlanInit += (EvacuationPlanDto evacPlanDto, RoutePointsDto startPoint) =>
             {
                 ClearAllPoints();
                 ClearAllLines();
                 if (!isMapInited)
                 {
-                    InitMap(evacPlanDto.Url);
+                    InitMap(evacPlanDto.Url, evacPlanDto.Width, evacPlanDto.Height);
                     isMapInited = true;
                 }
                 else
@@ -54,8 +54,10 @@ namespace FireSaverMobile.Pages
 
                 InitEvacPoints(startPoint);
 
-
-                SelectPoint(routePointIds[currentSelectedPoint]);
+                if (routePointIds != null && routePointIds.Count > 0)
+                {
+                    SelectPoint(routePointIds[currentSelectedPoint]);
+                }
 
             };
 
@@ -96,27 +98,40 @@ namespace FireSaverMobile.Pages
             return evacPlanModel.IsUserReachedExit;
         }
 
-        private void InitEvacPoints(RoutePointDto rootPoint)
+        private void InitEvacPoints(RoutePointsDto root)
         {
-            routePointIds.Add(rootPoint.Id);
-            PlacePoint(rootPoint.Id, rootPoint.MapPosition);
-            foreach (var point in rootPoint.ChildrenPoints)
+            if (root != null)
             {
-                if (point.RoutePointType == RoutePointType.EXIT)
-                    hasExit = true;
-                InitEvacPoints(point);
-                PlaceLine(rootPoint.Id, point.Id, point.Id);
-                linesBetweenPoints.Add(point.Id);
+                PlacePoint(root.RoutePoints[0].Id.Value, new Position()
+                {
+                    Latitude = root.RoutePoints[0].Longtitude,
+                    Longtitude = root.RoutePoints[0].Latitude
+                });
+
+                routePointIds.Add(root.RoutePoints[0].Id.Value);
+
+                for (int i = 1; i < root.RoutePoints.Count; i++)
+                {
+                    PlacePoint(root.RoutePoints[i].Id.Value, new Position()
+                    {
+                        Latitude = root.RoutePoints[i].Longtitude,
+                        Longtitude = root.RoutePoints[i].Latitude
+                    });
+
+                    routePointIds.Add(root.RoutePoints[i].Id.Value);
+                    PlaceLine(root.RoutePoints[i - 1].Id.Value, root.RoutePoints[i].Id.Value, root.RoutePoints[i].Id.Value);
+                    linesBetweenPoints.Add(root.RoutePoints[i].Id.Value);
+                }
             }
 
             return;
         }
 
 
-        private async void InitMap(string imageUrl)
+        private async void InitMap(string imageUrl, int width, int height)
         {
 
-            var res = await webView.EvaluateJavaScriptAsync(string.Format($"initMap('{imageUrl}')"));
+            var res = await webView.EvaluateJavaScriptAsync(string.Format($"initMap('{imageUrl}', {width}, {height})"));
             Console.WriteLine(res);
         }
 

@@ -12,7 +12,7 @@ namespace FireSaverMobile.Services
 {
     public class BaseHttpService
     {
-        protected const string serverAddr = "192.168.0.109:5000";
+        protected const string serverAddr = "192.168.0.2:5000";
         protected static HttpClient client;
 
         private async Task<string> getToken()

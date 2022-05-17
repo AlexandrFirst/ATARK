@@ -240,6 +240,12 @@ export abstract class BaseCompartmentComponent<T extends CompartmentDto> impleme
     if (this.evacPlanInfo) {
 
       this.bounds = [[0, 0], [this.evacPlanInfo.height, this.evacPlanInfo.width]];
+      
+      const newSrc = L.extend({}, L.CRS.Simple, {
+       // projection: L.Projection.LonLat,
+        // transformation: new L.Transformation(1, 0, 1, 0), // this line is changed!!
+        
+      });
 
       this.map = L.map('myMap', {
         crs: L.CRS.Simple,

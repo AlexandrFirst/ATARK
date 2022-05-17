@@ -32,6 +32,10 @@ namespace FireSaverApi.Common
         {
             return Math.Pow(other.X - this.X, 2) + Math.Pow(other.Y - this.Y, 2) <= Math.Pow(radius, 2);
         }
+        public static Point operator -(Point a, Point b)
+        {
+            return new Point() { X = b.X - a.X, Y = b.Y - a.Y };
+        }
     }
 
     public class BlockedPoint : Point
@@ -79,6 +83,31 @@ namespace FireSaverApi.Common
 
     }
 
+    public class ImagePointArray
+    {
+        private readonly ImagePoint[,] imagePoints;
+
+        public ImagePointArray(ImagePoint[,] imagePoints)
+        {
+            this.imagePoints = imagePoints;
+        }
+
+        public ImagePoint this[int index1, int index2]
+        {
+            get
+            {
+                return imagePoints[index1, index2];
+            }
+            set
+            {
+                imagePoints[index1, index2] = value;
+            }
+        }
+        public int GetLength(int n)
+        {
+            return imagePoints.GetLength(n);
+        }
+    }
 
     public class ImageParser
     {
@@ -89,7 +118,7 @@ namespace FireSaverApi.Common
             this.dataImageStream = dataImageStream;
         }
 
-        public ImagePoint[,] ParseImage()
+        public ImagePointArray ParseImage()
         {
             Bitmap bmp = new Bitmap(dataImageStream);
             Rectangle rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
@@ -150,10 +179,10 @@ namespace FireSaverApi.Common
             }
             bmp.UnlockBits(bmpData);
 
-            return availablePath;
+            return new ImagePointArray(availablePath);
         }
 
-        public static void BlockPoints(ref ImagePoint[,] imagePoints, BlockedPoint blockedPoint)
+        public static void BlockPoints(ref ImagePointArray imagePoints, BlockedPoint blockedPoint)
         {
 
             for (int x = blockedPoint.Radius; x >= -blockedPoint.Radius; x--)

@@ -15,8 +15,9 @@ namespace FireSaverApi.Dtos
 
         public PositionDto()
         {
-            
+
         }
+        public int? Id { get; set; }
         public double Longtitude { get; set; }
         public double Latitude { get; set; }
     }

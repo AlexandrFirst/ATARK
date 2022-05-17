@@ -34,7 +34,7 @@ namespace FireSaverMobile.ViewModels
         public List<EvacuationPlanDto> EvacuationsPlans { get; internal set; } = new List<EvacuationPlanDto>();
 
 
-        public Action<EvacuationPlanDto, RoutePointDto> OnEvacuationPlanInit;
+        public Action<EvacuationPlanDto, RoutePointsDto> OnEvacuationPlanInit;
         public Action<Position> OnUserPositonChange;
 
         private Position currentUserPostion;
