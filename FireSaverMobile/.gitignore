@@ -193,3 +193,5 @@ UpgradeLog*.htm
 FakesAssemblies/
 
 .vscode/settings.json
+
+./FireSaverMobile/FireSaverMobile/Helpers/APIKeyStorage.cs

@@ -1,15 +1,22 @@
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
+using FireSaverApi.Common;
 using FireSaverApi.Contracts;
 using FireSaverApi.DataContext;
+using FireSaverApi.Dtos;
 using FireSaverApi.Dtos.BuildingDtos;
 using FireSaverApi.Dtos.CompartmentDtos;
 using FireSaverApi.Helpers;
 using FireSaverApi.Helpers.ExceptionHandler.CustomExceptions;
 using FireSaverApi.Helpers.Pagination;
+using FireSaverApi.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace FireSaverApi.Services
 {
@@ -20,16 +27,22 @@ namespace FireSaverApi.Services
         private readonly IUserHelper userHelper;
         private readonly IUserContextService userContextService;
         private readonly ICompartmentHelper compartmentHelper;
+        private readonly IHttpClientFactory clientFactory;
+        private readonly GoogleApiInfo googleApiOptions;
 
         public BuildingService(DatabaseContext context,
                                 IMapper mapper,
                                 IUserHelper userHelper,
                                 IUserContextService userContextService,
-                                ICompartmentHelper compartmentHelper)
+                                ICompartmentHelper compartmentHelper,
+                                IHttpClientFactory clientFactory,
+                                IOptions<GoogleApiInfo> googleApiOptions)
         {
             this.userHelper = userHelper;
             this.userContextService = userContextService;
             this.compartmentHelper = compartmentHelper;
+            this.clientFactory = clientFactory;
+            this.googleApiOptions = googleApiOptions.Value;
             this.context = context;
             this.mapper = mapper;
         }
@@ -127,6 +140,7 @@ namespace FireSaverApi.Services
         {
             var building = await context.Buildings.Include(b => b.ResponsibleUsers)
                                                     .Include(s => s.Shelters)
+                                                    .ThenInclude(u => u.Users)
                                                    .Include(f => f.Floors)
                                                    .ThenInclude(r => r.Rooms)
                                                    .ThenInclude(u => u.InboundUsers)
@@ -213,6 +227,10 @@ namespace FireSaverApi.Services
         {
             var building = await GetBuildingById(buildingId);
             Shelter shelter = mapper.Map<Shelter>(newShelter);
+
+            var buildingDto = mapper.Map<BuildingInfoDto>(building);
+            shelter.Distance = await calculateDistance(buildingDto.BuildingCenterPosition, newShelter.ShelterPosition);
+
             building.Shelters.Add(shelter);
             await context.SaveChangesAsync();
             return mapper.Map<ShelterDto>(shelter);
@@ -220,15 +238,49 @@ namespace FireSaverApi.Services
 
         public async Task<ShelterDto> UpdateShelter(int shelterId, ShelterDto newShelter)
         {
-            var shelter = await context.Shelters.FirstOrDefaultAsync(s => s.Id == shelterId);
+            var shelter = await context.Shelters.Include(b => b.Building).FirstOrDefaultAsync(s => s.Id == shelterId);
+            var buildingDto = mapper.Map<BuildingInfoDto>(shelter.Building);
             if (shelter == null)
             {
                 return null;
             }
             mapper.Map(newShelter, shelter);
 
+            shelter.Distance = await calculateDistance(buildingDto.BuildingCenterPosition, newShelter.ShelterPosition);
+
             await context.SaveChangesAsync();
             return mapper.Map<ShelterDto>(shelter);
+        }
+
+        string convertDoubleToString(double value)
+        {
+            NumberFormatInfo nfi = new NumberFormatInfo();
+            nfi.NumberDecimalSeparator = ".";
+
+            return value.ToString(nfi);
+        }
+
+
+        private async Task<int> calculateDistance(PositionDto origin, PositionDto dest)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get,
+                string.Format($"https://maps.googleapis.com/maps/api/distancematrix/json?destinations={convertDoubleToString(dest.Latitude)},{convertDoubleToString(dest.Longtitude)}" +
+                $"&origins={convertDoubleToString(origin.Latitude)},{convertDoubleToString(origin.Longtitude)}" +
+                $"&key={googleApiOptions.GOOGLE_KEY}"));
+
+
+            var _clinet = clientFactory.CreateClient();
+            var response = await _clinet.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                using var responseStream = await response.Content.ReadAsStreamAsync();
+                var deserializedResponse = await JsonSerializer.DeserializeAsync
+                    <GoogleApiDistanceResponse>(responseStream);
+                return deserializedResponse.rows.First().elements.First().distance.value;
+            }
+
+            return int.MaxValue;
         }
 
         public async Task<ShelterDto> GetShelterInfo(int shelterId)
@@ -249,6 +301,29 @@ namespace FireSaverApi.Services
             await context.SaveChangesAsync();
             return true;
 
+        }
+
+        public async Task<bool> EnterShelter(int shelterId, User user)
+        {
+            var shelter = await context.Shelters.FirstOrDefaultAsync(s => s.Id == shelterId);
+            if (shelter == null)
+            {
+                return false;
+            }
+            shelter.Users.Add(user);
+            context.Update(shelter);
+            await context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> LeaveShelter(int userId)
+        {
+            var user = await userHelper.GetUserById(userId);
+            user.Shelter = null;
+            context.Update(user);
+
+            await context.SaveChangesAsync();
+            return true;
         }
     }
 

@@ -288,6 +288,7 @@ namespace FireSaverApi.Services
                                                .Include(c => c.CurrentCompartment)
                                                .ThenInclude(ev => ev.EvacuationPlan)
                                                .Include(r => r.RolesList)
+                                               .Include(s => s.Shelter)
                                                .FirstOrDefaultAsync(u => u.Id == userId);
             if (foundUser == null)
             {

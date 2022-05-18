@@ -154,7 +154,7 @@ namespace FireSaverMobile.ViewModels
 
                 OnEvacPlanRecieved?.Invoke(null, evacPlans.First());
 
-                var buidingInfo = await buildingService.GetBuildingInfo(userInfo.CurrentCompartment.Id);
+                var buidingInfo = await buildingService.GetBuildingInfoByCompartmentId(userInfo.CurrentCompartment.Id);
                 ResponsibleUsers.Clear();
                 foreach (var user in buidingInfo.ResponsibleUsers)
                 {

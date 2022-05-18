@@ -59,9 +59,9 @@ export class BuildingComponent implements OnInit {
     private toastrService: ToastrService,
     private matDialog: MatDialog,
     private floorService: HttpFloorService,
-    ) {
+  ) {
 
-    
+
   }
 
   ngOnInit() {
@@ -81,14 +81,31 @@ export class BuildingComponent implements OnInit {
   initBuildingInfo() {
     this.buildingService.getBuildingById(this.buildingId).subscribe(buildingInfo => {
       this.buildingInfo = buildingInfo;
-
+      console.log("Retrieved building info: ", buildingInfo);
       if (!this.buildingInfo.buildingCenterPosition) {
         this.validateBuildingAdress(this.buildingInfo.address).subscribe(result => {
-          console.log(result);
+
           this.buildingPos = {
             latitude: result.location.lat(),
             longtitude: result.location.lng()
-          };
+          } as Postion;
+
+
+          this.buildingService.updateBuildingInfo({
+            address: buildingInfo.address,
+            info: buildingInfo.info,
+            id: buildingInfo.id,
+            buildingCenterPosition: this.buildingPos
+          } as UpdateBuildingDto).subscribe(success => {
+            console.log(success)
+            this.toastrService.success("Building with id: " + success.id + " updated");
+            this.initBuildingInfo();
+          }, error => {
+            console.log(error);
+            this.toastrService.error("Something bad happened! Try again");
+          })
+
+
           console.log("Building pos", this.buildingPos);
         }, error => {
           this.toastrService.error("incorrect building adress! Fix this please: ", error)

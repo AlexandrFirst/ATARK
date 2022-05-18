@@ -58,6 +58,11 @@ namespace FireSaverApi.Controllers
             var buildingInfo = await buildingHelper.GetBuildingById(buildingId);
             var buildingInfoDto = mapper.Map<BuildingInfoDto>(buildingInfo);
 
+            for (int i = 0; i < buildingInfo.Shelters.Count; i++)
+            {
+                buildingInfoDto.Shelters[i].TotalPeople = buildingInfo.Shelters[i].Users.Count;
+            }
+
             return Ok(buildingInfoDto);
         }
 
@@ -196,5 +201,24 @@ namespace FireSaverApi.Controllers
             return Ok(shelter);
         }
 
+        [Authorize]
+        [HttpPut("shelter/enter/{shelterId}")]
+        public async Task<IActionResult> EnterShelter(int shelterId)
+        {
+            var contextUser = userContextService.GetUserContext();
+            var dbUser = await userHelper.GetUserById(contextUser.Id);
+
+            await buildingService.EnterShelter(shelterId, dbUser);
+            return Ok(new ServerResponse() { Message = "Welcome to the shelter" });
+        }
+
+        [Authorize]
+        [HttpDelete("shelter/leave")]
+        public async Task<IActionResult> LeaveShelter()
+        {
+            var contextUser = userContextService.GetUserContext();
+            await buildingService.LeaveShelter(contextUser.Id);
+            return Ok(new ServerResponse() { Message = "Good bye" });
+        }
     }
 }

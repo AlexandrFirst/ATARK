@@ -1,4 +1,8 @@
-namespace FireSaverApi.Dtos.BuildingDtos
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace FireSaverMobile.Models.BuildingModels
 {
     public class ShelterDto
     {
@@ -6,7 +10,7 @@ namespace FireSaverApi.Dtos.BuildingDtos
         public string Address { get; set; }
         public int Capacity { get; set; }
         public string Info { get; set; }
-        public PositionDto ShelterPosition { get; set; }
+        public Position ShelterPosition { get; set; }
         public int Distance { get; set; }
         public int TotalPeople { get; set; }
     }

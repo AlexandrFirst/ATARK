@@ -8,9 +8,10 @@ export class AsyncAddressValidator {
         console.log('creating validator for address');
         return (control: AbstractControl): Observable<ValidationErrors> | null => {
 
-            return buildingService.validateBuildingAdress(control.value).pipe(map(response => {
-                return null;
-            }), catchError(err => of({ addressCheck: false })))
+            // return buildingService.validateBuildingAdress(control.value).pipe(map(response => {
+            //     return null;
+            // }), catchError(err => of({ addressCheck: false })))
+            return null;
         };
     }
 }

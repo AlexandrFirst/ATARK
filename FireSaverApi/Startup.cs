@@ -155,7 +155,7 @@ namespace FireSaverApi
                 options.EnableDetailedErrors = true;
             });
 
-
+            services.AddHttpClient();
             services.AddScoped<ILocationService, LocationService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthUserService, UserService>();
@@ -190,7 +190,7 @@ namespace FireSaverApi
             services.AddScoped<IMessageService, MessageService>();
 
             services.AddScoped<IIotControllerService, IotControllerService>();
-            
+
 
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.TryAddSingleton<ITimerService, TimerService>();
@@ -199,6 +199,7 @@ namespace FireSaverApi
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
             services.Configure<BackupModel>(Configuration.GetSection("BackupSettings"));
+            services.Configure<GoogleApiInfo>(Configuration.GetSection("GoogleApiKey"));
 
             var mappingConfig = new MapperConfiguration(mc =>
             {

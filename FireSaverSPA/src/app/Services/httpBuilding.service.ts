@@ -43,7 +43,11 @@ export class HttpBuildingService extends BaseHttpService {
   }
 
   updateBuildingInfo(updatedBuildingInfo: UpdateBuildingDto): Observable<BuildingInfoDto> {
-    return this.client.put<BuildingInfoDto>(this.baseUrl + "Building/updateBuilding/" + updatedBuildingInfo.id, { address: updatedBuildingInfo.address, info: updatedBuildingInfo.info })
+    return this.client.put<BuildingInfoDto>(this.baseUrl + "Building/updateBuilding/" + updatedBuildingInfo.id, {
+      address: updatedBuildingInfo.address,
+      info: updatedBuildingInfo.info,
+      buildingCenterPosition: updatedBuildingInfo.buildingCenterPosition
+    })
   }
 
   addBuilding(newBuildingInfo: NewBuildingDto): Observable<BuildingInfoDto> {
@@ -72,6 +76,7 @@ export class HttpBuildingService extends BaseHttpService {
 
   validateBuildingAdress(address: string): Observable<any> {
     console.log('Building address: ', address)
+    console.log("Google api called(geocoding)...");
     const observable = new Observable<any>(observer => {
       this.geocoder.geocode({ "address": address }, (results: google.maps.GeocoderResult[],
         status: google.maps.GeocoderStatus) => {

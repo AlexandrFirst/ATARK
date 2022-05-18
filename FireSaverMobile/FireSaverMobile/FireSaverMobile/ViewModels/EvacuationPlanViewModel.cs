@@ -4,6 +4,7 @@ using FireSaverMobile.Helpers;
 using FireSaverMobile.Models;
 using FireSaverMobile.Models.PointModels;
 using FireSaverMobile.Models.QRModel;
+using FireSaverMobile.Pages;
 using FireSaverMobile.Popups.PopupNotification;
 using FireSaverMobile.Popups.QRCodePopUp;
 using FireSaverMobile.Popups.qrScannerProxy;
@@ -98,7 +99,7 @@ namespace FireSaverMobile.ViewModels
                     IsUserReachedExit = true;
                     await PopupNavigation.Instance.PushAsync(new PopupYesActionView(async () =>
                     {
-                        await NavigationDispetcher.Instance.Navigation.PopModalAsync();
+                        await NavigationDispetcher.Instance.Navigation.PushModalAsync(new ShelterRoutePage());
                     }, "You have reached the exit. Return to main page?", true));
 
                 }

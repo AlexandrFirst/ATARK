@@ -24,5 +24,8 @@ namespace FireSaverApi.Contracts
         Task<ShelterDto> AddShelter(int buildingId, ShelterDto newShelter);
         Task<ShelterDto> UpdateShelter(int shelterId, ShelterDto newShelter);
         Task<bool> RemoveShelter(int shelterId);
+
+        Task<bool> EnterShelter(int shelterId, User user);
+        Task<bool> LeaveShelter(int userId);
     }
 }
