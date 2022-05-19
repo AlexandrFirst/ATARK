@@ -1,6 +1,7 @@
 ﻿using FireSaverMobile.Contracts;
 using FireSaverMobile.DI;
 using FireSaverMobile.Helpers;
+using FireSaverMobile.Pages.Navigation;
 using FireSaverMobile.Resx;
 using FireSaverMobile.ViewModels;
 using System;
@@ -43,6 +44,7 @@ namespace FireSaverMobile.Pages
         public ICommand ChooseLanguage { get; set; }
 
         private ILoginService loginService;
+        private IUserService userService;
 
         public NavFlayoutPage()
         {
@@ -51,6 +53,7 @@ namespace FireSaverMobile.Pages
             LocalizationResourceManager.Current.CurrentCulture = CultureInfo.CurrentCulture;
 
             loginService = TinyIOC.Container.Resolve<ILoginService>();
+            userService = TinyIOC.Container.Resolve<IUserService>();
 
             NavElements = new ObservableCollection<FlayoutItemModel>()
             {
@@ -65,21 +68,33 @@ namespace FireSaverMobile.Pages
             };
 
             this.BindingContext = this;
+        }
 
-            Task.Run(async () =>
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+
+            var userInfo = await loginService.ReadDataFromStorage();
+            Console.WriteLine(userInfo);
+            var dbUserInfo = await userService.GetUserInfoById(userInfo.UserId);
+
+            if (userInfo.ResponsibleBuildingId.HasValue && userInfo.ResponsibleBuildingId > -1)
             {
-                var userInfo = await loginService.ReadDataFromStorage();
-                Console.WriteLine(userInfo);
-                if (userInfo.ResponsibleBuildingId.HasValue && userInfo.ResponsibleBuildingId > -1)
+                NavElements.Add(new FlayoutItemModel()
                 {
-                    NavElements.Add(new FlayoutItemModel()
-                    {
-                        PageNameLocalized = new LocalizedString(() => AppResources.BuildingData),
-                        ImageSource = "",
-                        DetailPage = new CompartmentInfosPage(userInfo.ResponsibleBuildingId.Value, Models.CompartmentType.Floor)
-                    });
-                }
-            });
+                    PageNameLocalized = new LocalizedString(() => AppResources.BuildingData),
+                    ImageSource = "",
+                    DetailPage = new CompartmentInfosPage(userInfo.ResponsibleBuildingId.Value, Models.CompartmentType.Floor)
+                });
+            }
+            if (dbUserInfo!=null && dbUserInfo.Shelter != null)
+            {
+                NavElements.Add(new FlayoutItemModel()
+                {
+                    PageNameLocalized = new LocalizedString(() => AppResources.Shelter),
+                    DetailPage = new ShelterPage(dbUserInfo.Shelter)
+                });
+            }
         }
 
         private async void LogoutBtnClicked(object sender, EventArgs e)

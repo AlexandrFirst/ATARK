@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:map="clr-namespace:Xamarin.Forms.GoogleMaps;assembly=Xamarin.Forms.GoogleMaps"
+             x:Class="FireSaverMobile.Pages.Navigation.ShelterPage">
+    <ContentPage.Content>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="9*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <map:Map IsShowingUser="True" x:Name="map" Grid.Row="1" Grid.ColumnSpan="3" MyLocationEnabled="true"/>
+            <Label x:Name="addressLbl" Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center" FontSize="Medium"/>
+            <Label x:Name="capacityLbl" Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" FontSize="Medium"/>
+            <Button x:Name="leaveBtn" Grid.Column="2" Text="Leave shelter" HorizontalOptions="Center" VerticalOptions="Center" FontSize="Medium"/>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

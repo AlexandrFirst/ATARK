@@ -5,7 +5,7 @@
     <ContentPage.Content>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="2*"/>
                 <RowDefinition Height="9*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -14,9 +14,12 @@
             </Grid.ColumnDefinitions>
             <maps:Map IsShowingUser="True" x:Name="map" Grid.Row="1" Grid.ColumnSpan="2" MyLocationEnabled="true"/>
             <Label Text="current shelter: (none)" HorizontalTextAlignment="Center" 
-                   FontSize="Large" TextColor="Black"/>
-            <Button Text="change shelter" Grid.Column="1" VerticalOptions="Start"/>
-            <Button Grid.Row="1" Text="Rebuild root" VerticalOptions="End"/>
+                   FontSize="Large" TextColor="Black" x:Name="shelterAdressLbl"/>
+            <StackLayout Grid.Column="1" >
+                <Button Text="change shelter" VerticalOptions="Start" x:Name="changeShelterBtn"/>
+                <Button Text="enter shelter" VerticalOptions="Start" x:Name="enterShelterBtn"/>
+            </StackLayout>
+            <Button Grid.Row="1" Text="Rebuild root" VerticalOptions="End" x:Name="rebuildRouteBtn"/>
         </Grid>
     </ContentPage.Content>
 </ContentPage>

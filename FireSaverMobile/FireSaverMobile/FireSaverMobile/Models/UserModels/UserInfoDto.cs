@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FireSaverMobile.Models.BuildingModels;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -16,5 +17,6 @@ namespace FireSaverMobile.Models
         public DateTime DOB { get; set; }
         public Position LastSeenBuildingPosition { get; set; }
         public CompartmentCommonInfo CurrentCompartment { get; set; }
+        public ShelterDto Shelter { get; set; }
     }
 }

@@ -26,6 +26,8 @@ namespace FireSaverMobile.Pages
 
         private Position userPosition = null;
 
+        Dictionary<int, Position> routePoints = new Dictionary<int, Position>();
+
         bool isMapInited = false;
 
         int currentSelectedPoint = 0;
@@ -102,6 +104,8 @@ namespace FireSaverMobile.Pages
         {
             if (root != null)
             {
+                routePoints.Clear();
+
                 PlacePoint(root.RoutePoints[0].Id.Value, new Position()
                 {
                     Latitude = root.RoutePoints[0].Longtitude,
@@ -116,6 +120,12 @@ namespace FireSaverMobile.Pages
                     {
                         Latitude = root.RoutePoints[i].Longtitude,
                         Longtitude = root.RoutePoints[i].Latitude
+                    });
+
+                    routePoints.Add(root.RoutePoints[i].Id.Value, new Position()
+                    {
+                        Latitude = root.RoutePoints[i].Latitude,
+                        Longtitude = root.RoutePoints[i].Longtitude
                     });
 
                     routePointIds.Add(root.RoutePoints[i].Id.Value);
@@ -197,7 +207,11 @@ namespace FireSaverMobile.Pages
 
         private void BlockPointBtnClicked(object sender, EventArgs e)
         {
-            evacPlanModel.BlockSelectedPoint.Execute(routePointIds[currentSelectedPoint]);
+            Position pointPosition;
+            if (routePoints.TryGetValue(routePointIds[currentSelectedPoint], out pointPosition)) 
+            {
+                evacPlanModel.BlockSelectedPoint.Execute(pointPosition);
+            }
         }
 
         private async Task Create()

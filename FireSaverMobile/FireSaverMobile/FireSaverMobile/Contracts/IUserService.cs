@@ -15,6 +15,6 @@ namespace FireSaverMobile.Contracts
         Task<CompartmentCommonInfo> SetUserCompartmentByCompartmentId(int userId, int compartmentId);
         Task<CompartmentCommonInfo> SetUserCompartmentByEvacPlanId(int userId, int evacPlanId);
         Task SendMessage(MessageDto messageDto);
-        Task BlockPoint(int pointId);
+        Task BlockPoint(Position positionToBlock);
     }
 }

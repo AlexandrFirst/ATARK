@@ -12,5 +12,7 @@ namespace FireSaverMobile.Contracts
         Task<TestCompModel> SendCompartmentData(UserEnterCompartmentDto compartmentEnterData);
         Task<ServerResponse> SendTestAnswers(AnswerListModel compartmentEnterData);
         Task<CompartmentCommonInfo> GetCompartmentById(int compartmentId);
+        Task<ServerResponse> EnterShelter(int shelterId);
+        Task<ServerResponse> LeaveShelter(int shelterId);
     }
 }

@@ -11,11 +11,23 @@ namespace FireSaverMobile.Services
 {
     public class CompartmentEnterService : BaseHttpService, ICompartmentEnterService
     {
+        public async Task<ServerResponse> EnterShelter(int shelterId)
+        {
+            var response = await client.GetRequest<ServerResponse>($"http://{serverAddr}/Building/shelter/enter/{shelterId}");
+            return response;
+        }
+
         public async Task<CompartmentCommonInfo> GetCompartmentById(int compartmentId)
         {
             var compartmentInfo = await client.GetRequest<CompartmentCommonInfo>($"http://{serverAddr}/Building/compartment/{compartmentId}");
             return compartmentInfo;
 
+        }
+
+        public async Task<ServerResponse> LeaveShelter(int shelterId)
+        {
+            var response = await client.DeleteRequest<ServerResponse>($"http://{serverAddr}/Building/shelter/leave");
+            return response;
         }
 
         public async Task<TestCompModel> SendCompartmentData(UserEnterCompartmentDto compartmentEnterInfo)

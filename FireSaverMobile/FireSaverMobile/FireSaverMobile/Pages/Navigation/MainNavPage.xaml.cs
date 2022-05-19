@@ -12,13 +12,14 @@ namespace FireSaverMobile.Pages
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MainNavPage : FlyoutPage
     {
+       
         public MainNavPage()
         {
             InitializeComponent();
             flyout.listView.ItemSelected += navItemSelected;
         }
 
-        private void navItemSelected(object sender, SelectedItemChangedEventArgs e)
+        public void navItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
             var model = e.SelectedItem as FlayoutItemModel;
 
@@ -27,6 +28,10 @@ namespace FireSaverMobile.Pages
                 Detail = new NavigationPage(model.DetailPage);
                 flyout.listView.SelectedItem = null;
                 IsPresented = false;
+            }
+            else 
+            {
+                IsPresented = true;
             }
         }
     }

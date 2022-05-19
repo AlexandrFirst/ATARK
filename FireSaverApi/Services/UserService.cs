@@ -99,7 +99,13 @@ namespace FireSaverApi.Services
         public async Task<UserInfoDto> GetUserInfoById(int userId)
         {
             var user = await GetUserById(userId);
-            return mapper.Map<UserInfoDto>(user);
+            var mappedUser = mapper.Map<UserInfoDto>(user);
+            if(mappedUser.Shelter!=null)
+            {
+                mappedUser.Shelter.TotalPeople = user.Shelter.Users.Count;
+            }
+
+            return mappedUser;
         }
 
         public async Task<UserInfoDto> UpdateUserInfo(UserInfoDto newUserInfo)
@@ -289,6 +295,7 @@ namespace FireSaverApi.Services
                                                .ThenInclude(ev => ev.EvacuationPlan)
                                                .Include(r => r.RolesList)
                                                .Include(s => s.Shelter)
+                                               .ThenInclude(p => p.Users)
                                                .FirstOrDefaultAsync(u => u.Id == userId);
             if (foundUser == null)
             {

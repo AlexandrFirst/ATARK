@@ -20,7 +20,7 @@ namespace FireSaverMobile
             LocalizationResourceManager.Current.PropertyChanged += (sender, e) => AppResources.Culture = LocalizationResourceManager.Current.CurrentCulture;
             LocalizationResourceManager.Current.Init(AppResources.ResourceManager);
 
-            MainPage = new ShelterRoutePage();
+            MainPage = new NavigationPage(new LoginPage());
             NavigationDispetcher.Instance.Initialize(MainPage.Navigation);
         }
 

@@ -202,7 +202,7 @@ namespace FireSaverApi.Controllers
         }
 
         [Authorize]
-        [HttpPut("shelter/enter/{shelterId}")]
+        [HttpGet("shelter/enter/{shelterId}")]
         public async Task<IActionResult> EnterShelter(int shelterId)
         {
             var contextUser = userContextService.GetUserContext();

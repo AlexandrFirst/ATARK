@@ -100,7 +100,7 @@ namespace FireSaverMobile.ViewModels
                     await PopupNavigation.Instance.PushAsync(new PopupYesActionView(async () =>
                     {
                         await NavigationDispetcher.Instance.Navigation.PushModalAsync(new ShelterRoutePage());
-                    }, "You have reached the exit. Return to main page?", true));
+                    }, "You have reached the exit. Get route to compartment?", true));
 
                 }
                 IsBusy = false;
@@ -130,9 +130,10 @@ namespace FireSaverMobile.ViewModels
                 IsBusy = false;
             });
 
-            BlockSelectedPoint = new Command<int>(async (pointId) =>
+            BlockSelectedPoint = new Command<Position>(async (pointCoords) =>
             {
-                await userService.BlockPoint(pointId);
+                await userService.BlockPoint(pointCoords);
+                await InitEvacPlans();
             });
 
         }

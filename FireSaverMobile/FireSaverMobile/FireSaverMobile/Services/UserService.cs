@@ -77,9 +77,10 @@ namespace FireSaverMobile.Services
             await messageDto.PostRequest(client, $"http://{serverAddr}/Message/SendMessage");
         }
 
-        public async Task BlockPoint(int pointId)
+        public async Task BlockPoint(Position blockPos)
         {
-            await client.DeleteRequest<ServerResponse>($"http://{serverAddr}/RouteBuilder/routepoint/block/{pointId}");
+            var response = await blockPos.PostRequest<Position>(client, $"http://{serverAddr}/RouteBuilder/addBlockePoint/20");
+            var blockPointResponse = await transformHttpResponse<ServerResponse>(response);
         }
     }
 }

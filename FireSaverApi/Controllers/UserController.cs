@@ -83,14 +83,14 @@ namespace FireSaverApi.Controllers
         }
 
 
-        [Authorize]
+        // [Authorize]
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetUserInfo(int userId)
         {
-            var currentUser = userContextService.GetUserContext();
+            // var currentUser = userContextService.GetUserContext();
 
-            if (currentUser.Id != userId && !currentUser.RolesList.Contains(UserRoleName.ADMIN))
-                return BadRequest("You are not the admin");
+            // if (currentUser.Id != userId && !currentUser.RolesList.Contains(UserRoleName.ADMIN))
+            //     return BadRequest("You are not the admin");
 
             var userInfo = await userService.GetUserInfoById(userId);
             return Ok(userInfo);

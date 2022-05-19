@@ -1,15 +1,18 @@
 ﻿using FireSaverMobile.Contracts;
 using FireSaverMobile.DI;
 using FireSaverMobile.Helpers;
+using FireSaverMobile.Models;
 using FireSaverMobile.Models.BuildingModels;
 using FireSaverMobile.Models.GoogleApiResponse;
+using KinderMobile.PopupYesNo;
+using Rg.Plugins.Popup.Services;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.GoogleMaps;
 using Xamarin.Forms.Xaml;
@@ -22,6 +25,9 @@ namespace FireSaverMobile.Pages
         int buildingId = 1002;
 
         private readonly IBuildingService buildingService;
+        private readonly ICompartmentEnterService compartmentService;
+
+        private ShelterDto currentDestination = null;
 
         public ShelterRoutePage()
         {
@@ -31,19 +37,78 @@ namespace FireSaverMobile.Pages
             map.UiSettings.MyLocationButtonEnabled = true;
 
             buildingService = TinyIOC.Container.Resolve<IBuildingService>();
+            compartmentService = TinyIOC.Container.Resolve<ICompartmentEnterService>();
         }
 
         protected override async void OnAppearing()
         {
             base.OnAppearing();
 
+            var buildingInfo = await buildingService.GetBuildingInfoByBuildingId(buildingId);
             var location = await LocationSyncer.GetCurrentLocation(new System.Threading.CancellationTokenSource());
-            map.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(location.Latitude, location.Longitude),
+            map.MoveToRegion(MapSpan.FromCenterAndRadius(new Xamarin.Forms.GoogleMaps.Position(location.Latitude, location.Longitude),
                                              Xamarin.Forms.GoogleMaps.Distance.FromMiles(1)));
 
-            var buildingInfo = await buildingService.GetBuildingInfoByBuildingId(buildingId);
+            changeShelterBtn.Clicked += async (e, o) =>
+            {
+                if (buildingInfo != null)
+                {
+                    var newAdress = await DisplayActionSheet("Choose shelter", "Cancel", null,
+                          buildingInfo.Shelters.Select(a =>
+                          {
+                              string adr = a.Address + "(" + a.Distance + ")";
+                              return adr;
+                          }).ToArray());
 
-            if (buildingInfo.Shelters.Count == 0) 
+                    currentDestination = buildingInfo.Shelters.Where(s => s.Address + "(" + s.Distance + ")" == newAdress).FirstOrDefault();
+                    if (currentDestination == null)
+                    {
+                        await DisplayAlert("Attention", "Can't get shelter info", "Ok");
+                        return;
+                    }
+
+                    var routePoints = await retrieveRoutePoints(currentDestination, buildingInfo);
+                    if (routePoints == null)
+                    {
+                        await DisplayAlert("Attention", "Can't build route", "Ok");
+                        return;
+                    }
+                    drawRouteLine(routePoints);
+                }
+            };
+
+            rebuildRouteBtn.Clicked += async (e, o) =>
+              {
+                  var location = await LocationSyncer.GetCurrentLocation(new System.Threading.CancellationTokenSource());
+                  map.MoveToRegion(MapSpan.FromCenterAndRadius(new Xamarin.Forms.GoogleMaps.Position(location.Latitude, location.Longitude),
+                                                   Xamarin.Forms.GoogleMaps.Distance.FromMiles(1)));
+
+                  var routePoints = await retrieveRoutePoints(currentDestination, buildingInfo);
+                  if (routePoints == null)
+                  {
+                      await DisplayAlert("Attention", "Can't build route", "Ok");
+                      return;
+                  }
+                  drawRouteLine(routePoints);
+              };
+
+
+            enterShelterBtn.Clicked += async (e, o) =>
+              {
+                  if (currentDestination == null)
+                  {
+                      await DisplayAlert("Attention", "No shelter to enter", "Ok");
+                  }
+
+
+                  ServerResponse serverResponse = await compartmentService.EnterShelter(currentDestination.Id);
+
+                 await NavigationDispetcher.Instance.Navigation.PopModalAsync();
+                  await NavigationDispetcher.Instance.Navigation.PopModalAsync();
+
+              };
+
+            if (buildingInfo.Shelters.Count == 0)
             {
                 await DisplayAlert("Attention", "No shelters exists", "OK");
                 return;
@@ -55,39 +120,52 @@ namespace FireSaverMobile.Pages
             foreach (var shelter in buildingInfo.Shelters)
             {
                 double tempShelterIndex = ((shelter.TotalPeople + 1) / (shelter.Capacity + 1)) * 0.4;
-                tempShelterIndex+= shelter.Distance * 0.6;
-                if (tempShelterIndex < shelterIndex) 
+                tempShelterIndex += shelter.Distance * 0.6;
+                if (tempShelterIndex < shelterIndex)
                 {
                     shelterIndex = tempShelterIndex;
                     destination = shelter;
                 }
             }
 
-            if (destination == null) 
+            if (destination == null)
             {
                 await DisplayAlert("Attention", "Don't know where to go", "OK");
                 return;
             }
+            currentDestination = destination;
 
-            GoogleApiRouteResponse routeToShelter = await buildingService.GetRouteToShelter(
-                new Models.Position()
-                {
-                    Latitude = buildingInfo.BuildingCenterPosition.Latitude.Replace(',', '.'),
-                    Longtitude = buildingInfo.BuildingCenterPosition.Longtitude.Replace(',', '.')
-                },
-                new Models.Position()
-                {
-                    Latitude = destination.ShelterPosition.Latitude.Replace(',','.'),
-                    Longtitude = destination.ShelterPosition.Longtitude.Replace(',', '.')
-                });
-            
-            if (routeToShelter == null) 
+            var routePoints = await retrieveRoutePoints(currentDestination, buildingInfo);
+            if (routePoints == null)
             {
-                await DisplayAlert("Attention", "No shelters exists", "OK");
                 return;
             }
+            drawRouteLine(routePoints);
 
-            List<FireSaverMobile.Models.Position> routePoints = new List<Models.Position>();
+
+        }
+
+        private async Task<List<Models.Position>> retrieveRoutePoints(ShelterDto destination, CommonBuildingDto buildingInfo)
+        {
+            GoogleApiRouteResponse routeToShelter = await buildingService.GetRouteToShelter(
+              new Models.Position()
+              {
+                  Latitude = buildingInfo.BuildingCenterPosition.Latitude.Replace(',', '.'),
+                  Longtitude = buildingInfo.BuildingCenterPosition.Longtitude.Replace(',', '.')
+              },
+              new Models.Position()
+              {
+                  Latitude = destination.ShelterPosition.Latitude.Replace(',', '.'),
+                  Longtitude = destination.ShelterPosition.Longtitude.Replace(',', '.')
+              });
+
+            if (routeToShelter == null)
+            {
+                await DisplayAlert("Attention", "No shelters exists", "OK");
+                return null;
+            }
+
+            List<Models.Position> routePoints = new List<Models.Position>();
 
             foreach (var route in routeToShelter.routes)
             {
@@ -97,8 +175,16 @@ namespace FireSaverMobile.Pages
                     {
                         routePoints.AddRange(DecodePolylinePoints(step.polyline.points));
                     }
-                } 
+                }
             }
+
+            shelterAdressLbl.Text = destination.Address;
+            return routePoints;
+        }
+
+        private void drawRouteLine(List<Models.Position> routePoints)
+        {
+            map.Polylines.Clear();
 
             var routeLine = new Xamarin.Forms.GoogleMaps.Polyline();
             routeLine.StrokeWidth = 10f;
@@ -106,12 +192,12 @@ namespace FireSaverMobile.Pages
 
             foreach (var point in routePoints)
             {
-                routeLine.Positions.Add(new Position(double.Parse(point.Latitude), double.Parse(point.Longtitude)));
+                routeLine.Positions.Add(new Xamarin.Forms.GoogleMaps.Position(double.Parse(point.Latitude), double.Parse(point.Longtitude)));
             }
             map.Polylines.Add(routeLine);
         }
 
-        string convertDoubleToString(double value)
+        private string convertDoubleToString(double value)
         {
             NumberFormatInfo nfi = new NumberFormatInfo();
             nfi.NumberDecimalSeparator = ".";

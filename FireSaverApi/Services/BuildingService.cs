@@ -310,8 +310,12 @@ namespace FireSaverApi.Services
             {
                 return false;
             }
+            user.CurrentCompartment = null;
             shelter.Users.Add(user);
+
             context.Update(shelter);
+            context.Update(user);
+
             await context.SaveChangesAsync();
             return true;
         }
@@ -321,7 +325,7 @@ namespace FireSaverApi.Services
             var user = await userHelper.GetUserById(userId);
             user.Shelter = null;
             context.Update(user);
-
+            
             await context.SaveChangesAsync();
             return true;
         }
