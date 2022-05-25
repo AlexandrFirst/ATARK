@@ -28,6 +28,7 @@ namespace FireSaverApi.Services
         private readonly IUserContextService userContextService;
         private readonly ICompartmentHelper compartmentHelper;
         private readonly IHttpClientFactory clientFactory;
+        private readonly RegionListService regionsList;
         private readonly GoogleApiInfo googleApiOptions;
 
         public BuildingService(DatabaseContext context,
@@ -36,12 +37,14 @@ namespace FireSaverApi.Services
                                 IUserContextService userContextService,
                                 ICompartmentHelper compartmentHelper,
                                 IHttpClientFactory clientFactory,
-                                IOptions<GoogleApiInfo> googleApiOptions)
+                                IOptions<GoogleApiInfo> googleApiOptions,
+                                RegionListService regionsList)
         {
             this.userHelper = userHelper;
             this.userContextService = userContextService;
             this.compartmentHelper = compartmentHelper;
             this.clientFactory = clientFactory;
+            this.regionsList = regionsList;
             this.googleApiOptions = googleApiOptions.Value;
             this.context = context;
             this.mapper = mapper;
@@ -328,6 +331,11 @@ namespace FireSaverApi.Services
             
             await context.SaveChangesAsync();
             return true;
+        }
+
+        public List<RegionXmlClass.Region> GetAllRegions()
+        {
+            return regionsList.getAllRegions();
         }
     }
 

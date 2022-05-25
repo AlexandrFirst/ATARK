@@ -15,6 +15,10 @@ export class BuildingDialogComponent {
 
   buildingForm: FormGroup;
 
+  initBuildingAddr;
+
+  Regions = [];
+
   get getForm() {
     return this.buildingForm;
   }
@@ -27,29 +31,51 @@ export class BuildingDialogComponent {
     return this.buildingForm.get('info');
   }
 
+  get regionName() {
+    return this.buildingForm.get('regionName');
+  }
+
   constructor(public dialogRef: MatDialogRef<BuildingDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private buildingService: HttpBuildingService) {
     console.log(data)
 
+    buildingService.getRegions().subscribe(data => {
+      this.Regions = data;
+    })
+
     this.buildingForm = new FormGroup({
       address: new FormControl(data?.address, [Validators.required]),
-      info: new FormControl(data?.info, [Validators.required])
+      info: new FormControl(data?.info, [Validators.required]),
+      regionName: new FormControl(data?.region, [Validators.required])
     });
 
     if (data) {
       this.id = data.id;
     }
+    this.initBuildingAddr = data?.address;
+  }
+
+  changeRegion(e: any) {
+    this.regionName?.setValue(e.target.value, {
+      onlySelf: true,
+    });
   }
 
   CloseAndChange() {
     if (this.buildingForm.valid) {
-      this.buildingService.validateBuildingAdress(this.formAddress.value).subscribe(result => {
-        console.log(this.buildingForm.value)
-        this.dialogRef.close({ id: this.id, address: this.formAddress.value, info: this.formInfo.value, pos: result.location });
-      }, error => {
-        alert("No such address exists")
-      });
+      console.log("Selected region name: ", this.regionName)
+      if (this.initBuildingAddr == this.formAddress.value) {
+        this.dialogRef.close({ id: this.id, address: this.formAddress.value, info: this.formInfo.value, pos: null, region: this.regionName.value });
+      }
+      else {
+        this.buildingService.validateBuildingAdress(this.formAddress.value).subscribe(result => {
+          console.log(this.buildingForm.value)
+          this.dialogRef.close({ id: this.id, address: this.formAddress.value, info: this.formInfo.value, pos: result.location, region: this.regionName.value });
+        }, error => {
+          alert("No such address exists")
+        });
+      }
     }
   }
 

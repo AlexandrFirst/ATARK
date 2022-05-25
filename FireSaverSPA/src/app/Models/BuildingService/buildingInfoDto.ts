@@ -11,4 +11,5 @@ export class BuildingInfoDto {
     address: string;
     info: string;
     buildingCenterPosition: Postion;
+    region:String;
 }

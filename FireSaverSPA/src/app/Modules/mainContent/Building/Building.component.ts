@@ -265,6 +265,7 @@ export class BuildingComponent implements OnInit {
       data: {
         address: this.buildingInfo.address,
         info: this.buildingInfo.info,
+        region: this.buildingInfo.region,
         id: this.buildingId,
       },
       panelClass: "dialog-container-custom"
@@ -272,7 +273,15 @@ export class BuildingComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(data => {
       if (data) {
-        console.log(data)
+        console.log("Updating info: ", data)
+
+        if (!data.pos) {
+          data.pos = {
+            lat: () => this.buildingInfo.buildingCenterPosition.latitude,
+            lng: () => this.buildingInfo.buildingCenterPosition.longtitude
+          }
+        }
+
         this.buildingService.updateBuildingInfo({
           address: data.address,
           info: data.info,
@@ -280,7 +289,8 @@ export class BuildingComponent implements OnInit {
           buildingCenterPosition: {
             latitude: data.pos.lat(),
             longtitude: data.pos.lng()
-          }
+          },
+          region: data.region
         } as UpdateBuildingDto).subscribe(success => {
           console.log(success)
           this.toastrService.success("Building with id: " + success.id + " updated");

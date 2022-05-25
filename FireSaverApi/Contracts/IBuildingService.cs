@@ -4,6 +4,7 @@ using FireSaverApi.DataContext;
 using FireSaverApi.Dtos.BuildingDtos;
 using FireSaverApi.Dtos.CompartmentDtos;
 using FireSaverApi.Helpers.Pagination;
+using static FireSaverApi.Common.RegionXmlClass;
 
 namespace FireSaverApi.Contracts
 {
@@ -27,5 +28,6 @@ namespace FireSaverApi.Contracts
 
         Task<bool> EnterShelter(int shelterId, User user);
         Task<bool> LeaveShelter(int userId);
+        List<Region> GetAllRegions();
     }
 }

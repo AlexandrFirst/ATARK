@@ -124,8 +124,8 @@ namespace FireSaverMobile.Pages
 
                     routePoints.Add(root.RoutePoints[i].Id.Value, new Position()
                     {
-                        Latitude = root.RoutePoints[i].Latitude,
-                        Longtitude = root.RoutePoints[i].Longtitude
+                        Latitude = root.RoutePoints[i].Longtitude,
+                        Longtitude = root.RoutePoints[i].Latitude
                     });
 
                     routePointIds.Add(root.RoutePoints[i].Id.Value);

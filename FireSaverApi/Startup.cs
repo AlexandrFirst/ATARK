@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Versioning;
@@ -195,6 +196,7 @@ namespace FireSaverApi
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.TryAddSingleton<ITimerService, TimerService>();
             services.AddSingleton<CompartmentDataStorage>();
+            services.AddSingleton(new RegionListService(new FileStream("./Resources/region-vals.xml", FileMode.Open)));
 
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));

@@ -14,5 +14,6 @@ namespace FireSaverApi.Dtos.BuildingDtos
         public PositionDto BuildingCenterPosition { get; set; }
         public IList<ShelterDto> Shelters { get; set; }
         public double? SafetyDistance { get; set; }
+        public string Region { get; set; }
     }
 }

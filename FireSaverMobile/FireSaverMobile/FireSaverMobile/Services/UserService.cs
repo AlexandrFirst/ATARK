@@ -79,7 +79,7 @@ namespace FireSaverMobile.Services
 
         public async Task BlockPoint(Position blockPos)
         {
-            var response = await blockPos.PostRequest<Position>(client, $"http://{serverAddr}/RouteBuilder/addBlockePoint/20");
+            var response = await blockPos.PostRequest<Position>(client, $"http://{serverAddr}/RouteBuilder/addBlockePoint/40");
             var blockPointResponse = await transformHttpResponse<ServerResponse>(response);
         }
     }

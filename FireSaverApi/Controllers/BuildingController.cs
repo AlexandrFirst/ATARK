@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using FireSaverApi.Contracts;
@@ -219,6 +220,11 @@ namespace FireSaverApi.Controllers
             var contextUser = userContextService.GetUserContext();
             await buildingService.LeaveShelter(contextUser.Id);
             return Ok(new ServerResponse() { Message = "Good bye" });
+        }
+
+        [HttpGet("regions")]
+        public IActionResult GetAllRegions(){
+            return Ok(buildingService.GetAllRegions().Select(s => s.Alert));
         }
     }
 }

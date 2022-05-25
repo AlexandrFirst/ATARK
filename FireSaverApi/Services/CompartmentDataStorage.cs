@@ -20,9 +20,11 @@ namespace FireSaverApi.Services
 
         public void AddBlockPointToCompartment(int compartmentId, BlockedPoint blockedPoint)
         {
-            List<BlockedPoint> blockedPoints = new List<BlockedPoint>();
+            List<BlockedPoint> blockedPoints;
             if (!blockedCompartmentArea.TryGetValue(compartmentId, out blockedPoints))
             {
+                blockedPoints = new List<BlockedPoint>();
+                
                 blockedPoints.Add(blockedPoint);
                 blockedCompartmentArea.Add(compartmentId, blockedPoints);
             }

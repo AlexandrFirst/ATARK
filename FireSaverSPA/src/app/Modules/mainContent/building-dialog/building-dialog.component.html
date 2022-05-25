@@ -16,6 +16,14 @@
       Fill in this field
     </div>
   </div>
+  <div>
+    <select class="custom-select mb-3" formControlName="regionName">
+      <option value="">Choose Region</option>
+      <option *ngFor="let region of Regions" [ngValue]="region">
+        {{ region }}
+      </option>
+    </select>
+  </div>
   <button style="float: right;" (click)="CloseAndChange()" [disabled]="getForm.invalid" i18n="@@submitBtn">Add</button>
   <button style="float: right; margin-right: 10px;" (click)="Close()" i18n="@@cancelBtn">Cancel</button>
 </form>

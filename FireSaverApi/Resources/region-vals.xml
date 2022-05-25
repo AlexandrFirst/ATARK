@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<regions>
+    <region>
+        <alert>Вінницька область.</alert>
+    </region>
+    <region>
+        <alert>Волинська область.</alert>
+    </region>
+    <region>
+        <alert>Дніпропетровська область.</alert>
+    </region>
+    <region>
+        <alert>Донецька область.</alert>
+    </region>
+    <region>
+        <alert>Житомирська область.</alert>
+    </region>
+    <region>
+        <alert>Закарпатська область.</alert>
+    </region>
+    <region>
+        <alert>Запорізька область.</alert>
+    </region>
+    <region>
+        <alert>Івано-Франківська область.</alert>
+    </region>
+    <region>
+        <alert>Київська область.</alert>
+    </region>
+    <region>
+        <alert>Кіровоградська область.</alert>
+    </region>
+    <region>
+        <alert>Луганська область.</alert>
+    </region>
+    <region>
+        <alert>Львівська область.</alert>
+    </region>
+    <region>
+        <alert>Миколаївська область.</alert>
+    </region>
+    <region>
+        <alert>Одеська область.</alert>
+    </region>
+    <region>
+        <alert>Полтавська область.</alert>
+    </region>
+    <region>
+        <alert>Рівненська область.</alert>
+    </region>
+    <region>
+        <alert>Сумська область.</alert>
+    </region>
+    <region>
+        <alert>Тернопільська область.</alert>
+    </region>
+    <region>
+        <alert>Харківська область.</alert>
+    </region>
+    <region>
+        <alert>Херсонська область.</alert>
+    </region>
+    <region>
+        <alert>Хмельницька область.</alert>
+    </region>
+    <region>
+        <alert>Черкаська область.</alert>
+    </region>
+    <region>
+        <alert>Чернівецька область.</alert>
+    </region>
+    <region>
+        <alert>Чернігівська область.</alert>
+    </region>
+</regions>

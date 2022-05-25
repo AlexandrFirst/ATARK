@@ -46,7 +46,8 @@ export class HttpBuildingService extends BaseHttpService {
     return this.client.put<BuildingInfoDto>(this.baseUrl + "Building/updateBuilding/" + updatedBuildingInfo.id, {
       address: updatedBuildingInfo.address,
       info: updatedBuildingInfo.info,
-      buildingCenterPosition: updatedBuildingInfo.buildingCenterPosition
+      buildingCenterPosition: updatedBuildingInfo.buildingCenterPosition,
+      region: updatedBuildingInfo.region
     })
   }
 
@@ -72,6 +73,10 @@ export class HttpBuildingService extends BaseHttpService {
 
   removeResponsibleUser(userId: number): Observable<BuildingInfoDto> {
     return this.client.delete<BuildingInfoDto>(this.baseUrl + `Building/removeuser/${userId}`);
+  }
+
+  getRegions(): Observable<String[]>{
+    return this.client.get<String[]>(this.baseUrl + `Building/regions`);
   }
 
   validateBuildingAdress(address: string): Observable<any> {

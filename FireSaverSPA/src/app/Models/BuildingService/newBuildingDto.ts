@@ -4,4 +4,5 @@ export class NewBuildingDto {
     address: string;
     info: string;
     buildingCenterPosition: Postion;
+    region:String;
 }
